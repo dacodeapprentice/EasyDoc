@@ -15,29 +15,27 @@
     <script type="text/babel">
         const { useState } = React;
 
-        const Icon = ({ d, size = 20 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d={d} />
-            </svg>
-        );
-
         const App = () => {
             const [view, setView] = useState('home');
             const [template, setTemplate] = useState(null);
             const [data, setData] = useState({});
+            const [selectedCategory, setSelectedCategory] = useState('all');
 
             const templates = [
+                // FEATURED TEMPLATES
                 {
                     id: 'resume',
                     name: 'Professional Resume',
                     icon: '📄',
-                    desc: 'Create a professional resume',
+                    desc: 'Create a professional resume with experience and skills',
+                    category: 'Personal',
+                    featured: true,
                     fields: [
                         { name: 'fullName', label: 'Full Name', type: 'text', req: true },
                         { name: 'email', label: 'Email', type: 'email', req: true },
                         { name: 'phone', label: 'Phone', type: 'tel', req: true },
                         { name: 'address', label: 'Address', type: 'text' },
-                        { name: 'summary', label: 'Summary', type: 'textarea', req: true },
+                        { name: 'summary', label: 'Professional Summary', type: 'textarea', req: true },
                         { name: 'experience', label: 'Work Experience', type: 'list', req: true,
                             sub: [
                                 { name: 'jobTitle', label: 'Job Title' },
@@ -60,7 +58,9 @@
                     id: 'invoice',
                     name: 'Business Invoice',
                     icon: '💰',
-                    desc: 'Generate invoices for clients',
+                    desc: 'Generate professional invoices for clients',
+                    category: 'Business',
+                    featured: true,
                     fields: [
                         { name: 'invoiceNumber', label: 'Invoice #', type: 'text', req: true },
                         { name: 'date', label: 'Date', type: 'date', req: true },
@@ -83,7 +83,9 @@
                     id: 'letter',
                     name: 'Formal Letter',
                     icon: '✉️',
-                    desc: 'Create formal letters',
+                    desc: 'Create formal business or personal letters',
+                    category: 'Personal',
+                    featured: true,
                     fields: [
                         { name: 'date', label: 'Date', type: 'date', req: true },
                         { name: 'senderName', label: 'Your Name', type: 'text', req: true },
@@ -99,7 +101,9 @@
                     id: 'certificate',
                     name: 'Certificate',
                     icon: '🏆',
-                    desc: 'Create achievement certificates',
+                    desc: 'Create achievement and completion certificates',
+                    category: 'Educational',
+                    featured: true,
                     fields: [
                         { name: 'recipientName', label: 'Recipient', type: 'text', req: true },
                         { name: 'achievement', label: 'Achievement', type: 'text', req: true },
@@ -108,8 +112,159 @@
                         { name: 'signerName', label: 'Signer', type: 'text', req: true },
                         { name: 'signerTitle', label: 'Title', type: 'text', req: true }
                     ]
+                },
+                // BUSINESS TEMPLATES
+                {
+                    id: 'proposal',
+                    name: 'Business Proposal',
+                    icon: '📊',
+                    desc: 'Professional business proposal template',
+                    category: 'Business',
+                    fields: [
+                        { name: 'title', label: 'Proposal Title', type: 'text', req: true },
+                        { name: 'date', label: 'Date', type: 'date', req: true },
+                        { name: 'preparedFor', label: 'Prepared For', type: 'text', req: true },
+                        { name: 'preparedBy', label: 'Prepared By', type: 'text', req: true },
+                        { name: 'executive', label: 'Executive Summary', type: 'textarea', req: true },
+                        { name: 'problem', label: 'Problem Statement', type: 'textarea', req: true },
+                        { name: 'solution', label: 'Proposed Solution', type: 'textarea', req: true },
+                        { name: 'budget', label: 'Budget', type: 'text', req: true },
+                        { name: 'timeline', label: 'Timeline', type: 'text', req: true }
+                    ]
+                },
+                {
+                    id: 'contract',
+                    name: 'Service Agreement',
+                    icon: '📝',
+                    desc: 'Basic service contract template',
+                    category: 'Legal',
+                    fields: [
+                        { name: 'date', label: 'Date', type: 'date', req: true },
+                        { name: 'party1Name', label: 'Service Provider', type: 'text', req: true },
+                        { name: 'party1Address', label: 'Provider Address', type: 'textarea', req: true },
+                        { name: 'party2Name', label: 'Client', type: 'text', req: true },
+                        { name: 'party2Address', label: 'Client Address', type: 'textarea', req: true },
+                        { name: 'services', label: 'Services Description', type: 'textarea', req: true },
+                        { name: 'compensation', label: 'Compensation', type: 'text', req: true },
+                        { name: 'term', label: 'Term/Duration', type: 'text', req: true },
+                        { name: 'terms', label: 'Additional Terms', type: 'textarea' }
+                    ]
+                },
+                {
+                    id: 'receipt',
+                    name: 'Payment Receipt',
+                    icon: '🧾',
+                    desc: 'Simple payment receipt',
+                    category: 'Business',
+                    fields: [
+                        { name: 'receiptNumber', label: 'Receipt #', type: 'text', req: true },
+                        { name: 'date', label: 'Date', type: 'date', req: true },
+                        { name: 'from', label: 'Received From', type: 'text', req: true },
+                        { name: 'amount', label: 'Amount', type: 'text', req: true },
+                        { name: 'paymentMethod', label: 'Payment Method', type: 'text', req: true },
+                        { name: 'purpose', label: 'Purpose/Description', type: 'textarea', req: true },
+                        { name: 'receivedBy', label: 'Received By', type: 'text', req: true }
+                    ]
+                },
+                // PERSONAL TEMPLATES
+                {
+                    id: 'coverletter',
+                    name: 'Cover Letter',
+                    icon: '📮',
+                    desc: 'Professional job application cover letter',
+                    category: 'Personal',
+                    fields: [
+                        { name: 'date', label: 'Date', type: 'date', req: true },
+                        { name: 'yourName', label: 'Your Name', type: 'text', req: true },
+                        { name: 'yourAddress', label: 'Your Address', type: 'textarea', req: true },
+                        { name: 'hiringManager', label: 'Hiring Manager', type: 'text', req: true },
+                        { name: 'company', label: 'Company', type: 'text', req: true },
+                        { name: 'companyAddress', label: 'Company Address', type: 'textarea', req: true },
+                        { name: 'position', label: 'Position', type: 'text', req: true },
+                        { name: 'body', label: 'Letter Body', type: 'textarea', req: true }
+                    ]
+                },
+                {
+                    id: 'reference',
+                    name: 'Reference Letter',
+                    icon: '💼',
+                    desc: 'Professional reference/recommendation letter',
+                    category: 'Personal',
+                    fields: [
+                        { name: 'date', label: 'Date', type: 'date', req: true },
+                        { name: 'writerName', label: 'Your Name', type: 'text', req: true },
+                        { name: 'writerTitle', label: 'Your Title', type: 'text', req: true },
+                        { name: 'writerOrg', label: 'Organization', type: 'text', req: true },
+                        { name: 'candidateName', label: 'Candidate Name', type: 'text', req: true },
+                        { name: 'relationship', label: 'Your Relationship', type: 'text', req: true },
+                        { name: 'duration', label: 'Duration Known', type: 'text', req: true },
+                        { name: 'recommendation', label: 'Recommendation', type: 'textarea', req: true }
+                    ]
+                },
+                // EVENT TEMPLATES
+                {
+                    id: 'invitation',
+                    name: 'Event Invitation',
+                    icon: '🎉',
+                    desc: 'Formal event invitation',
+                    category: 'Events',
+                    fields: [
+                        { name: 'eventName', label: 'Event Name', type: 'text', req: true },
+                        { name: 'host', label: 'Hosted By', type: 'text', req: true },
+                        { name: 'date', label: 'Date', type: 'date', req: true },
+                        { name: 'time', label: 'Time', type: 'text', req: true },
+                        { name: 'venue', label: 'Venue', type: 'text', req: true },
+                        { name: 'address', label: 'Address', type: 'textarea', req: true },
+                        { name: 'details', label: 'Event Details', type: 'textarea', req: true },
+                        { name: 'rsvp', label: 'RSVP Information', type: 'text' }
+                    ]
+                },
+                {
+                    id: 'agenda',
+                    name: 'Meeting Agenda',
+                    icon: '📋',
+                    desc: 'Professional meeting agenda',
+                    category: 'Business',
+                    fields: [
+                        { name: 'meetingTitle', label: 'Meeting Title', type: 'text', req: true },
+                        { name: 'date', label: 'Date', type: 'date', req: true },
+                        { name: 'time', label: 'Time', type: 'text', req: true },
+                        { name: 'location', label: 'Location', type: 'text', req: true },
+                        { name: 'organizer', label: 'Organizer', type: 'text', req: true },
+                        { name: 'attendees', label: 'Attendees', type: 'textarea', req: true },
+                        { name: 'items', label: 'Agenda Items', type: 'list', req: true,
+                            sub: [
+                                { name: 'topic', label: 'Topic' },
+                                { name: 'duration', label: 'Duration' },
+                                { name: 'presenter', label: 'Presenter' }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 'timesheet',
+                    name: 'Timesheet',
+                    icon: '⏰',
+                    desc: 'Employee timesheet template',
+                    category: 'Business',
+                    fields: [
+                        { name: 'employeeName', label: 'Employee Name', type: 'text', req: true },
+                        { name: 'employeeId', label: 'Employee ID', type: 'text' },
+                        { name: 'weekEnding', label: 'Week Ending', type: 'date', req: true },
+                        { name: 'department', label: 'Department', type: 'text' },
+                        { name: 'entries', label: 'Time Entries', type: 'list', req: true,
+                            sub: [
+                                { name: 'date', label: 'Date', type: 'date' },
+                                { name: 'hoursWorked', label: 'Hours', type: 'number' },
+                                { name: 'description', label: 'Description' }
+                            ]
+                        },
+                        { name: 'supervisor', label: 'Supervisor', type: 'text' }
+                    ]
                 }
             ];
+
+            const categories = ['all', 'Business', 'Personal', 'Legal', 'Educational', 'Events'];
 
             const selectTemplate = (t) => {
                 setTemplate(t);
@@ -122,11 +277,8 @@
             };
 
             const updateData = (k, v) => setData(p => ({ ...p, [k]: v }));
-            
             const addListItem = (k) => setData(p => ({ ...p, [k]: [...(p[k] || []), {}] }));
-            
             const removeListItem = (k, i) => setData(p => ({ ...p, [k]: p[k].filter((_, idx) => idx !== i) }));
-            
             const updateListItem = (k, i, sk, v) => setData(p => ({
                 ...p,
                 [k]: p[k].map((item, idx) => idx === i ? { ...item, [sk]: v } : item)
@@ -139,6 +291,16 @@
                 const w = doc.internal.pageSize.getWidth();
                 const m = 20;
                 const mw = w - 2 * m;
+
+                // Helper function for page breaks
+                const checkPageBreak = (needed) => {
+                    if (y + needed > 270) {
+                        doc.addPage();
+                        y = 20;
+                        return true;
+                    }
+                    return false;
+                };
 
                 if (template.id === 'resume') {
                     doc.setFontSize(24);
@@ -160,12 +322,13 @@
                     y += sum.length * 5 + 10;
 
                     if (data.experience?.length) {
+                        checkPageBreak(20);
                         doc.setFontSize(12);
                         doc.setFont(undefined, 'bold');
                         doc.text('WORK EXPERIENCE', m, y);
                         y += 7;
                         data.experience.forEach(e => {
-                            if (y > 270) { doc.addPage(); y = 20; }
+                            checkPageBreak(30);
                             doc.setFontSize(11);
                             doc.setFont(undefined, 'bold');
                             doc.text(e.jobTitle || '', m, y);
@@ -184,7 +347,7 @@
                     }
 
                     if (data.education?.length) {
-                        if (y > 250) { doc.addPage(); y = 20; }
+                        checkPageBreak(20);
                         doc.setFontSize(12);
                         doc.setFont(undefined, 'bold');
                         doc.text('EDUCATION', m, y);
@@ -203,7 +366,7 @@
                     }
 
                     if (data.skills) {
-                        if (y > 250) { doc.addPage(); y = 20; }
+                        checkPageBreak(15);
                         doc.setFontSize(12);
                         doc.setFont(undefined, 'bold');
                         doc.text('SKILLS', m, y);
@@ -287,32 +450,44 @@
                         const n = doc.splitTextToSize(data.notes, mw);
                         doc.text(n, m, y);
                     }
-                } else if (template.id === 'letter') {
+                } else if (template.id === 'letter' || template.id === 'coverletter') {
                     doc.setFontSize(10);
-                    doc.text(data.senderName || '', m, y);
+                    doc.text(data.senderName || data.yourName || '', m, y);
                     y += 5;
-                    const sa = doc.splitTextToSize(data.senderAddress || '', mw);
+                    const sa = doc.splitTextToSize(data.senderAddress || data.yourAddress || '', mw);
                     doc.text(sa, m, y);
                     y += sa.length * 5 + 10;
                     doc.text(data.date || '', m, y);
                     y += 15;
-                    doc.text(data.recipientName || '', m, y);
+                    doc.text(data.recipientName || data.hiringManager || '', m, y);
                     y += 5;
-                    const ra = doc.splitTextToSize(data.recipientAddress || '', mw);
+                    if (data.company) {
+                        doc.text(data.company, m, y);
+                        y += 5;
+                    }
+                    const ra = doc.splitTextToSize(data.recipientAddress || data.companyAddress || '', mw);
                     doc.text(ra, m, y);
                     y += ra.length * 5 + 15;
-                    doc.setFont(undefined, 'bold');
-                    doc.text(`Re: ${data.subject || ''}`, m, y);
-                    y += 10;
+                    if (data.subject) {
+                        doc.setFont(undefined, 'bold');
+                        doc.text(`Re: ${data.subject}`, m, y);
+                        y += 10;
+                    }
+                    if (data.position) {
+                        doc.setFont(undefined, 'bold');
+                        doc.text(`Re: ${data.position}`, m, y);
+                        y += 10;
+                    }
                     doc.setFont(undefined, 'normal');
-                    doc.text('Dear ' + (data.recipientName || '') + ',', m, y);
+                    const greeting = data.recipientName ? `Dear ${data.recipientName},` : data.hiringManager ? `Dear ${data.hiringManager},` : 'Dear Sir/Madam,';
+                    doc.text(greeting, m, y);
                     y += 10;
                     const b = doc.splitTextToSize(data.body || '', mw);
                     doc.text(b, m, y);
                     y += b.length * 5 + 15;
                     doc.text(data.closing || 'Sincerely,', m, y);
                     y += 15;
-                    doc.text(data.senderName || '', m, y);
+                    doc.text(data.senderName || data.yourName || '', m, y);
                 } else if (template.id === 'certificate') {
                     doc.setFillColor(245, 245, 250);
                     doc.rect(0, 0, w, doc.internal.pageSize.getHeight(), 'F');
@@ -358,6 +533,46 @@
                     doc.setFont(undefined, 'italic');
                     doc.text(data.signerTitle || '', w / 2 - 40, y, { align: 'center' });
                     doc.text('Organization', w / 2 + 40, y, { align: 'center' });
+                } else {
+                    // Generic document layout for other templates
+                    doc.setFontSize(20);
+                    doc.setFont(undefined, 'bold');
+                    doc.text(template.name, w / 2, y, { align: 'center' });
+                    y += 15;
+                    
+                    doc.setFontSize(10);
+                    doc.setFont(undefined, 'normal');
+                    
+                    template.fields.forEach(field => {
+                        if (field.type === 'list' && data[field.name]) {
+                            checkPageBreak(30);
+                            doc.setFont(undefined, 'bold');
+                            doc.text(field.label + ':', m, y);
+                            y += 7;
+                            doc.setFont(undefined, 'normal');
+                            data[field.name].forEach((item, idx) => {
+                                checkPageBreak(20);
+                                doc.text(`${idx + 1}.`, m, y);
+                                let itemText = '';
+                                field.sub.forEach(sf => {
+                                    if (item[sf.name]) itemText += item[sf.name] + ' ';
+                                });
+                                const lines = doc.splitTextToSize(itemText, mw - 10);
+                                doc.text(lines, m + 5, y);
+                                y += lines.length * 5 + 3;
+                            });
+                            y += 5;
+                        } else if (data[field.name]) {
+                            checkPageBreak(15);
+                            doc.setFont(undefined, 'bold');
+                            doc.text(field.label + ':', m, y);
+                            y += 6;
+                            doc.setFont(undefined, 'normal');
+                            const content = doc.splitTextToSize(data[field.name].toString(), mw);
+                            doc.text(content, m, y);
+                            y += content.length * 5 + 8;
+                        }
+                    });
                 }
 
                 doc.save(`${template.name.replace(/\s+/g, '_')}.pdf`);
@@ -438,11 +653,14 @@
                     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
                         <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
                             <button onClick={() => { setView('home'); setTemplate(null); }} className="text-gray-600 hover:text-gray-800 mb-6 flex items-center gap-2">
-                                ← Back
+                                ← Back to Templates
                             </button>
                             <div className="flex items-center gap-3 mb-6">
                                 <span className="text-4xl">{template.icon}</span>
-                                <h2 className="text-2xl font-bold">{template.name}</h2>
+                                <div>
+                                    <h2 className="text-2xl font-bold">{template.name}</h2>
+                                    <p className="text-sm text-gray-600">{template.desc}</p>
+                                </div>
                             </div>
                             <div className="space-y-4">
                                 {template.fields.map(renderField)}
@@ -455,26 +673,103 @@
                 );
             }
 
+            const featuredTemplates = templates.filter(t => t.featured);
+            const filteredTemplates = selectedCategory === 'all' 
+                ? templates.filter(t => !t.featured)
+                : templates.filter(t => !t.featured && t.category === selectedCategory);
+
             return (
                 <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-                    <div className="max-w-6xl mx-auto">
+                    <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-12">
-                            <h1 className="text-4xl font-bold text-gray-800 mb-4">Universal Document Generator</h1>
-                            <p className="text-gray-600 text-lg">Create professional documents in minutes</p>
+                            <h1 className="text-5xl font-bold text-gray-800 mb-4">Universal Document Generator</h1>
+                            <p className="text-gray-600 text-lg">Create professional documents in minutes. Choose from our library of templates.</p>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {templates.map(t => (
-                                <div key={t.id} onClick={() => selectTemplate(t)} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl cursor-pointer border-2 border-transparent hover:border-blue-300 transition">
-                                    <div className="flex items-start gap-4">
-                                        <span className="text-5xl">{t.icon}</span>
-                                        <div>
-                                            <h3 className="text-xl font-bold mb-2">{t.name}</h3>
-                                            <p className="text-gray-600 mb-4">{t.desc}</p>
-                                            <span className="text-blue-600 font-semibold">Create →</span>
+
+                        {/* Featured Templates */}
+                        <div className="mb-12">
+                            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                                <span className="text-yellow-500">⭐</span> Most Popular Templates
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                {featuredTemplates.map(t => (
+                                    <div key={t.id} onClick={() => selectTemplate(t)} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl cursor-pointer border-2 border-yellow-200 hover:border-yellow-400 transition transform hover:-translate-y-1">
+                                        <div className="text-center">
+                                            <span className="text-5xl block mb-3">{t.icon}</span>
+                                            <h3 className="text-lg font-bold mb-2">{t.name}</h3>
+                                            <p className="text-gray-600 text-sm mb-4">{t.desc}</p>
+                                            <span className="text-blue-600 font-semibold text-sm">Create Document →</span>
                                         </div>
                                     </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* All Templates Section */}
+                        <div>
+                            <div className="flex items-center justify-between mb-6">
+                                <h2 className="text-2xl font-bold text-gray-800">All Templates</h2>
+                                <div className="flex gap-2 flex-wrap">
+                                    {categories.map(cat => (
+                                        <button
+                                            key={cat}
+                                            onClick={() => setSelectedCategory(cat)}
+                                            className={`px-4 py-2 rounded-lg font-medium text-sm transition ${
+                                                selectedCategory === cat
+                                                    ? 'bg-blue-600 text-white'
+                                                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                                            }`}
+                                        >
+                                            {cat === 'all' ? 'All' : cat}
+                                        </button>
+                                    ))}
                                 </div>
-                            ))}
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {filteredTemplates.map(t => (
+                                    <div key={t.id} onClick={() => selectTemplate(t)} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl cursor-pointer border-2 border-transparent hover:border-blue-300 transition">
+                                        <div className="flex items-start gap-4">
+                                            <span className="text-4xl">{t.icon}</span>
+                                            <div className="flex-1">
+                                                <div className="flex items-start justify-between mb-2">
+                                                    <h3 className="text-lg font-bold">{t.name}</h3>
+                                                    <span className="text-xs bg-gray-100 px-2 py-1 rounded">{t.category}</span>
+                                                </div>
+                                                <p className="text-gray-600 text-sm mb-3">{t.desc}</p>
+                                                <span className="text-blue-600 font-semibold text-sm">Create →</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Footer Info */}
+                        <div className="mt-16 bg-white rounded-xl shadow-lg p-8">
+                            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">How It Works</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="text-center">
+                                    <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span className="text-3xl">1️⃣</span>
+                                    </div>
+                                    <h3 className="font-semibold text-gray-800 mb-2">Choose Template</h3>
+                                    <p className="text-gray-600 text-sm">Browse our library and select the document you need</p>
+                                </div>
+                                <div className="text-center">
+                                    <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span className="text-3xl">2️⃣</span>
+                                    </div>
+                                    <h3 className="font-semibold text-gray-800 mb-2">Fill Information</h3>
+                                    <p className="text-gray-600 text-sm">Enter your details in the easy-to-use form</p>
+                                </div>
+                                <div className="text-center">
+                                    <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <span className="text-3xl">3️⃣</span>
+                                    </div>
+                                    <h3 className="font-semibold text-gray-800 mb-2">Download PDF</h3>
+                                    <p className="text-gray-600 text-sm">Get your professional document instantly</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
