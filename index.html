@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Document Generator</title>
+    <title>EasyDoc - Universal Document Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
@@ -13,7 +13,7 @@
 <body>
     <div id="root"></div>
     <script type="text/babel">
-        const { useState } = React;
+        const { useState, useEffect } = React;
 
         const App = () => {
             const [view, setView] = useState('home');
@@ -21,6 +21,26 @@
             const [data, setData] = useState({});
             const [selectedCategory, setSelectedCategory] = useState('all');
             const [selectedStyle, setSelectedStyle] = useState('classic');
+            const [accentColor, setAccentColor] = useState('#3498db');
+            const [savedDrafts, setSavedDrafts] = useState([]);
+            const [showSaveModal, setShowSaveModal] = useState(false);
+            const [draftName, setDraftName] = useState('');
+            const [showLoadModal, setShowLoadModal] = useState(false);
+
+            // Load saved drafts on mount
+            useEffect(() => {
+                const drafts = localStorage.getItem('easydoc_drafts');
+                if (drafts) {
+                    setSavedDrafts(JSON.parse(drafts));
+                }
+            }, []);
+
+            // Save drafts to localStorage whenever they change
+            useEffect(() => {
+                if (savedDrafts.length > 0) {
+                    localStorage.setItem('easydoc_drafts', JSON.stringify(savedDrafts));
+                }
+            }, [savedDrafts]);
 
             const templates = [
                 // FEATURED TEMPLATES
@@ -344,6 +364,146 @@
                         },
                         { name: 'supervisor', label: 'Supervisor', type: 'text' }
                     ]
+                },
+                // NEW TEMPLATES
+                {
+                    id: 'budget',
+                    name: 'Budget Report',
+                    icon: '💵',
+                    desc: 'Track income and expenses',
+                    category: 'Business',
+                    fields: [
+                        { name: 'title', label: 'Budget Title', type: 'text', req: true },
+                        { name: 'period', label: 'Period', type: 'text', req: true },
+                        { name: 'preparedBy', label: 'Prepared By', type: 'text', req: true },
+                        { name: 'date', label: 'Date', type: 'date', req: true },
+                        { name: 'income', label: 'Income Items', type: 'list', req: true,
+                            sub: [
+                                { name: 'source', label: 'Income Source' },
+                                { name: 'amount', label: 'Amount', type: 'number' }
+                            ]
+                        },
+                        { name: 'expenses', label: 'Expense Items', type: 'list', req: true,
+                            sub: [
+                                { name: 'category', label: 'Category' },
+                                { name: 'description', label: 'Description' },
+                                { name: 'amount', label: 'Amount', type: 'number' }
+                            ]
+                        },
+                        { name: 'notes', label: 'Notes', type: 'textarea' }
+                    ]
+                },
+                {
+                    id: 'purchaseorder',
+                    name: 'Purchase Order',
+                    icon: '🛒',
+                    desc: 'Create purchase orders for vendors',
+                    category: 'Business',
+                    fields: [
+                        { name: 'poNumber', label: 'PO Number', type: 'text', req: true },
+                        { name: 'date', label: 'Date', type: 'date', req: true },
+                        { name: 'buyerName', label: 'Buyer Company', type: 'text', req: true },
+                        { name: 'buyerAddress', label: 'Buyer Address', type: 'textarea', req: true },
+                        { name: 'vendorName', label: 'Vendor Name', type: 'text', req: true },
+                        { name: 'vendorAddress', label: 'Vendor Address', type: 'textarea', req: true },
+                        { name: 'items', label: 'Items to Purchase', type: 'list', req: true,
+                            sub: [
+                                { name: 'itemName', label: 'Item' },
+                                { name: 'quantity', label: 'Quantity', type: 'number' },
+                                { name: 'unitPrice', label: 'Unit Price', type: 'number' }
+                            ]
+                        },
+                        { name: 'deliveryDate', label: 'Expected Delivery', type: 'date' },
+                        { name: 'terms', label: 'Terms & Conditions', type: 'textarea' }
+                    ]
+                },
+                {
+                    id: 'itinerary',
+                    name: 'Travel Itinerary',
+                    icon: '✈️',
+                    desc: 'Plan your travel schedule',
+                    category: 'Personal',
+                    fields: [
+                        { name: 'tripTitle', label: 'Trip Title', type: 'text', req: true },
+                        { name: 'traveler', label: 'Traveler Name', type: 'text', req: true },
+                        { name: 'startDate', label: 'Start Date', type: 'date', req: true },
+                        { name: 'endDate', label: 'End Date', type: 'date', req: true },
+                        { name: 'destination', label: 'Destination', type: 'text', req: true },
+                        { name: 'schedule', label: 'Daily Schedule', type: 'list', req: true,
+                            sub: [
+                                { name: 'day', label: 'Day/Date' },
+                                { name: 'time', label: 'Time' },
+                                { name: 'activity', label: 'Activity' },
+                                { name: 'location', label: 'Location' }
+                            ]
+                        },
+                        { name: 'accommodation', label: 'Accommodation Details', type: 'textarea' },
+                        { name: 'contacts', label: 'Emergency Contacts', type: 'textarea' }
+                    ]
+                },
+                {
+                    id: 'mealplan',
+                    name: 'Meal Plan',
+                    icon: '🍽️',
+                    desc: 'Weekly meal planning template',
+                    category: 'Personal',
+                    fields: [
+                        { name: 'weekOf', label: 'Week Of', type: 'date', req: true },
+                        { name: 'planFor', label: 'Plan For', type: 'text', req: true },
+                        { name: 'meals', label: 'Daily Meals', type: 'list', req: true,
+                            sub: [
+                                { name: 'day', label: 'Day' },
+                                { name: 'breakfast', label: 'Breakfast' },
+                                { name: 'lunch', label: 'Lunch' },
+                                { name: 'dinner', label: 'Dinner' },
+                                { name: 'snacks', label: 'Snacks' }
+                            ]
+                        },
+                        { name: 'shoppingList', label: 'Shopping List', type: 'textarea' },
+                        { name: 'notes', label: 'Notes', type: 'textarea' }
+                    ]
+                },
+                {
+                    id: 'minutes',
+                    name: 'Meeting Minutes',
+                    icon: '📝',
+                    desc: 'Record meeting discussions and decisions',
+                    category: 'Business',
+                    fields: [
+                        { name: 'meetingTitle', label: 'Meeting Title', type: 'text', req: true },
+                        { name: 'date', label: 'Date', type: 'date', req: true },
+                        { name: 'time', label: 'Time', type: 'text', req: true },
+                        { name: 'location', label: 'Location', type: 'text', req: true },
+                        { name: 'attendees', label: 'Attendees', type: 'textarea', req: true },
+                        { name: 'absent', label: 'Absent', type: 'text' },
+                        { name: 'discussions', label: 'Discussion Points', type: 'list', req: true,
+                            sub: [
+                                { name: 'topic', label: 'Topic' },
+                                { name: 'discussion', label: 'Discussion', type: 'textarea' },
+                                { name: 'decision', label: 'Decision/Action' }
+                            ]
+                        },
+                        { name: 'nextMeeting', label: 'Next Meeting', type: 'text' }
+                    ]
+                },
+                {
+                    id: 'checklist',
+                    name: 'Checklist',
+                    icon: '✅',
+                    desc: 'Create task and to-do checklists',
+                    category: 'Personal',
+                    fields: [
+                        { name: 'title', label: 'Checklist Title', type: 'text', req: true },
+                        { name: 'description', label: 'Description', type: 'textarea' },
+                        { name: 'date', label: 'Date', type: 'date', req: true },
+                        { name: 'items', label: 'Checklist Items', type: 'list', req: true,
+                            sub: [
+                                { name: 'task', label: 'Task' },
+                                { name: 'priority', label: 'Priority' },
+                                { name: 'notes', label: 'Notes' }
+                            ]
+                        }
+                    ]
                 }
             ];
 
@@ -368,6 +528,79 @@
                 [k]: p[k].map((item, idx) => idx === i ? { ...item, [sk]: v } : item)
             }));
 
+            // Save draft
+            const saveDraft = () => {
+                if (!draftName.trim()) {
+                    alert('Please enter a name for your draft');
+                    return;
+                }
+                const draft = {
+                    id: Date.now(),
+                    name: draftName,
+                    template: template,
+                    data: data,
+                    style: selectedStyle,
+                    accentColor: accentColor,
+                    date: new Date().toLocaleDateString()
+                };
+                setSavedDrafts(prev => [draft, ...prev]);
+                setShowSaveModal(false);
+                setDraftName('');
+                alert('Draft saved successfully!');
+            };
+
+            // Load draft
+            const loadDraft = (draft) => {
+                setTemplate(draft.template);
+                setData(draft.data);
+                setSelectedStyle(draft.style);
+                setAccentColor(draft.accentColor);
+                setView('editor');
+                setShowLoadModal(false);
+            };
+
+            // Delete draft
+            const deleteDraft = (id) => {
+                if (confirm('Are you sure you want to delete this draft?')) {
+                    setSavedDrafts(prev => prev.filter(d => d.id !== id));
+                }
+            };
+
+            // Fill with sample data
+            const fillSampleData = () => {
+                if (!confirm('This will replace your current data with sample data. Continue?')) return;
+                
+                const samples = {
+                    resume: {
+                        fullName: 'Jane Doe',
+                        email: 'jane.doe@email.com',
+                        phone: '+1 (555) 123-4567',
+                        address: 'New York, NY',
+                        summary: 'Experienced software developer with 5+ years of expertise in full-stack development.',
+                        experience: [{ jobTitle: 'Senior Developer', company: 'Tech Corp', duration: '2020-Present', description: 'Led development of key features' }],
+                        education: [{ degree: 'BS Computer Science', institution: 'University of Technology', year: '2018' }],
+                        skills: 'JavaScript, React, Node.js, Python, SQL'
+                    },
+                    invoice: {
+                        invoiceNumber: 'INV-001',
+                        date: '2025-01-06',
+                        dueDate: '2025-02-06',
+                        fromName: 'Your Company',
+                        fromAddress: '123 Business St, City, State 12345',
+                        toName: 'Client Name',
+                        toAddress: '456 Client Ave, City, State 67890',
+                        items: [{ description: 'Web Development Services', quantity: 40, rate: 150 }],
+                        notes: 'Payment due within 30 days'
+                    }
+                };
+
+                if (samples[template.id]) {
+                    setData(samples[template.id]);
+                } else {
+                    alert('Sample data not available for this template');
+                }
+            };
+
             const generatePDF = () => {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
@@ -388,14 +621,25 @@
 
                 // Style configurations
                 const applyStyle = (style) => {
+                    const hexToRgb = (hex) => {
+                        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                        return result ? [
+                            parseInt(result[1], 16),
+                            parseInt(result[2], 16),
+                            parseInt(result[3], 16)
+                        ] : [52, 152, 219];
+                    };
+                    
+                    const customColor = hexToRgb(accentColor);
+                    
                     if (style === 'modern') {
-                        return { primaryColor: [52, 152, 219], headerSize: 26, accentColor: [41, 128, 185] };
+                        return { primaryColor: customColor, headerSize: 26, accentColor: customColor };
                     } else if (style === 'minimal') {
-                        return { primaryColor: [44, 62, 80], headerSize: 22, accentColor: [127, 140, 141] };
+                        return { primaryColor: [44, 62, 80], headerSize: 22, accentColor: customColor };
                     } else if (style === 'creative') {
-                        return { primaryColor: [155, 89, 182], headerSize: 28, accentColor: [142, 68, 173] };
+                        return { primaryColor: customColor, headerSize: 28, accentColor: customColor };
                     } else { // classic
-                        return { primaryColor: [0, 0, 0], headerSize: 24, accentColor: [50, 50, 50] };
+                        return { primaryColor: [0, 0, 0], headerSize: 24, accentColor: customColor };
                     }
                 };
 
@@ -1126,11 +1370,43 @@
                             <button onClick={() => { setView('home'); setTemplate(null); }} className="text-gray-600 hover:text-gray-800 mb-6 flex items-center gap-2">
                                 ← Back to Templates
                             </button>
-                            <div className="flex items-center gap-3 mb-6">
-                                <span className="text-4xl">{template.icon}</span>
-                                <div>
-                                    <h2 className="text-2xl font-bold">{template.name}</h2>
-                                    <p className="text-sm text-gray-600">{template.desc}</p>
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <span className="text-4xl">{template.icon}</span>
+                                    <div>
+                                        <h2 className="text-2xl font-bold">{template.name}</h2>
+                                        <p className="text-sm text-gray-600">{template.desc}</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button onClick={() => setShowLoadModal(true)} className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium">
+                                        📂 Load
+                                    </button>
+                                    <button onClick={() => setShowSaveModal(true)} className="px-4 py-2 bg-blue-100 hover:bg-blue-200 rounded-lg text-sm font-medium text-blue-700">
+                                        💾 Save Draft
+                                    </button>
+                                    <button onClick={fillSampleData} className="px-4 py-2 bg-green-100 hover:bg-green-200 rounded-lg text-sm font-medium text-green-700">
+                                        ✨ Sample Data
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Color Picker */}
+                            <div className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <h3 className="text-sm font-semibold mb-1">Customize Your Colors 🎨</h3>
+                                        <p className="text-xs text-gray-600">Choose an accent color for your document</p>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <input 
+                                            type="color" 
+                                            value={accentColor} 
+                                            onChange={(e) => setAccentColor(e.target.value)}
+                                            className="w-12 h-12 rounded cursor-pointer border-2 border-white shadow"
+                                        />
+                                        <div className="text-sm font-mono">{accentColor}</div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -1167,6 +1443,64 @@
                                 </button>
                             </div>
                         </div>
+
+                        {/* Save Modal */}
+                        {showSaveModal && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+                                    <h3 className="text-xl font-bold mb-4">Save Draft</h3>
+                                    <input
+                                        type="text"
+                                        value={draftName}
+                                        onChange={(e) => setDraftName(e.target.value)}
+                                        placeholder="Enter draft name..."
+                                        className="w-full px-4 py-2 border rounded-lg mb-4"
+                                    />
+                                    <div className="flex gap-2">
+                                        <button onClick={saveDraft} className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700">
+                                            Save
+                                        </button>
+                                        <button onClick={() => { setShowSaveModal(false); setDraftName(''); }} className="flex-1 bg-gray-200 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Load Modal */}
+                        {showLoadModal && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                <div className="bg-white rounded-xl p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+                                    <h3 className="text-xl font-bold mb-4">Load Draft</h3>
+                                    {savedDrafts.length === 0 ? (
+                                        <p className="text-gray-500 text-center py-8">No saved drafts yet</p>
+                                    ) : (
+                                        <div className="space-y-2">
+                                            {savedDrafts.map(draft => (
+                                                <div key={draft.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
+                                                    <div className="flex-1">
+                                                        <div className="font-semibold">{draft.name}</div>
+                                                        <div className="text-sm text-gray-600">{draft.template.name} • {draft.date}</div>
+                                                    </div>
+                                                    <div className="flex gap-2">
+                                                        <button onClick={() => loadDraft(draft)} className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
+                                                            Load
+                                                        </button>
+                                                        <button onClick={() => deleteDraft(draft.id)} className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm">
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    <button onClick={() => setShowLoadModal(false)} className="w-full mt-4 bg-gray-200 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 );
             }
@@ -1180,7 +1514,7 @@
                 <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-12">
-                            <h1 className="text-5xl font-bold text-gray-800 mb-4">Universal Document Generator</h1>
+                            <h1 className="text-5xl font-bold text-gray-800 mb-4">EasyDoc</h1>
                             <p className="text-gray-600 text-lg">Create professional documents in minutes. Choose from our library of templates.</p>
                         </div>
 
