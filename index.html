@@ -1,2470 +1,745 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyDoc - Universal Document Generator</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        body.dark-mode {
-            background-color: #1a202c;
-            color: #e2e8f0;
-        }
-        .dark-mode .bg-white {
-            background-color: #2d3748 !important;
-            color: #e2e8f0 !important;
-        }
-        .dark-mode .text-gray-800 {
-            color: #e2e8f0 !important;
-        }
-        .dark-mode .text-gray-600 {
-            color: #cbd5e0 !important;
-        }
-        .dark-mode .bg-gray-50 {
-            background-color: #374151 !important;
-        }
-        .dark-mode .border-gray-300 {
-            border-color: #4a5568 !important;
-        }
-        .dark-mode input, .dark-mode textarea, .dark-mode select {
-            background-color: #374151 !important;
-            color: #e2e8f0 !important;
-            border-color: #4a5568 !important;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EasyDoc</title>
+
+<!-- React -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+
+<!-- Babel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+}
+</style>
 </head>
+
 <body>
-    <div id="root"></div>
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+<div id="root"></div>
 
-        const App = () => {
-            const [view, setView] = useState('home');
-            const [template, setTemplate] = useState(null);
-            const [data, setData] = useState({});
-            const [selectedCategory, setSelectedCategory] = useState('all');
-            const [selectedStyle, setSelectedStyle] = useState('classic');
-            const [accentColor, setAccentColor] = useState('#3498db');
-            const [savedDrafts, setSavedDrafts] = useState([]);
-            const [showSaveModal, setShowSaveModal] = useState(false);
-            const [draftName, setDraftName] = useState('');
-            const [showLoadModal, setShowLoadModal] = useState(false);
-            const [uploadedImages, setUploadedImages] = useState({});
-            const [documentHistory, setDocumentHistory] = useState([]);
-            const [showHistory, setShowHistory] = useState(false);
-            const [showTips, setShowTips] = useState(true);
-            const [language, setLanguage] = useState('en');
-            const [searchQuery, setSearchQuery] = useState('');
-            const [selectedFont, setSelectedFont] = useState('helvetica');
-            const [darkMode, setDarkMode] = useState(false);
-            const [showExportImport, setShowExportImport] = useState(false);
-            const [selectedLayout, setSelectedLayout] = useState('layout1');
-            const [showAddContent, setShowAddContent] = useState(false);
-            const [additionalSections, setAdditionalSections] = useState([]);
+<script type="text/babel">
+const { useState } = React;
+const { jsPDF } = window.jspdf;
 
-            // Load dark mode preference
-            useEffect(() => {
-                const savedDarkMode = localStorage.getItem('easydoc_darkmode');
-                if (savedDarkMode) {
-                    setDarkMode(savedDarkMode === 'true');
-                }
-            }, []);
+/* -------------------- TEMPLATES -------------------- */
+const TEMPLATES = Object.freeze([
+    {
+        id: "resume",
+        name: "Professional Resume",
+        icon: "📄",
+        category: "Personal",
+        desc: "Create a professional resume with experience and skills",
+        popular: true,
+        sections: [
+            {
+                id: "header",
+                title: "Header",
+                fields: [
+                    { name: "name", label: "Full Name" },
+                    { name: "title", label: "Professional Title" },
+                    { name: "email", label: "Email" },
+                    { name: "phone", label: "Phone" },
+                ],
+            },
+            {
+                id: "summary",
+                title: "Summary",
+                fields: [
+                    { name: "summary", label: "Professional Summary", type: "textarea" },
+                ],
+            },
+            {
+                id: "experience",
+                title: "Experience",
+                repeatable: true,
+                fields: [
+                    { name: "role", label: "Role" },
+                    { name: "company", label: "Company" },
+                    { name: "period", label: "Period" },
+                    { name: "description", label: "Description", type: "textarea" },
+                ],
+            },
+            {
+                id: "education",
+                title: "Education",
+                repeatable: true,
+                fields: [
+                    { name: "degree", label: "Degree" },
+                    { name: "school", label: "School" },
+                    { name: "year", label: "Year" },
+                ],
+            },
+        ],
+    },
+    {
+        id: "cv",
+        name: "Curriculum Vitae (CV)",
+        icon: "📋",
+        category: "Personal",
+        desc: "Comprehensive academic/professional CV",
+        popular: true,
+        sections: [
+            {
+                id: "header",
+                title: "Personal Information",
+                fields: [
+                    { name: "name", label: "Full Name" },
+                    { name: "email", label: "Email" },
+                    { name: "phone", label: "Phone" },
+                    { name: "address", label: "Address" },
+                ],
+            },
+            {
+                id: "experience",
+                title: "Professional Experience",
+                repeatable: true,
+                fields: [
+                    { name: "position", label: "Position" },
+                    { name: "organization", label: "Organization" },
+                    { name: "period", label: "Period" },
+                    { name: "responsibilities", label: "Responsibilities", type: "textarea" },
+                ],
+            },
+        ],
+    },
+    {
+        id: "portfolio",
+        name: "Portfolio",
+        icon: "🎨",
+        category: "Personal",
+        desc: "Showcase your work and projects",
+        popular: true,
+        sections: [
+            {
+                id: "intro",
+                title: "Introduction",
+                fields: [
+                    { name: "name", label: "Your Name" },
+                    { name: "tagline", label: "Tagline" },
+                    { name: "bio", label: "Bio", type: "textarea" },
+                ],
+            },
+            {
+                id: "projects",
+                title: "Projects",
+                repeatable: true,
+                fields: [
+                    { name: "title", label: "Project Title" },
+                    { name: "description", label: "Description", type: "textarea" },
+                    { name: "tech", label: "Technologies Used" },
+                ],
+            },
+        ],
+    },
+    {
+        id: "invoice",
+        name: "Business Invoice",
+        icon: "💰",
+        category: "Business",
+        desc: "Generate professional invoices for clients",
+        popular: false,
+        sections: [
+            {
+                id: "header",
+                title: "Invoice Details",
+                fields: [
+                    { name: "invoiceNumber", label: "Invoice #" },
+                    { name: "date", label: "Date" },
+                ],
+            },
+            {
+                id: "client",
+                title: "Client",
+                fields: [
+                    { name: "clientName", label: "Client Name" },
+                    { name: "clientAddress", label: "Address" },
+                ],
+            },
+            {
+                id: "items",
+                title: "Items",
+                repeatable: true,
+                fields: [
+                    { name: "item", label: "Item" },
+                    { name: "qty", label: "Qty" },
+                    { name: "price", label: "Price" },
+                ],
+            },
+        ],
+    },
+    {
+        id: "formal-letter",
+        name: "Formal Letter",
+        icon: "✉️",
+        category: "Personal",
+        desc: "Create formal business or personal letters",
+        popular: true,
+        sections: [
+            {
+                id: "sender",
+                title: "Your Information",
+                fields: [
+                    { name: "name", label: "Your Name" },
+                    { name: "address", label: "Your Address" },
+                    { name: "date", label: "Date" },
+                ],
+            },
+            {
+                id: "recipient",
+                title: "Recipient",
+                fields: [
+                    { name: "recipientName", label: "Recipient Name" },
+                    { name: "company", label: "Company/Organization" },
+                    { name: "address", label: "Address" },
+                ],
+            },
+            {
+                id: "body",
+                title: "Letter Content",
+                fields: [
+                    { name: "subject", label: "Subject" },
+                    { name: "body", label: "Message", type: "textarea" },
+                ],
+            },
+        ],
+    },
+    {
+        id: "certificate",
+        name: "Certificate",
+        icon: "🏆",
+        category: "Educational",
+        desc: "Create achievement and completion certificates",
+        popular: true,
+        sections: [
+            {
+                id: "details",
+                title: "Certificate Details",
+                fields: [
+                    { name: "recipient", label: "Recipient Name" },
+                    { name: "achievement", label: "Achievement/Course" },
+                    { name: "date", label: "Date" },
+                    { name: "issuer", label: "Issued By" },
+                ],
+            },
+        ],
+    },
+    {
+        id: "cover-letter",
+        name: "Cover Letter",
+        icon: "📮",
+        category: "Personal",
+        desc: "Professional job application cover letter",
+        popular: false,
+        sections: [
+            {
+                id: "header",
+                title: "Your Information",
+                fields: [
+                    { name: "name", label: "Your Name" },
+                    { name: "address", label: "Your Address" },
+                    { name: "date", label: "Date" },
+                ],
+            },
+            {
+                id: "recipient",
+                title: "Recipient",
+                fields: [
+                    { name: "recipientName", label: "Hiring Manager" },
+                    { name: "company", label: "Company" },
+                    { name: "position", label: "Position" },
+                ],
+            },
+            {
+                id: "body",
+                title: "Letter Body",
+                fields: [
+                    { name: "opening", label: "Opening Paragraph", type: "textarea" },
+                    { name: "middle", label: "Middle Paragraph", type: "textarea" },
+                    { name: "closing", label: "Closing Paragraph", type: "textarea" },
+                ],
+            },
+        ],
+    },
+    {
+        id: "agenda",
+        name: "Meeting Agenda",
+        icon: "📋",
+        category: "Business",
+        desc: "Professional meeting agenda",
+        popular: false,
+        sections: [
+            {
+                id: "meeting",
+                title: "Meeting Info",
+                fields: [
+                    { name: "title", label: "Meeting Title" },
+                    { name: "date", label: "Date" },
+                    { name: "time", label: "Time" },
+                ],
+            },
+            {
+                id: "items",
+                title: "Agenda Items",
+                repeatable: true,
+                fields: [
+                    { name: "topic", label: "Topic" },
+                    { name: "duration", label: "Duration" },
+                    { name: "presenter", label: "Presenter" },
+                ],
+            },
+        ],
+    },
+    {
+        id: "proposal",
+        name: "Business Proposal",
+        icon: "📊",
+        category: "Business",
+        desc: "Professional business proposal template",
+        popular: false,
+        sections: [
+            {
+                id: "header",
+                title: "Proposal Details",
+                fields: [
+                    { name: "title", label: "Proposal Title" },
+                    { name: "client", label: "Client Name" },
+                    { name: "date", label: "Date" },
+                ],
+            },
+            {
+                id: "executive",
+                title: "Executive Summary",
+                fields: [
+                    { name: "summary", label: "Summary", type: "textarea" },
+                ],
+            },
+        ],
+    },
+    {
+        id: "receipt",
+        name: "Payment Receipt",
+        icon: "🧾",
+        category: "Business",
+        desc: "Simple payment receipt",
+        popular: false,
+        sections: [
+            {
+                id: "details",
+                title: "Receipt Details",
+                fields: [
+                    { name: "receiptNumber", label: "Receipt #" },
+                    { name: "date", label: "Date" },
+                    { name: "payer", label: "Received From" },
+                    { name: "amount", label: "Amount" },
+                    { name: "for", label: "Payment For" },
+                ],
+            },
+        ],
+    },
+]);
 
-            // Save dark mode preference
-            useEffect(() => {
-                localStorage.setItem('easydoc_darkmode', darkMode.toString());
-                if (darkMode) {
-                    document.body.classList.add('dark-mode');
-                } else {
-                    document.body.classList.remove('dark-mode');
-                }
-            }, [darkMode]);
+const CATEGORIES = ["All", "Business", "Personal", "Legal", "Educational", "Events"];
 
-            // Translation dictionary
-            const translations = {
-                en: {
-                    title: 'EasyDoc',
-                    subtitle: 'Create professional documents in minutes. Choose from our library of templates.',
-                    recentDocs: 'Recent Documents',
-                    tip: 'Tip: You can save drafts and come back later!',
-                    mostPopular: 'Most Popular Templates',
-                    allTemplates: 'All Templates',
-                    all: 'All',
-                    business: 'Business',
-                    personal: 'Personal',
-                    legal: 'Legal',
-                    educational: 'Educational',
-                    events: 'Events',
-                    createDoc: 'Create Document',
-                    howItWorks: 'How It Works',
-                    step1: 'Choose Template',
-                    step1desc: 'Browse our library and select the document you need',
-                    step2: 'Fill Information',
-                    step2desc: 'Enter your details in the easy-to-use form',
-                    step3: 'Download PDF',
-                    step3desc: 'Get your professional document instantly',
-                    backToTemplates: 'Back to Templates',
-                    load: 'Load',
-                    saveDraft: 'Save Draft',
-                    sampleData: 'Sample Data',
-                    customizeColors: 'Customize Your Colors',
-                    chooseAccent: 'Choose an accent color for your document',
-                    chooseStyle: 'Choose Your Style',
-                    downloadPDF: 'Download PDF',
-                    saveDraftTitle: 'Save Draft',
-                    enterName: 'Enter draft name...',
-                    save: 'Save',
-                    cancel: 'Cancel',
-                    loadDraftTitle: 'Load Draft',
-                    noSavedDrafts: 'No saved drafts yet',
-                    delete: 'Delete',
-                    close: 'Close',
-                    noDocs: 'No documents created yet',
-                    optional: 'Optional',
-                    required: 'Required',
-                    remove: 'Remove',
-                    add: 'Add',
-                    search: 'Search templates...',
-                    font: 'Font',
-                    exportData: 'Export Data',
-                    importData: 'Import Data',
-                    darkMode: 'Dark Mode',
-                    exportImport: 'Export/Import',
-                    exportDesc: 'Download all your drafts and settings',
-                    importDesc: 'Load drafts from an exported file',
-                    export: 'Export',
-                    import: 'Import',
-                    selectFile: 'Select File',
-                    editingOptions: 'Document Editing Options',
-                    editingDesc: 'Customize the appearance and style of your document',
-                    documentContent: 'Document Content',
-                    contentDesc: 'Fill in your information below',
-                    chooseLayout: 'Choose Content Layout',
-                    layoutDesc: 'Select how your content is organized on the page',
-                    addOptionalContent: 'Add Optional Content',
-                    optionalSections: 'Optional Sections',
-                    addSection: 'Add Section',
-                    removeSection: 'Remove Section'
-                },
-                pt: {
-                    title: 'EasyDoc',
-                    subtitle: 'Crie documentos profissionais em minutos. Escolha entre nossa biblioteca de modelos.',
-                    recentDocs: 'Documentos Recentes',
-                    tip: 'Dica: Você pode salvar rascunhos e voltar depois!',
-                    mostPopular: 'Modelos Mais Populares',
-                    allTemplates: 'Todos os Modelos',
-                    all: 'Todos',
-                    business: 'Negócios',
-                    personal: 'Pessoal',
-                    legal: 'Jurídico',
-                    educational: 'Educacional',
-                    events: 'Eventos',
-                    createDoc: 'Criar Documento',
-                    howItWorks: 'Como Funciona',
-                    step1: 'Escolha o Modelo',
-                    step1desc: 'Navegue em nossa biblioteca e selecione o documento que precisa',
-                    step2: 'Preencha as Informações',
-                    step2desc: 'Insira seus dados no formulário fácil de usar',
-                    step3: 'Baixe o PDF',
-                    step3desc: 'Obtenha seu documento profissional instantaneamente',
-                    backToTemplates: 'Voltar aos Modelos',
-                    load: 'Carregar',
-                    saveDraft: 'Salvar Rascunho',
-                    sampleData: 'Dados de Exemplo',
-                    customizeColors: 'Personalize Suas Cores',
-                    chooseAccent: 'Escolha uma cor de destaque para seu documento',
-                    chooseStyle: 'Escolha Seu Estilo',
-                    downloadPDF: 'Baixar PDF',
-                    saveDraftTitle: 'Salvar Rascunho',
-                    enterName: 'Digite o nome do rascunho...',
-                    save: 'Salvar',
-                    cancel: 'Cancelar',
-                    loadDraftTitle: 'Carregar Rascunho',
-                    noSavedDrafts: 'Nenhum rascunho salvo ainda',
-                    delete: 'Excluir',
-                    close: 'Fechar',
-                    noDocs: 'Nenhum documento criado ainda',
-                    optional: 'Opcional',
-                    required: 'Obrigatório',
-                    remove: 'Remover',
-                    add: 'Adicionar',
-                    search: 'Pesquisar modelos...',
-                    font: 'Fonte',
-                    exportData: 'Exportar Dados',
-                    importData: 'Importar Dados',
-                    darkMode: 'Modo Escuro',
-                    exportImport: 'Exportar/Importar',
-                    exportDesc: 'Baixe todos os seus rascunhos e configurações',
-                    importDesc: 'Carregue rascunhos de um arquivo exportado',
-                    export: 'Exportar',
-                    import: 'Importar',
-                    selectFile: 'Selecionar Arquivo',
-                    editingOptions: 'Opções de Edição do Documento',
-                    editingDesc: 'Personalize a aparência e estilo do seu documento',
-                    documentContent: 'Conteúdo do Documento',
-                    contentDesc: 'Preencha suas informações abaixo',
-                    chooseLayout: 'Escolher Layout do Conteúdo',
-                    layoutDesc: 'Selecione como seu conteúdo é organizado na página',
-                    addOptionalContent: 'Adicionar Conteúdo Opcional',
-                    optionalSections: 'Seções Opcionais',
-                    addSection: 'Adicionar Seção',
-                    removeSection: 'Remover Seção'
-                },
-                es: {
-                    title: 'EasyDoc',
-                    subtitle: 'Crea documentos profesionales en minutos. Elige entre nuestra biblioteca de plantillas.',
-                    recentDocs: 'Documentos Recientes',
-                    tip: '¡Consejo: Puedes guardar borradores y volver más tarde!',
-                    mostPopular: 'Plantillas Más Populares',
-                    allTemplates: 'Todas las Plantillas',
-                    all: 'Todas',
-                    business: 'Negocios',
-                    personal: 'Personal',
-                    legal: 'Legal',
-                    educational: 'Educativo',
-                    events: 'Eventos',
-                    createDoc: 'Crear Documento',
-                    howItWorks: 'Cómo Funciona',
-                    step1: 'Elige Plantilla',
-                    step1desc: 'Navega por nuestra biblioteca y selecciona el documento que necesitas',
-                    step2: 'Completa Información',
-                    step2desc: 'Ingresa tus datos en el formulario fácil de usar',
-                    step3: 'Descarga PDF',
-                    step3desc: 'Obtén tu documento profesional al instante',
-                    backToTemplates: 'Volver a Plantillas',
-                    load: 'Cargar',
-                    saveDraft: 'Guardar Borrador',
-                    sampleData: 'Datos de Ejemplo',
-                    customizeColors: 'Personaliza Tus Colores',
-                    chooseAccent: 'Elige un color de acento para tu documento',
-                    chooseStyle: 'Elige Tu Estilo',
-                    downloadPDF: 'Descargar PDF',
-                    saveDraftTitle: 'Guardar Borrador',
-                    enterName: 'Ingresa el nombre del borrador...',
-                    save: 'Guardar',
-                    cancel: 'Cancelar',
-                    loadDraftTitle: 'Cargar Borrador',
-                    noSavedDrafts: 'Aún no hay borradores guardados',
-                    delete: 'Eliminar',
-                    close: 'Cerrar',
-                    noDocs: 'Aún no se han creado documentos',
-                    optional: 'Opcional',
-                    required: 'Requerido',
-                    remove: 'Eliminar',
-                    add: 'Agregar',
-                    search: 'Buscar plantillas...',
-                    font: 'Fuente',
-                    exportData: 'Exportar Datos',
-                    importData: 'Importar Datos',
-                    darkMode: 'Modo Oscuro',
-                    exportImport: 'Exportar/Importar',
-                    exportDesc: 'Descarga todos tus borradores y configuraciones',
-                    importDesc: 'Carga borradores desde un archivo exportado',
-                    export: 'Exportar',
-                    import: 'Importar',
-                    selectFile: 'Seleccionar Archivo',
-                    editingOptions: 'Opciones de Edición del Documento',
-                    editingDesc: 'Personaliza la apariencia y estilo de tu documento',
-                    documentContent: 'Contenido del Documento',
-                    contentDesc: 'Completa tu información abajo',
-                    chooseLayout: 'Elegir Diseño del Contenido',
-                    layoutDesc: 'Selecciona cómo se organiza tu contenido en la página',
-                    addOptionalContent: 'Agregar Contenido Opcional',
-                    optionalSections: 'Secciones Opcionales',
-                    addSection: 'Agregar Sección',
-                    removeSection: 'Eliminar Sección'
-                },
-                fr: {
-                    title: 'EasyDoc',
-                    subtitle: 'Créez des documents professionnels en quelques minutes. Choisissez parmi notre bibliothèque de modèles.',
-                    recentDocs: 'Documents Récents',
-                    tip: 'Astuce: Vous pouvez enregistrer des brouillons et revenir plus tard!',
-                    mostPopular: 'Modèles Les Plus Populaires',
-                    allTemplates: 'Tous Les Modèles',
-                    all: 'Tous',
-                    business: 'Affaires',
-                    personal: 'Personnel',
-                    legal: 'Juridique',
-                    educational: 'Éducatif',
-                    events: 'Événements',
-                    createDoc: 'Créer Document',
-                    howItWorks: 'Comment Ça Marche',
-                    step1: 'Choisir Modèle',
-                    step1desc: 'Parcourez notre bibliothèque et sélectionnez le document dont vous avez besoin',
-                    step2: 'Remplir Informations',
-                    step2desc: 'Entrez vos détails dans le formulaire facile à utiliser',
-                    step3: 'Télécharger PDF',
-                    step3desc: 'Obtenez votre document professionnel instantanément',
-                    backToTemplates: 'Retour aux Modèles',
-                    load: 'Charger',
-                    saveDraft: 'Enregistrer Brouillon',
-                    sampleData: 'Données Exemple',
-                    customizeColors: 'Personnalisez Vos Couleurs',
-                    chooseAccent: 'Choisissez une couleur d\'accentuation pour votre document',
-                    chooseStyle: 'Choisissez Votre Style',
-                    downloadPDF: 'Télécharger PDF',
-                    saveDraftTitle: 'Enregistrer Brouillon',
-                    enterName: 'Entrez le nom du brouillon...',
-                    save: 'Enregistrer',
-                    cancel: 'Annuler',
-                    loadDraftTitle: 'Charger Brouillon',
-                    noSavedDrafts: 'Aucun brouillon enregistré pour le moment',
-                    delete: 'Supprimer',
-                    close: 'Fermer',
-                    noDocs: 'Aucun document créé pour le moment',
-                    optional: 'Optionnel',
-                    required: 'Requis',
-                    remove: 'Retirer',
-                    add: 'Ajouter',
-                    search: 'Rechercher modèles...',
-                    font: 'Police',
-                    exportData: 'Exporter Données',
-                    importData: 'Importer Données',
-                    darkMode: 'Mode Sombre',
-                    exportImport: 'Exporter/Importer',
-                    exportDesc: 'Téléchargez tous vos brouillons et paramètres',
-                    importDesc: 'Chargez des brouillons depuis un fichier exporté',
-                    export: 'Exporter',
-                    import: 'Importer',
-                    selectFile: 'Sélectionner Fichier',
-                    editingOptions: 'Options d\'Édition du Document',
-                    editingDesc: 'Personnalisez l\'apparence et le style de votre document',
-                    documentContent: 'Contenu du Document',
-                    contentDesc: 'Remplissez vos informations ci-dessous',
-                    chooseLayout: 'Choisir la Mise en Page',
-                    layoutDesc: 'Sélectionnez comment votre contenu est organisé sur la page',
-                    addOptionalContent: 'Ajouter Contenu Optionnel',
-                    optionalSections: 'Sections Optionnelles',
-                    addSection: 'Ajouter Section',
-                    removeSection: 'Supprimer Section'
-                }
-            };
+/* -------------------- HELPERS -------------------- */
+function initDocument(sections) {
+    const doc = {};
+    sections.forEach(sec => {
+        doc[sec.id] = sec.repeatable ? [initSection(sec)] : initSection(sec);
+    });
+    return doc;
+}
 
-            const t = translations[language];
+function initSection(section) {
+    const obj = {};
+    section.fields.forEach(f => {
+        obj[f.name] = "";
+    });
+    return obj;
+}
 
-            // Load saved drafts on mount
-            useEffect(() => {
-                const drafts = localStorage.getItem('easydoc_drafts');
-                if (drafts) {
-                    setSavedDrafts(JSON.parse(drafts));
-                }
-                const history = localStorage.getItem('easydoc_history');
-                if (history) {
-                    setDocumentHistory(JSON.parse(history));
-                }
-            }, []);
+/* -------------------- APP -------------------- */
+function App() {
+    const [stage, setStage] = useState("home");
+    const [template, setTemplate] = useState(null);
+    const [documentData, setDocumentData] = useState({});
+    const [search, setSearch] = useState("");
+    const [category, setCategory] = useState("All");
 
-            // Save drafts to localStorage whenever they change
-            useEffect(() => {
-                if (savedDrafts.length > 0) {
-                    localStorage.setItem('easydoc_drafts', JSON.stringify(savedDrafts));
-                }
-            }, [savedDrafts]);
+    function selectTemplate(tpl) {
+        setTemplate(tpl);
+        setDocumentData(initDocument(tpl.sections));
+        setStage("edit");
+    }
 
-            // Save history to localStorage
-            useEffect(() => {
-                if (documentHistory.length > 0) {
-                    localStorage.setItem('easydoc_history', JSON.stringify(documentHistory));
-                }
-            }, [documentHistory]);
+    function updateField(sectionId, index, name, value) {
+        setDocumentData(prev => {
+            const copy = structuredClone(prev);
+            if (Array.isArray(copy[sectionId])) {
+                copy[sectionId][index][name] = value;
+            } else {
+                copy[sectionId][name] = value;
+            }
+            return copy;
+        });
+    }
 
-            const templates = [
-                // FEATURED TEMPLATES
-                {
-                    id: 'resume',
-                    name: 'Professional Resume',
-                    icon: '📄',
-                    desc: 'Create a professional resume with experience and skills',
-                    category: 'Personal',
-                    featured: true,
-                    fields: [
-                        { name: 'fullName', label: 'Full Name', type: 'text', req: true },
-                        { name: 'email', label: 'Email', type: 'email', req: true },
-                        { name: 'phone', label: 'Phone', type: 'tel', req: true },
-                        { name: 'address', label: 'Address', type: 'text' },
-                        { name: 'summary', label: 'Professional Summary', type: 'textarea', req: true },
-                        { name: 'experience', label: 'Work Experience', type: 'list', req: true,
-                            sub: [
-                                { name: 'jobTitle', label: 'Job Title' },
-                                { name: 'company', label: 'Company' },
-                                { name: 'duration', label: 'Duration' },
-                                { name: 'description', label: 'Description', type: 'textarea' }
-                            ]
-                        },
-                        { name: 'education', label: 'Education', type: 'list', req: true,
-                            sub: [
-                                { name: 'degree', label: 'Degree' },
-                                { name: 'institution', label: 'Institution' },
-                                { name: 'year', label: 'Year' }
-                            ]
-                        },
-                        { name: 'skills', label: 'Skills (comma-separated)', type: 'text', req: true }
-                    ]
-                },
-                {
-                    id: 'cv',
-                    name: 'Curriculum Vitae (CV)',
-                    icon: '📋',
-                    desc: 'Comprehensive academic/professional CV',
-                    category: 'Personal',
-                    featured: true,
-                    hasStyles: true,
-                    hasImages: true,
-                    imageFields: ['photo'],
-                    styles: ['classic', 'modern', 'minimal'],
-                    layouts: {
-                        layout1: { name: 'Traditional', desc: 'Classic top-to-bottom format' },
-                        layout2: { name: 'Two-Column', desc: 'Skills and experience side-by-side' },
-                        layout3: { name: 'Sidebar', desc: 'Contact info in left sidebar' }
-                    },
-                    optionalContent: [
-                        { id: 'references', name: 'References', fields: [
-                            { name: 'references', label: 'References', type: 'list', sub: [
-                                { name: 'refName', label: 'Name' },
-                                { name: 'refTitle', label: 'Title' },
-                                { name: 'refCompany', label: 'Company' },
-                                { name: 'refPhone', label: 'Phone' }
-                            ]}
-                        ]},
-                        { id: 'languages', name: 'Languages', fields: [
-                            { name: 'languages', label: 'Languages', type: 'text' }
-                        ]},
-                        { id: 'hobbies', name: 'Hobbies & Interests', fields: [
-                            { name: 'hobbies', label: 'Hobbies & Interests', type: 'textarea' }
-                        ]},
-                        { id: 'volunteering', name: 'Volunteer Work', fields: [
-                            { name: 'volunteering', label: 'Volunteer Experience', type: 'list', sub: [
-                                { name: 'volOrg', label: 'Organization' },
-                                { name: 'volRole', label: 'Role' },
-                                { name: 'volPeriod', label: 'Period' }
-                            ]}
-                        ]}
-                    ],
-                    fields: [
-                        { name: 'fullName', label: 'Full Name', type: 'text', req: true },
-                        { name: 'photo', label: 'Photo (Optional)', type: 'image', help: 'Professional headshot recommended' },
-                        { name: 'email', label: 'Email', type: 'email', req: true },
-                        { name: 'phone', label: 'Phone', type: 'tel', req: true },
-                        { name: 'address', label: 'Address', type: 'text' },
-                        { name: 'website', label: 'Website/LinkedIn', type: 'text' },
-                        { name: 'objective', label: 'Professional Objective', type: 'textarea', req: true },
-                        { name: 'experience', label: 'Professional Experience', type: 'list', req: true,
-                            sub: [
-                                { name: 'position', label: 'Position' },
-                                { name: 'organization', label: 'Organization' },
-                                { name: 'location', label: 'Location' },
-                                { name: 'dates', label: 'Dates' },
-                                { name: 'responsibilities', label: 'Responsibilities', type: 'textarea' }
-                            ]
-                        },
-                        { name: 'education', label: 'Education', type: 'list', req: true,
-                            sub: [
-                                { name: 'degree', label: 'Degree' },
-                                { name: 'institution', label: 'Institution' },
-                                { name: 'location', label: 'Location' },
-                                { name: 'year', label: 'Year' },
-                                { name: 'honors', label: 'Honors/GPA' }
-                            ]
-                        },
-                        { name: 'publications', label: 'Publications', type: 'list',
-                            sub: [
-                                { name: 'title', label: 'Title' },
-                                { name: 'journal', label: 'Journal/Conference' },
-                                { name: 'year', label: 'Year' }
-                            ]
-                        },
-                        { name: 'skills', label: 'Skills & Competencies', type: 'textarea', req: true },
-                        { name: 'languages', label: 'Languages', type: 'text' },
-                        { name: 'certifications', label: 'Certifications', type: 'textarea' }
-                    ]
-                },
-                {
-                    id: 'portfolio',
-                    name: 'Portfolio',
-                    icon: '🎨',
-                    desc: 'Showcase your work and projects',
-                    category: 'Personal',
-                    featured: true,
-                    hasStyles: true,
-                    hasImages: true,
-                    imageFields: ['profilePhoto'],
-                    styles: ['classic', 'modern', 'creative'],
-                    fields: [
-                        { name: 'fullName', label: 'Your Name', type: 'text', req: true },
-                        { name: 'profilePhoto', label: 'Profile Photo (Optional)', type: 'image', help: 'Upload a professional headshot' },
-                        { name: 'title', label: 'Professional Title', type: 'text', req: true },
-                        { name: 'email', label: 'Email', type: 'email', req: true },
-                        { name: 'phone', label: 'Phone', type: 'tel' },
-                        { name: 'website', label: 'Website/Portfolio URL', type: 'text' },
-                        { name: 'bio', label: 'Professional Bio', type: 'textarea', req: true },
-                        { name: 'projects', label: 'Projects', type: 'list', req: true,
-                            sub: [
-                                { name: 'projectName', label: 'Project Name' },
-                                { name: 'role', label: 'Your Role' },
-                                { name: 'date', label: 'Date/Year' },
-                                { name: 'description', label: 'Description', type: 'textarea' },
-                                { name: 'technologies', label: 'Technologies/Tools Used' }
-                            ]
-                        },
-                        { name: 'skills', label: 'Core Skills', type: 'textarea', req: true },
-                        { name: 'awards', label: 'Awards & Recognition', type: 'list',
-                            sub: [
-                                { name: 'award', label: 'Award' },
-                                { name: 'organization', label: 'Organization' },
-                                { name: 'year', label: 'Year' }
-                            ]
-                        },
-                        { name: 'clients', label: 'Notable Clients/Companies', type: 'text' }
-                    ]
-                },
-                {
-                    id: 'invoice',
-                    name: 'Business Invoice',
-                    icon: '💰',
-                    desc: 'Generate professional invoices for clients',
-                    category: 'Business',
-                    hasImages: true,
-                    imageFields: ['logo'],
-                    styles: ['classic', 'modern', 'minimal'],
-                    layouts: {
-                        layout1: { name: 'Standard', desc: 'Traditional invoice layout' },
-                        layout2: { name: 'Modern', desc: 'Logo at top, clean lines' },
-                        layout3: { name: 'Detailed', desc: 'Extended item descriptions' }
-                    },
-                    optionalContent: [
-                        { id: 'discount', name: 'Discount/Tax', fields: [
-                            { name: 'discount', label: 'Discount (%)', type: 'number' },
-                            { name: 'tax', label: 'Tax (%)', type: 'number' }
-                        ]},
-                        { id: 'shipping', name: 'Shipping Info', fields: [
-                            { name: 'shippingCost', label: 'Shipping Cost', type: 'number' },
-                            { name: 'shippingAddress', label: 'Shipping Address', type: 'textarea' }
-                        ]},
-                        { id: 'terms', name: 'Payment Terms', fields: [
-                            { name: 'paymentTerms', label: 'Payment Terms', type: 'textarea' }
-                        ]}
-                    ],
-                    fields: [
-                        { name: 'invoiceNumber', label: 'Invoice #', type: 'text', req: true },
-                        { name: 'logo', label: 'Company Logo (Optional)', type: 'image', help: 'Add your business logo' },
-                        { name: 'date', label: 'Date', type: 'date', req: true },
-                        { name: 'dueDate', label: 'Due Date', type: 'date', req: true },
-                        { name: 'fromName', label: 'Your Business', type: 'text', req: true },
-                        { name: 'fromAddress', label: 'Your Address', type: 'textarea', req: true },
-                        { name: 'toName', label: 'Client Name', type: 'text', req: true },
-                        { name: 'toAddress', label: 'Client Address', type: 'textarea', req: true },
-                        { name: 'items', label: 'Items', type: 'list', req: true,
-                            sub: [
-                                { name: 'description', label: 'Description' },
-                                { name: 'quantity', label: 'Qty', type: 'number' },
-                                { name: 'rate', label: 'Rate', type: 'number' }
-                            ]
-                        },
-                        { name: 'notes', label: 'Notes', type: 'textarea' }
-                    ]
-                },
-                {
-                    id: 'letter',
-                    name: 'Formal Letter',
-                    icon: '✉️',
-                    desc: 'Create formal business or personal letters',
-                    category: 'Personal',
-                    featured: true,
-                    hasStyles: true,
-                    hasImages: true,
-                    imageFields: ['logo'],
-                    styles: ['classic', 'modern', 'minimal'],
-                    fields: [
-                        { name: 'logo', label: 'Letterhead Logo (Optional)', type: 'image', help: 'Add your company or personal logo' },
-                        { name: 'date', label: 'Date', type: 'date', req: true },
-                        { name: 'senderName', label: 'Your Name', type: 'text', req: true },
-                        { name: 'senderAddress', label: 'Your Address', type: 'textarea', req: true },
-                        { name: 'recipientName', label: 'Recipient', type: 'text', req: true },
-                        { name: 'recipientAddress', label: 'Recipient Address', type: 'textarea', req: true },
-                        { name: 'subject', label: 'Subject', type: 'text', req: true },
-                        { name: 'body', label: 'Body', type: 'textarea', req: true },
-                        { name: 'closing', label: 'Closing', type: 'text', req: true }
-                    ]
-                },
-                {
-                    id: 'certificate',
-                    name: 'Certificate',
-                    icon: '🏆',
-                    desc: 'Create achievement and completion certificates',
-                    category: 'Educational',
-                    featured: true,
-                    hasStyles: true,
-                    hasImages: true,
-                    imageFields: ['logo'],
-                    styles: ['classic', 'modern', 'creative'],
-                    fields: [
-                        { name: 'logo', label: 'Organization Logo (Optional)', type: 'image', help: 'Add organization seal or logo' },
-                        { name: 'recipientName', label: 'Recipient', type: 'text', req: true },
-                        { name: 'achievement', label: 'Achievement', type: 'text', req: true },
-                        { name: 'date', label: 'Date', type: 'date', req: true },
-                        { name: 'organization', label: 'Organization', type: 'text', req: true },
-                        { name: 'signerName', label: 'Signer', type: 'text', req: true },
-                        { name: 'signerTitle', label: 'Title', type: 'text', req: true }
-                    ]
-                },
-                // BUSINESS TEMPLATES
-                {
-                    id: 'proposal',
-                    name: 'Business Proposal',
-                    icon: '📊',
-                    desc: 'Professional business proposal template',
-                    category: 'Business',
-                    fields: [
-                        { name: 'title', label: 'Proposal Title', type: 'text', req: true },
-                        { name: 'date', label: 'Date', type: 'date', req: true },
-                        { name: 'preparedFor', label: 'Prepared For', type: 'text', req: true },
-                        { name: 'preparedBy', label: 'Prepared By', type: 'text', req: true },
-                        { name: 'executive', label: 'Executive Summary', type: 'textarea', req: true },
-                        { name: 'problem', label: 'Problem Statement', type: 'textarea', req: true },
-                        { name: 'solution', label: 'Proposed Solution', type: 'textarea', req: true },
-                        { name: 'budget', label: 'Budget', type: 'text', req: true },
-                        { name: 'timeline', label: 'Timeline', type: 'text', req: true }
-                    ]
-                },
-                {
-                    id: 'contract',
-                    name: 'Service Agreement',
-                    icon: '📝',
-                    desc: 'Basic service contract template',
-                    category: 'Legal',
-                    fields: [
-                        { name: 'date', label: 'Date', type: 'date', req: true },
-                        { name: 'party1Name', label: 'Service Provider', type: 'text', req: true },
-                        { name: 'party1Address', label: 'Provider Address', type: 'textarea', req: true },
-                        { name: 'party2Name', label: 'Client', type: 'text', req: true },
-                        { name: 'party2Address', label: 'Client Address', type: 'textarea', req: true },
-                        { name: 'services', label: 'Services Description', type: 'textarea', req: true },
-                        { name: 'compensation', label: 'Compensation', type: 'text', req: true },
-                        { name: 'term', label: 'Term/Duration', type: 'text', req: true },
-                        { name: 'terms', label: 'Additional Terms', type: 'textarea' }
-                    ]
-                },
-                {
-                    id: 'receipt',
-                    name: 'Payment Receipt',
-                    icon: '🧾',
-                    desc: 'Simple payment receipt',
-                    category: 'Business',
-                    fields: [
-                        { name: 'receiptNumber', label: 'Receipt #', type: 'text', req: true },
-                        { name: 'date', label: 'Date', type: 'date', req: true },
-                        { name: 'from', label: 'Received From', type: 'text', req: true },
-                        { name: 'amount', label: 'Amount', type: 'text', req: true },
-                        { name: 'paymentMethod', label: 'Payment Method', type: 'text', req: true },
-                        { name: 'purpose', label: 'Purpose/Description', type: 'textarea', req: true },
-                        { name: 'receivedBy', label: 'Received By', type: 'text', req: true }
-                    ]
-                },
-                // PERSONAL TEMPLATES
-                {
-                    id: 'coverletter',
-                    name: 'Cover Letter',
-                    icon: '📮',
-                    desc: 'Professional job application cover letter',
-                    category: 'Personal',
-                    fields: [
-                        { name: 'date', label: 'Date', type: 'date', req: true },
-                        { name: 'yourName', label: 'Your Name', type: 'text', req: true },
-                        { name: 'yourAddress', label: 'Your Address', type: 'textarea', req: true },
-                        { name: 'hiringManager', label: 'Hiring Manager', type: 'text', req: true },
-                        { name: 'company', label: 'Company', type: 'text', req: true },
-                        { name: 'companyAddress', label: 'Company Address', type: 'textarea', req: true },
-                        { name: 'position', label: 'Position', type: 'text', req: true },
-                        { name: 'body', label: 'Letter Body', type: 'textarea', req: true }
-                    ]
-                },
-                {
-                    id: 'reference',
-                    name: 'Reference Letter',
-                    icon: '💼',
-                    desc: 'Professional reference/recommendation letter',
-                    category: 'Personal',
-                    fields: [
-                        { name: 'date', label: 'Date', type: 'date', req: true },
-                        { name: 'writerName', label: 'Your Name', type: 'text', req: true },
-                        { name: 'writerTitle', label: 'Your Title', type: 'text', req: true },
-                        { name: 'writerOrg', label: 'Organization', type: 'text', req: true },
-                        { name: 'candidateName', label: 'Candidate Name', type: 'text', req: true },
-                        { name: 'relationship', label: 'Your Relationship', type: 'text', req: true },
-                        { name: 'duration', label: 'Duration Known', type: 'text', req: true },
-                        { name: 'recommendation', label: 'Recommendation', type: 'textarea', req: true }
-                    ]
-                },
-                // EVENT TEMPLATES
-                {
-                    id: 'invitation',
-                    name: 'Event Invitation',
-                    icon: '🎉',
-                    desc: 'Formal event invitation',
-                    category: 'Events',
-                    fields: [
-                        { name: 'eventName', label: 'Event Name', type: 'text', req: true },
-                        { name: 'host', label: 'Hosted By', type: 'text', req: true },
-                        { name: 'date', label: 'Date', type: 'date', req: true },
-                        { name: 'time', label: 'Time', type: 'text', req: true },
-                        { name: 'venue', label: 'Venue', type: 'text', req: true },
-                        { name: 'address', label: 'Address', type: 'textarea', req: true },
-                        { name: 'details', label: 'Event Details', type: 'textarea', req: true },
-                        { name: 'rsvp', label: 'RSVP Information', type: 'text' }
-                    ]
-                },
-                {
-                    id: 'agenda',
-                    name: 'Meeting Agenda',
-                    icon: '📋',
-                    desc: 'Professional meeting agenda',
-                    category: 'Business',
-                    fields: [
-                        { name: 'meetingTitle', label: 'Meeting Title', type: 'text', req: true },
-                        { name: 'date', label: 'Date', type: 'date', req: true },
-                        { name: 'time', label: 'Time', type: 'text', req: true },
-                        { name: 'location', label: 'Location', type: 'text', req: true },
-                        { name: 'organizer', label: 'Organizer', type: 'text', req: true },
-                        { name: 'attendees', label: 'Attendees', type: 'textarea', req: true },
-                        { name: 'items', label: 'Agenda Items', type: 'list', req: true,
-                            sub: [
-                                { name: 'topic', label: 'Topic' },
-                                { name: 'duration', label: 'Duration' },
-                                { name: 'presenter', label: 'Presenter' }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    id: 'timesheet',
-                    name: 'Timesheet',
-                    icon: '⏰',
-                    desc: 'Employee timesheet template',
-                    category: 'Business',
-                    fields: [
-                        { name: 'employeeName', label: 'Employee Name', type: 'text', req: true },
-                        { name: 'employeeId', label: 'Employee ID', type: 'text' },
-                        { name: 'weekEnding', label: 'Week Ending', type: 'date', req: true },
-                        { name: 'department', label: 'Department', type: 'text' },
-                        { name: 'entries', label: 'Time Entries', type: 'list', req: true,
-                            sub: [
-                                { name: 'date', label: 'Date', type: 'date' },
-                                { name: 'hoursWorked', label: 'Hours', type: 'number' },
-                                { name: 'description', label: 'Description' }
-                            ]
-                        },
-                        { name: 'supervisor', label: 'Supervisor', type: 'text' }
-                    ]
-                },
-                // NEW TEMPLATES
-                {
-                    id: 'budget',
-                    name: 'Budget Report',
-                    icon: '💵',
-                    desc: 'Track income and expenses',
-                    category: 'Business',
-                    fields: [
-                        { name: 'title', label: 'Budget Title', type: 'text', req: true },
-                        { name: 'period', label: 'Period', type: 'text', req: true },
-                        { name: 'preparedBy', label: 'Prepared By', type: 'text', req: true },
-                        { name: 'date', label: 'Date', type: 'date', req: true },
-                        { name: 'income', label: 'Income Items', type: 'list', req: true,
-                            sub: [
-                                { name: 'source', label: 'Income Source' },
-                                { name: 'amount', label: 'Amount', type: 'number' }
-                            ]
-                        },
-                        { name: 'expenses', label: 'Expense Items', type: 'list', req: true,
-                            sub: [
-                                { name: 'category', label: 'Category' },
-                                { name: 'description', label: 'Description' },
-                                { name: 'amount', label: 'Amount', type: 'number' }
-                            ]
-                        },
-                        { name: 'notes', label: 'Notes', type: 'textarea' }
-                    ]
-                },
-                {
-                    id: 'purchaseorder',
-                    name: 'Purchase Order',
-                    icon: '🛒',
-                    desc: 'Create purchase orders for vendors',
-                    category: 'Business',
-                    fields: [
-                        { name: 'poNumber', label: 'PO Number', type: 'text', req: true },
-                        { name: 'date', label: 'Date', type: 'date', req: true },
-                        { name: 'buyerName', label: 'Buyer Company', type: 'text', req: true },
-                        { name: 'buyerAddress', label: 'Buyer Address', type: 'textarea', req: true },
-                        { name: 'vendorName', label: 'Vendor Name', type: 'text', req: true },
-                        { name: 'vendorAddress', label: 'Vendor Address', type: 'textarea', req: true },
-                        { name: 'items', label: 'Items to Purchase', type: 'list', req: true,
-                            sub: [
-                                { name: 'itemName', label: 'Item' },
-                                { name: 'quantity', label: 'Quantity', type: 'number' },
-                                { name: 'unitPrice', label: 'Unit Price', type: 'number' }
-                            ]
-                        },
-                        { name: 'deliveryDate', label: 'Expected Delivery', type: 'date' },
-                        { name: 'terms', label: 'Terms & Conditions', type: 'textarea' }
-                    ]
-                },
-                {
-                    id: 'itinerary',
-                    name: 'Travel Itinerary',
-                    icon: '✈️',
-                    desc: 'Plan your travel schedule',
-                    category: 'Personal',
-                    fields: [
-                        { name: 'tripTitle', label: 'Trip Title', type: 'text', req: true },
-                        { name: 'traveler', label: 'Traveler Name', type: 'text', req: true },
-                        { name: 'startDate', label: 'Start Date', type: 'date', req: true },
-                        { name: 'endDate', label: 'End Date', type: 'date', req: true },
-                        { name: 'destination', label: 'Destination', type: 'text', req: true },
-                        { name: 'schedule', label: 'Daily Schedule', type: 'list', req: true,
-                            sub: [
-                                { name: 'day', label: 'Day/Date' },
-                                { name: 'time', label: 'Time' },
-                                { name: 'activity', label: 'Activity' },
-                                { name: 'location', label: 'Location' }
-                            ]
-                        },
-                        { name: 'accommodation', label: 'Accommodation Details', type: 'textarea' },
-                        { name: 'contacts', label: 'Emergency Contacts', type: 'textarea' }
-                    ]
-                },
-                {
-                    id: 'mealplan',
-                    name: 'Meal Plan',
-                    icon: '🍽️',
-                    desc: 'Weekly meal planning template',
-                    category: 'Personal',
-                    fields: [
-                        { name: 'weekOf', label: 'Week Of', type: 'date', req: true },
-                        { name: 'planFor', label: 'Plan For', type: 'text', req: true },
-                        { name: 'meals', label: 'Daily Meals', type: 'list', req: true,
-                            sub: [
-                                { name: 'day', label: 'Day' },
-                                { name: 'breakfast', label: 'Breakfast' },
-                                { name: 'lunch', label: 'Lunch' },
-                                { name: 'dinner', label: 'Dinner' },
-                                { name: 'snacks', label: 'Snacks' }
-                            ]
-                        },
-                        { name: 'shoppingList', label: 'Shopping List', type: 'textarea' },
-                        { name: 'notes', label: 'Notes', type: 'textarea' }
-                    ]
-                },
-                {
-                    id: 'minutes',
-                    name: 'Meeting Minutes',
-                    icon: '📝',
-                    desc: 'Record meeting discussions and decisions',
-                    category: 'Business',
-                    fields: [
-                        { name: 'meetingTitle', label: 'Meeting Title', type: 'text', req: true },
-                        { name: 'date', label: 'Date', type: 'date', req: true },
-                        { name: 'time', label: 'Time', type: 'text', req: true },
-                        { name: 'location', label: 'Location', type: 'text', req: true },
-                        { name: 'attendees', label: 'Attendees', type: 'textarea', req: true },
-                        { name: 'absent', label: 'Absent', type: 'text' },
-                        { name: 'discussions', label: 'Discussion Points', type: 'list', req: true,
-                            sub: [
-                                { name: 'topic', label: 'Topic' },
-                                { name: 'discussion', label: 'Discussion', type: 'textarea' },
-                                { name: 'decision', label: 'Decision/Action' }
-                            ]
-                        },
-                        { name: 'nextMeeting', label: 'Next Meeting', type: 'text' }
-                    ]
-                },
-                {
-                    id: 'checklist',
-                    name: 'Checklist',
-                    icon: '✅',
-                    desc: 'Create task and to-do checklists',
-                    category: 'Personal',
-                    fields: [
-                        { name: 'title', label: 'Checklist Title', type: 'text', req: true },
-                        { name: 'description', label: 'Description', type: 'textarea' },
-                        { name: 'date', label: 'Date', type: 'date', req: true },
-                        { name: 'items', label: 'Checklist Items', type: 'list', req: true,
-                            sub: [
-                                { name: 'task', label: 'Task' },
-                                { name: 'priority', label: 'Priority' },
-                                { name: 'notes', label: 'Notes' }
-                            ]
-                        }
-                    ]
-                }
-            ];
+    function addSection(section) {
+        setDocumentData(prev => {
+            const copy = structuredClone(prev);
+            copy[section.id].push(initSection(section));
+            return copy;
+        });
+    }
 
-            const categories = ['all', 'Business', 'Personal', 'Legal', 'Educational', 'Events'];
+    function removeSection(section, idx) {
+        setDocumentData(prev => {
+            const copy = structuredClone(prev);
+            if (copy[section.id].length > 1) {
+                copy[section.id].splice(idx, 1);
+            }
+            return copy;
+        });
+    }
 
-            const selectTemplate = (t) => {
-                setTemplate(t);
-                setSelectedStyle(t.hasStyles ? 'classic' : null);
-                setSelectedLayout('layout1');
-                setAdditionalSections([]);
-                const init = {};
-                t.fields.forEach(f => {
-                    init[f.name] = f.type === 'list' ? [{}] : '';
+    function saveDraft() {
+        const draft = { template: template.id, data: documentData };
+        localStorage.setItem("easydoc_draft", JSON.stringify(draft));
+        alert("Draft saved!");
+    }
+
+    function loadDraft() {
+        const saved = localStorage.getItem("easydoc_draft");
+        if (saved) {
+            const draft = JSON.parse(saved);
+            const tpl = TEMPLATES.find(t => t.id === draft.template);
+            if (tpl) {
+                setTemplate(tpl);
+                setDocumentData(draft.data);
+                setStage("edit");
+            }
+        } else {
+            alert("No draft found");
+        }
+    }
+
+    function exportPDF() {
+        const pdf = new jsPDF();
+        let y = 20;
+
+        pdf.setFontSize(16);
+        pdf.text(template.name, 20, y);
+        y += 10;
+
+        pdf.setFontSize(10);
+
+        template.sections.forEach(sec => {
+            if (y > 270) {
+                pdf.addPage();
+                y = 20;
+            }
+
+            pdf.setFont(undefined, "bold");
+            pdf.text(sec.title, 20, y);
+            pdf.setFont(undefined, "normal");
+            y += 6;
+
+            const data = documentData[sec.id];
+            const blocks = Array.isArray(data) ? data : [data];
+
+            blocks.forEach(block => {
+                Object.entries(block).forEach(([key, val]) => {
+                    if (val) {
+                        const lines = pdf.splitTextToSize(val, 170);
+                        lines.forEach(line => {
+                            if (y > 280) {
+                                pdf.addPage();
+                                y = 20;
+                            }
+                            pdf.text(line, 24, y);
+                            y += 5;
+                        });
+                    }
                 });
-                setData(init);
-                setView('editor');
-            };
+                y += 3;
+            });
+            y += 2;
+        });
 
-            const updateData = (k, v) => setData(p => ({ ...p, [k]: v }));
-            const addListItem = (k) => setData(p => ({ ...p, [k]: [...(p[k] || []), {}] }));
-            const removeListItem = (k, i) => setData(p => ({ ...p, [k]: p[k].filter((_, idx) => idx !== i) }));
-            const updateListItem = (k, i, sk, v) => setData(p => ({
-                ...p,
-                [k]: p[k].map((item, idx) => idx === i ? { ...item, [sk]: v } : item)
-            }));
+        pdf.save(template.id + ".pdf");
+    }
 
-            // Handle optional content sections
-            const addOptionalSection = (sectionId) => {
-                const section = template.optionalContent?.find(s => s.id === sectionId);
-                if (section && !additionalSections.includes(sectionId)) {
-                    setAdditionalSections(prev => [...prev, sectionId]);
-                    // Initialize data for new section
-                    section.fields.forEach(f => {
-                        setData(prev => ({
-                            ...prev,
-                            [f.name]: f.type === 'list' ? [{}] : ''
-                        }));
-                    });
-                }
-                setShowAddContent(false);
-            };
+    const filtered = TEMPLATES.filter(t => {
+        const matchSearch = t.name.toLowerCase().includes(search.toLowerCase()) || 
+                           t.desc.toLowerCase().includes(search.toLowerCase());
+        const matchCategory = category === "All" || t.category === category;
+        return matchSearch && matchCategory;
+    });
 
-            const removeOptionalSection = (sectionId) => {
-                setAdditionalSections(prev => prev.filter(id => id !== sectionId));
-            };
+    const popular = TEMPLATES.filter(t => t.popular);
 
-            // Save draft
-            const saveDraft = () => {
-                if (!draftName.trim()) {
-                    alert('Please enter a name for your draft');
-                    return;
-                }
-                const draft = {
-                    id: Date.now(),
-                    name: draftName,
-                    template: template,
-                    data: data,
-                    style: selectedStyle,
-                    accentColor: accentColor,
-                    date: new Date().toLocaleDateString()
-                };
-                setSavedDrafts(prev => [draft, ...prev]);
-                setShowSaveModal(false);
-                setDraftName('');
-                alert('Draft saved successfully!');
-            };
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+            
+            {/* HEADER */}
+            <header className="bg-white shadow-sm border-b">
+                <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-900">EasyDoc</h1>
+                    </div>
+                    <div className="flex gap-4 text-sm">
+                        {stage === "home" && (
+                            <button onClick={loadDraft} className="text-blue-600 hover:underline">
+                                💾 Load Draft
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </header>
 
-            // Load draft
-            const loadDraft = (draft) => {
-                setTemplate(draft.template);
-                setData(draft.data);
-                setSelectedStyle(draft.style);
-                setAccentColor(draft.accentColor);
-                setView('editor');
-                setShowLoadModal(false);
-            };
-
-            // Delete draft
-            const deleteDraft = (id) => {
-                if (confirm('Are you sure you want to delete this draft?')) {
-                    setSavedDrafts(prev => prev.filter(d => d.id !== id));
-                }
-            };
-
-            // Handle image upload
-            const handleImageUpload = (fieldName, event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    if (file.size > 2 * 1024 * 1024) { // 2MB limit
-                        alert('Image size should be less than 2MB');
-                        return;
-                    }
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        setUploadedImages(prev => ({
-                            ...prev,
-                            [fieldName]: e.target.result
-                        }));
-                    };
-                    reader.readAsDataURL(file);
-                }
-            };
-
-            // Add to document history
-            const addToHistory = (templateName) => {
-                const historyItem = {
-                    id: Date.now(),
-                    templateName: templateName,
-                    date: new Date().toLocaleString(),
-                    timestamp: Date.now()
-                };
-                setDocumentHistory(prev => [historyItem, ...prev.slice(0, 9)]); // Keep last 10
-            };
-
-            // Export all data
-            const exportAllData = () => {
-                const exportData = {
-                    drafts: savedDrafts,
-                    settings: {
-                        language,
-                        darkMode,
-                        accentColor,
-                        selectedFont
-                    },
-                    history: documentHistory,
-                    exportDate: new Date().toISOString()
-                };
-                const dataStr = JSON.stringify(exportData, null, 2);
-                const dataBlob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(dataBlob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `easydoc_backup_${Date.now()}.json`;
-                link.click();
-                URL.revokeObjectURL(url);
-                alert('Data exported successfully!');
-            };
-
-            // Import data
-            const importData = (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        try {
-                            const importedData = JSON.parse(e.target.result);
-                            if (importedData.drafts) {
-                                setSavedDrafts(prev => [...importedData.drafts, ...prev]);
-                            }
-                            if (importedData.settings) {
-                                setLanguage(importedData.settings.language || 'en');
-                                setDarkMode(importedData.settings.darkMode || false);
-                                setAccentColor(importedData.settings.accentColor || '#3498db');
-                                setSelectedFont(importedData.settings.selectedFont || 'helvetica');
-                            }
-                            if (importedData.history) {
-                                setDocumentHistory(prev => [...importedData.history, ...prev]);
-                            }
-                            alert('Data imported successfully!');
-                            setShowExportImport(false);
-                        } catch (error) {
-                            alert('Error importing data. Please check the file format.');
-                        }
-                    };
-                    reader.readAsText(file);
-                }
-            };
-            const fillSampleData = () => {
-                if (!confirm('This will replace your current data with sample data. Continue?')) return;
-                
-                const samples = {
-                    resume: {
-                        fullName: 'Jane Doe',
-                        email: 'jane.doe@email.com',
-                        phone: '+1 (555) 123-4567',
-                        address: 'New York, NY',
-                        summary: 'Experienced software developer with 5+ years of expertise in full-stack development.',
-                        experience: [{ jobTitle: 'Senior Developer', company: 'Tech Corp', duration: '2020-Present', description: 'Led development of key features' }],
-                        education: [{ degree: 'BS Computer Science', institution: 'University of Technology', year: '2018' }],
-                        skills: 'JavaScript, React, Node.js, Python, SQL'
-                    },
-                    invoice: {
-                        invoiceNumber: 'INV-001',
-                        date: '2025-01-06',
-                        dueDate: '2025-02-06',
-                        fromName: 'Your Company',
-                        fromAddress: '123 Business St, City, State 12345',
-                        toName: 'Client Name',
-                        toAddress: '456 Client Ave, City, State 67890',
-                        items: [{ description: 'Web Development Services', quantity: 40, rate: 150 }],
-                        notes: 'Payment due within 30 days'
-                    }
-                };
-
-                if (samples[template.id]) {
-                    setData(samples[template.id]);
-                } else {
-                    alert('Sample data not available for this template');
-                }
-            };
-
-            const generatePDF = () => {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                let y = 20;
-                const w = doc.internal.pageSize.getWidth();
-                const m = 20;
-                const mw = w - 2 * m;
-
-                // Add to history
-                addToHistory(template.name);
-
-                // Helper function for page breaks
-                const checkPageBreak = (needed) => {
-                    if (y + needed > 270) {
-                        doc.addPage();
-                        y = 20;
-                        return true;
-                    }
-                    return false;
-                };
-
-                // Style configurations
-                const applyStyle = (style) => {
-                    const hexToRgb = (hex) => {
-                        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-                        return result ? [
-                            parseInt(result[1], 16),
-                            parseInt(result[2], 16),
-                            parseInt(result[3], 16)
-                        ] : [52, 152, 219];
-                    };
+            {/* HOME */}
+            {stage === "home" && (
+                <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
                     
-                    const customColor = hexToRgb(accentColor);
-                    
-                    if (style === 'modern') {
-                        return { primaryColor: customColor, headerSize: 26, accentColor: customColor };
-                    } else if (style === 'minimal') {
-                        return { primaryColor: [44, 62, 80], headerSize: 22, accentColor: customColor };
-                    } else if (style === 'creative') {
-                        return { primaryColor: customColor, headerSize: 28, accentColor: customColor };
-                    } else { // classic
-                        return { primaryColor: [0, 0, 0], headerSize: 24, accentColor: customColor };
-                    }
-                };
+                    {/* Hero */}
+                    <div className="text-center space-y-3">
+                        <h2 className="text-4xl font-bold text-gray-900">
+                            Create professional documents in minutes
+                        </h2>
+                        <p className="text-lg text-gray-600">
+                            Choose from our library of templates
+                        </p>
+                    </div>
 
-                const styleConfig = applyStyle(selectedStyle);
+                    {/* Search */}
+                    <div className="max-w-2xl mx-auto">
+                        <input
+                            type="text"
+                            placeholder="Search templates..."
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                            className="w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
 
-                // Apply font to document
-                const fontMap = {
-                    helvetica: 'helvetica',
-                    times: 'times',
-                    courier: 'courier'
-                };
-                doc.setFont(fontMap[selectedFont] || 'helvetica');
-
-                if (template.id === 'resume') {
-                    if (selectedStyle === 'modern') {
-                        // Modern Resume Style
-                        doc.setFillColor(styleConfig.primaryColor[0], styleConfig.primaryColor[1], styleConfig.primaryColor[2]);
-                        doc.rect(0, 0, w, 35, 'F');
-                        
-                        // Add photo if uploaded
-                        if (uploadedImages.photo) {
-                            doc.addImage(uploadedImages.photo, 'JPEG', w - 40, 5, 25, 25);
-                        }
-                        
-                        doc.setTextColor(255, 255, 255);
-                        doc.setFontSize(styleConfig.headerSize);
-                        doc.setFont(undefined, 'bold');
-                        doc.text(data.fullName || '', w / 2, 15, { align: 'center' });
-                        doc.setFontSize(10);
-                        doc.setFont(undefined, 'normal');
-                        doc.text(`${data.email || ''} | ${data.phone || ''}`, w / 2, 25, { align: 'center' });
-                        y = 45;
-                        doc.setTextColor(0, 0, 0);
-                    } else if (selectedStyle === 'minimal') {
-                        // Minimal Resume Style
-                        doc.setFontSize(styleConfig.headerSize);
-                        doc.setFont(undefined, 'bold');
-                        doc.setTextColor(styleConfig.primaryColor[0], styleConfig.primaryColor[1], styleConfig.primaryColor[2]);
-                        doc.text(data.fullName || '', m, y);
-                        y += 8;
-                        doc.setFontSize(9);
-                        doc.setFont(undefined, 'normal');
-                        doc.setTextColor(100, 100, 100);
-                        doc.text(`${data.email || ''} • ${data.phone || ''} • ${data.address || ''}`, m, y);
-                        y += 15;
-                        doc.setTextColor(0, 0, 0);
-                    } else {
-                        // Classic Resume Style
-                        doc.setFontSize(styleConfig.headerSize);
-                        doc.setFont(undefined, 'bold');
-                        doc.text(data.fullName || '', w / 2, y, { align: 'center' });
-                        y += 10;
-                        doc.setFontSize(10);
-                        doc.setFont(undefined, 'normal');
-                        doc.text(`${data.email || ''} | ${data.phone || ''} | ${data.address || ''}`, w / 2, y, { align: 'center' });
-                        y += 15;
-                    }
-
-                    doc.setFontSize(12);
-                    doc.setFont(undefined, 'bold');
-                    doc.setTextColor(styleConfig.accentColor[0], styleConfig.accentColor[1], styleConfig.accentColor[2]);
-                    doc.text('PROFESSIONAL SUMMARY', m, y);
-                    y += 7;
-                    doc.setFontSize(10);
-                    doc.setFont(undefined, 'normal');
-                    doc.setTextColor(0, 0, 0);
-                    const sum = doc.splitTextToSize(data.summary || '', mw);
-                    doc.text(sum, m, y);
-                    y += sum.length * 5 + 10;
-
-                    if (data.experience?.length) {
-                        checkPageBreak(20);
-                        doc.setFontSize(12);
-                        doc.setFont(undefined, 'bold');
-                        doc.setTextColor(styleConfig.accentColor[0], styleConfig.accentColor[1], styleConfig.accentColor[2]);
-                        doc.text('WORK EXPERIENCE', m, y);
-                        y += 7;
-                        data.experience.forEach(e => {
-                            checkPageBreak(30);
-                            doc.setFontSize(11);
-                            doc.setFont(undefined, 'bold');
-                            doc.setTextColor(0, 0, 0);
-                            doc.text(e.jobTitle || '', m, y);
-                            doc.setFont(undefined, 'normal');
-                            doc.text(e.duration || '', w - m, y, { align: 'right' });
-                            y += 6;
-                            doc.setFontSize(10);
-                            doc.setFont(undefined, 'italic');
-                            doc.text(e.company || '', m, y);
-                            y += 6;
-                            doc.setFont(undefined, 'normal');
-                            const d = doc.splitTextToSize(e.description || '', mw);
-                            doc.text(d, m, y);
-                            y += d.length * 5 + 8;
-                        });
-                    }
-
-                    if (data.education?.length) {
-                        checkPageBreak(20);
-                        doc.setFontSize(12);
-                        doc.setFont(undefined, 'bold');
-                        doc.setTextColor(styleConfig.accentColor[0], styleConfig.accentColor[1], styleConfig.accentColor[2]);
-                        doc.text('EDUCATION', m, y);
-                        y += 7;
-                        data.education.forEach(e => {
-                            doc.setFontSize(11);
-                            doc.setFont(undefined, 'bold');
-                            doc.setTextColor(0, 0, 0);
-                            doc.text(e.degree || '', m, y);
-                            doc.setFont(undefined, 'normal');
-                            doc.text(e.year || '', w - m, y, { align: 'right' });
-                            y += 6;
-                            doc.setFontSize(10);
-                            doc.text(e.institution || '', m, y);
-                            y += 8;
-                        });
-                    }
-
-                    if (data.skills) {
-                        checkPageBreak(15);
-                        doc.setFontSize(12);
-                        doc.setFont(undefined, 'bold');
-                        doc.setTextColor(styleConfig.accentColor[0], styleConfig.accentColor[1], styleConfig.accentColor[2]);
-                        doc.text('SKILLS', m, y);
-                        y += 7;
-                        doc.setFontSize(10);
-                        doc.setFont(undefined, 'normal');
-                        doc.setTextColor(0, 0, 0);
-                        const sk = doc.splitTextToSize(data.skills, mw);
-                        doc.text(sk, m, y);
-                    }
-                } else if (template.id === 'cv') {
-                    // CV Generation with styles
-                    if (selectedStyle === 'modern') {
-                        doc.setFillColor(styleConfig.primaryColor[0], styleConfig.primaryColor[1], styleConfig.primaryColor[2]);
-                        doc.rect(0, 0, 60, doc.internal.pageSize.getHeight(), 'F');
-                        doc.setTextColor(255, 255, 255);
-                        doc.setFontSize(20);
-                        doc.setFont(undefined, 'bold');
-                        const nameLines = doc.splitTextToSize(data.fullName || '', 50);
-                        doc.text(nameLines, 5, 20);
-                        y = 20 + nameLines.length * 8;
-                        doc.setFontSize(8);
-                        doc.setFont(undefined, 'normal');
-                        doc.text(data.email || '', 5, y);
-                        y += 5;
-                        doc.text(data.phone || '', 5, y);
-                        y += 5;
-                        if (data.website) {
-                            doc.text(data.website, 5, y);
-                        }
-                        
-                        // Main content area
-                        y = 20;
-                        const contentX = 65;
-                        const contentW = w - contentX - m;
-                        doc.setTextColor(0, 0, 0);
-                        
-                        doc.setFontSize(12);
-                        doc.setFont(undefined, 'bold');
-                        doc.text('PROFESSIONAL OBJECTIVE', contentX, y);
-                        y += 7;
-                        doc.setFontSize(10);
-                        doc.setFont(undefined, 'normal');
-                        const obj = doc.splitTextToSize(data.objective || '', contentW);
-                        doc.text(obj, contentX, y);
-                        y += obj.length * 5 + 10;
-
-                        if (data.experience?.length) {
-                            checkPageBreak(20);
-                            doc.setFontSize(12);
-                            doc.setFont(undefined, 'bold');
-                            doc.text('EXPERIENCE', contentX, y);
-                            y += 7;
-                            data.experience.forEach(e => {
-                                checkPageBreak(25);
-                                doc.setFontSize(11);
-                                doc.setFont(undefined, 'bold');
-                                doc.text(e.position || '', contentX, y);
-                                y += 6;
-                                doc.setFontSize(10);
-                                doc.setFont(undefined, 'italic');
-                                doc.text(`${e.organization || ''} - ${e.location || ''}`, contentX, y);
-                                y += 5;
-                                doc.setFont(undefined, 'normal');
-                                doc.text(e.dates || '', contentX, y);
-                                y += 6;
-                                const resp = doc.splitTextToSize(e.responsibilities || '', contentW);
-                                doc.text(resp, contentX, y);
-                                y += resp.length * 5 + 8;
-                            });
-                        }
-                    } else {
-                        // Classic/Minimal CV Style
-                        doc.setFontSize(styleConfig.headerSize);
-                        doc.setFont(undefined, 'bold');
-                        doc.setTextColor(styleConfig.primaryColor[0], styleConfig.primaryColor[1], styleConfig.primaryColor[2]);
-                        doc.text(data.fullName || '', w / 2, y, { align: 'center' });
-                        y += 8;
-                        doc.setFontSize(10);
-                        doc.setFont(undefined, 'normal');
-                        doc.setTextColor(0, 0, 0);
-                        doc.text(`${data.email || ''} | ${data.phone || ''} | ${data.website || ''}`, w / 2, y, { align: 'center' });
-                        y += 15;
-
-                        doc.setFontSize(12);
-                        doc.setFont(undefined, 'bold');
-                        doc.setTextColor(styleConfig.accentColor[0], styleConfig.accentColor[1], styleConfig.accentColor[2]);
-                        doc.text('PROFESSIONAL OBJECTIVE', m, y);
-                        y += 7;
-                        doc.setFontSize(10);
-                        doc.setFont(undefined, 'normal');
-                        doc.setTextColor(0, 0, 0);
-                        const obj = doc.splitTextToSize(data.objective || '', mw);
-                        doc.text(obj, m, y);
-                        y += obj.length * 5 + 10;
-
-                        if (data.experience?.length) {
-                            checkPageBreak(20);
-                            doc.setFontSize(12);
-                            doc.setFont(undefined, 'bold');
-                            doc.setTextColor(styleConfig.accentColor[0], styleConfig.accentColor[1], styleConfig.accentColor[2]);
-                            doc.text('PROFESSIONAL EXPERIENCE', m, y);
-                            y += 7;
-                            data.experience.forEach(e => {
-                                checkPageBreak(25);
-                                doc.setFontSize(11);
-                                doc.setFont(undefined, 'bold');
-                                doc.setTextColor(0, 0, 0);
-                                doc.text(e.position || '', m, y);
-                                doc.setFont(undefined, 'normal');
-                                doc.text(e.dates || '', w - m, y, { align: 'right' });
-                                y += 6;
-                                doc.setFontSize(10);
-                                doc.setFont(undefined, 'italic');
-                                doc.text(`${e.organization || ''}, ${e.location || ''}`, m, y);
-                                y += 6;
-                                doc.setFont(undefined, 'normal');
-                                const resp = doc.splitTextToSize(e.responsibilities || '', mw);
-                                doc.text(resp, m, y);
-                                y += resp.length * 5 + 8;
-                            });
-                        }
-
-                        if (data.education?.length) {
-                            checkPageBreak(20);
-                            doc.setFontSize(12);
-                            doc.setFont(undefined, 'bold');
-                            doc.setTextColor(styleConfig.accentColor[0], styleConfig.accentColor[1], styleConfig.accentColor[2]);
-                            doc.text('EDUCATION', m, y);
-                            y += 7;
-                            data.education.forEach(e => {
-                                doc.setFontSize(11);
-                                doc.setFont(undefined, 'bold');
-                                doc.setTextColor(0, 0, 0);
-                                doc.text(`${e.degree || ''} ${e.honors ? '(' + e.honors + ')' : ''}`, m, y);
-                                doc.setFont(undefined, 'normal');
-                                doc.text(e.year || '', w - m, y, { align: 'right' });
-                                y += 6;
-                                doc.setFontSize(10);
-                                doc.text(`${e.institution || ''}, ${e.location || ''}`, m, y);
-                                y += 8;
-                            });
-                        }
-
-                        if (data.publications?.length && data.publications[0].title) {
-                            checkPageBreak(20);
-                            doc.setFontSize(12);
-                            doc.setFont(undefined, 'bold');
-                            doc.setTextColor(styleConfig.accentColor[0], styleConfig.accentColor[1], styleConfig.accentColor[2]);
-                            doc.text('PUBLICATIONS', m, y);
-                            y += 7;
-                            data.publications.forEach(p => {
-                                if (p.title) {
-                                    doc.setFontSize(10);
-                                    doc.setFont(undefined, 'normal');
-                                    doc.setTextColor(0, 0, 0);
-                                    doc.text(`${p.title}. ${p.journal || ''}. ${p.year || ''}`, m, y);
-                                    y += 6;
-                                }
-                            });
-                            y += 4;
-                        }
-
-                        if (data.skills) {
-                            checkPageBreak(15);
-                            doc.setFontSize(12);
-                            doc.setFont(undefined, 'bold');
-                            doc.setTextColor(styleConfig.accentColor[0], styleConfig.accentColor[1], styleConfig.accentColor[2]);
-                            doc.text('SKILLS & COMPETENCIES', m, y);
-                            y += 7;
-                            doc.setFontSize(10);
-                            doc.setFont(undefined, 'normal');
-                            doc.setTextColor(0, 0, 0);
-                            const sk = doc.splitTextToSize(data.skills, mw);
-                            doc.text(sk, m, y);
-                        }
-                    }
-                } else if (template.id === 'portfolio') {
-                    // Portfolio Generation with styles
-                    if (selectedStyle === 'creative') {
-                        // Creative Portfolio Style
-                        doc.setFillColor(styleConfig.primaryColor[0], styleConfig.primaryColor[1], styleConfig.primaryColor[2]);
-                        doc.rect(0, 0, w, 45, 'F');
-                        
-                        // Add profile photo if uploaded
-                        if (uploadedImages.profilePhoto) {
-                            doc.addImage(uploadedImages.profilePhoto, 'JPEG', w / 2 - 15, 50, 30, 30);
-                            y = 90;
-                        }
-                        
-                        doc.setTextColor(255, 255, 255);
-                        doc.setFontSize(styleConfig.headerSize);
-                        doc.setFont(undefined, 'bold');
-                        doc.text(data.fullName || '', w / 2, 20, { align: 'center' });
-                        doc.setFontSize(14);
-                        doc.setFont(undefined, 'normal');
-                        doc.text(data.title || '', w / 2, 30, { align: 'center' });
-                        doc.setFontSize(9);
-                        doc.text(`${data.email || ''} | ${data.phone || ''}`, w / 2, 38, { align: 'center' });
-                        y = 55;
-                        doc.setTextColor(0, 0, 0);
-                    } else if (selectedStyle === 'modern') {
-                        // Modern Portfolio Style
-                        doc.setFontSize(styleConfig.headerSize);
-                        doc.setFont(undefined, 'bold');
-                        doc.setTextColor(styleConfig.primaryColor[0], styleConfig.primaryColor[1], styleConfig.primaryColor[2]);
-                        doc.text(data.fullName || '', m, y);
-                        y += 8;
-                        doc.setFontSize(12);
-                        doc.setFont(undefined, 'normal');
-                        doc.text(data.title || '', m, y);
-                        y += 8;
-                        doc.setFontSize(9);
-                        doc.setTextColor(100, 100, 100);
-                        doc.text(`${data.email || ''} | ${data.phone || ''} | ${data.website || ''}`, m, y);
-                        y += 15;
-                        doc.setTextColor(0, 0, 0);
-                    } else {
-                        // Classic Portfolio Style
-                        doc.setFontSize(styleConfig.headerSize);
-                        doc.setFont(undefined, 'bold');
-                        doc.text(data.fullName || '', w / 2, y, { align: 'center' });
-                        y += 8;
-                        doc.setFontSize(12);
-                        doc.setFont(undefined, 'italic');
-                        doc.text(data.title || '', w / 2, y, { align: 'center' });
-                        y += 10;
-                        doc.setFontSize(10);
-                        doc.setFont(undefined, 'normal');
-                        doc.text(`${data.email || ''} | ${data.phone || ''} | ${data.website || ''}`, w / 2, y, { align: 'center' });
-                        y += 15;
-                    }
-
-                    doc.setFontSize(12);
-                    doc.setFont(undefined, 'bold');
-                    doc.setTextColor(styleConfig.accentColor[0], styleConfig.accentColor[1], styleConfig.accentColor[2]);
-                    doc.text('ABOUT', m, y);
-                    y += 7;
-                    doc.setFontSize(10);
-                    doc.setFont(undefined, 'normal');
-                    doc.setTextColor(0, 0, 0);
-                    const bio = doc.splitTextToSize(data.bio || '', mw);
-                    doc.text(bio, m, y);
-                    y += bio.length * 5 + 10;
-
-                    if (data.projects?.length) {
-                        checkPageBreak(20);
-                        doc.setFontSize(12);
-                        doc.setFont(undefined, 'bold');
-                        doc.setTextColor(styleConfig.accentColor[0], styleConfig.accentColor[1], styleConfig.accentColor[2]);
-                        doc.text('FEATURED PROJECTS', m, y);
-                        y += 7;
-                        data.projects.forEach((p, idx) => {
-                            checkPageBreak(30);
-                            doc.setFontSize(11);
-                            doc.setFont(undefined, 'bold');
-                            doc.setTextColor(0, 0, 0);
-                            doc.text(`${idx + 1}. ${p.projectName || ''}`, m, y);
-                            y += 6;
-                            doc.setFontSize(10);
-                            doc.setFont(undefined, 'italic');
-                            doc.text(`${p.role || ''} | ${p.date || ''}`, m, y);
-                            y += 6;
-                            doc.setFont(undefined, 'normal');
-                            const desc = doc.splitTextToSize(p.description || '', mw);
-                            doc.text(desc, m, y);
-                            y += desc.length * 5 + 3;
-                            if (p.technologies) {
-                                doc.setFontSize(9);
-                                doc.setTextColor(100, 100, 100);
-                                doc.text(`Technologies: ${p.technologies}`, m, y);
-                                y += 6;
-                                doc.setTextColor(0, 0, 0);
-                            }
-                            y += 5;
-                        });
-                    }
-
-                    if (data.skills) {
-                        checkPageBreak(15);
-                        doc.setFontSize(12);
-                        doc.setFont(undefined, 'bold');
-                        doc.setTextColor(styleConfig.accentColor[0], styleConfig.accentColor[1], styleConfig.accentColor[2]);
-                        doc.text('CORE SKILLS', m, y);
-                        y += 7;
-                        doc.setFontSize(10);
-                        doc.setFont(undefined, 'normal');
-                        doc.setTextColor(0, 0, 0);
-                        const sk = doc.splitTextToSize(data.skills, mw);
-                        doc.text(sk, m, y);
-                    }
-                } else if (template.id === 'invoice') {
-                    doc.setFontSize(24);
-                    doc.setFont(undefined, 'bold');
-                    
-                    // Add logo if uploaded
-                    if (uploadedImages.logo) {
-                        doc.addImage(uploadedImages.logo, 'JPEG', w - 50, 10, 30, 30);
-                    }
-                    
-                    doc.text('INVOICE', m, y);
-                    y += 15;
-                    doc.setFontSize(10);
-                    doc.setFont(undefined, 'normal');
-                    doc.text(`Invoice #: ${data.invoiceNumber || ''}`, m, y);
-                    y += 6;
-                    doc.text(`Date: ${data.date || ''}`, m, y);
-                    y += 6;
-                    doc.text(`Due Date: ${data.dueDate || ''}`, m, y);
-                    y += 15;
-                    doc.setFont(undefined, 'bold');
-                    doc.text('FROM:', m, y);
-                    y += 6;
-                    doc.setFont(undefined, 'normal');
-                    doc.text(data.fromName || '', m, y);
-                    y += 6;
-                    const fa = doc.splitTextToSize(data.fromAddress || '', 80);
-                    doc.text(fa, m, y);
-                    
-                    const ty = 55;
-                    doc.setFont(undefined, 'bold');
-                    doc.text('TO:', w - m - 80, ty);
-                    doc.setFont(undefined, 'normal');
-                    doc.text(data.toName || '', w - m - 80, ty + 6);
-                    const ta = doc.splitTextToSize(data.toAddress || '', 80);
-                    doc.text(ta, w - m - 80, ty + 12);
-                    
-                    y += fa.length * 5 + 15;
-                    doc.setFillColor(240, 240, 240);
-                    doc.rect(m, y, mw, 8, 'F');
-                    doc.setFont(undefined, 'bold');
-                    doc.text('Description', m + 2, y + 5);
-                    doc.text('Qty', w - 90, y + 5);
-                    doc.text('Rate', w - 60, y + 5);
-                    doc.text('Amount', w - m - 2, y + 5, { align: 'right' });
-                    y += 12;
-                    
-                    doc.setFont(undefined, 'normal');
-                    let total = 0;
-                    if (data.items) {
-                        data.items.forEach(it => {
-                            const q = parseFloat(it.quantity) || 0;
-                            const r = parseFloat(it.rate) || 0;
-                            const amt = q * r;
-                            total += amt;
-                            doc.text(it.description || '', m + 2, y);
-                            doc.text(q.toString(), w - 90, y);
-                            doc.text(`$${r.toFixed(2)}`, w - 60, y);
-                            doc.text(`$${amt.toFixed(2)}`, w - m - 2, y, { align: 'right' });
-                            y += 8;
-                        });
-                    }
-                    
-                    y += 5;
-                    doc.setDrawColor(200, 200, 200);
-                    doc.line(w - 80, y, w - m, y);
-                    y += 8;
-                    doc.setFont(undefined, 'bold');
-                    doc.setFontSize(12);
-                    doc.text('TOTAL:', w - 80, y);
-                    doc.text(`$${total.toFixed(2)}`, w - m - 2, y, { align: 'right' });
-                    
-                    if (data.notes) {
-                        y += 20;
-                        doc.setFontSize(10);
-                        doc.text('Notes:', m, y);
-                        y += 6;
-                        doc.setFont(undefined, 'normal');
-                        const n = doc.splitTextToSize(data.notes, mw);
-                        doc.text(n, m, y);
-                    }
-                } else if (template.id === 'letter' || template.id === 'coverletter') {
-                    doc.setFontSize(10);
-                    doc.text(data.senderName || data.yourName || '', m, y);
-                    y += 5;
-                    const sa = doc.splitTextToSize(data.senderAddress || data.yourAddress || '', mw);
-                    doc.text(sa, m, y);
-                    y += sa.length * 5 + 10;
-                    doc.text(data.date || '', m, y);
-                    y += 15;
-                    doc.text(data.recipientName || data.hiringManager || '', m, y);
-                    y += 5;
-                    if (data.company) {
-                        doc.text(data.company, m, y);
-                        y += 5;
-                    }
-                    const ra = doc.splitTextToSize(data.recipientAddress || data.companyAddress || '', mw);
-                    doc.text(ra, m, y);
-                    y += ra.length * 5 + 15;
-                    if (data.subject) {
-                        doc.setFont(undefined, 'bold');
-                        doc.text(`Re: ${data.subject}`, m, y);
-                        y += 10;
-                    }
-                    if (data.position) {
-                        doc.setFont(undefined, 'bold');
-                        doc.text(`Re: ${data.position}`, m, y);
-                        y += 10;
-                    }
-                    doc.setFont(undefined, 'normal');
-                    const greeting = data.recipientName ? `Dear ${data.recipientName},` : data.hiringManager ? `Dear ${data.hiringManager},` : 'Dear Sir/Madam,';
-                    doc.text(greeting, m, y);
-                    y += 10;
-                    const b = doc.splitTextToSize(data.body || '', mw);
-                    doc.text(b, m, y);
-                    y += b.length * 5 + 15;
-                    doc.text(data.closing || 'Sincerely,', m, y);
-                    y += 15;
-                    doc.text(data.senderName || data.yourName || '', m, y);
-                } else if (template.id === 'certificate') {
-                    doc.setFillColor(245, 245, 250);
-                    doc.rect(0, 0, w, doc.internal.pageSize.getHeight(), 'F');
-                    doc.setDrawColor(100, 100, 200);
-                    doc.setLineWidth(3);
-                    doc.rect(15, 15, w - 30, doc.internal.pageSize.getHeight() - 30);
-                    y = 50;
-                    doc.setFontSize(32);
-                    doc.setFont(undefined, 'bold');
-                    doc.setTextColor(60, 60, 120);
-                    doc.text('Certificate of Achievement', w / 2, y, { align: 'center' });
-                    y += 30;
-                    doc.setFontSize(14);
-                    doc.setFont(undefined, 'normal');
-                    doc.setTextColor(0, 0, 0);
-                    doc.text('This certifies that', w / 2, y, { align: 'center' });
-                    y += 20;
-                    doc.setFontSize(24);
-                    doc.setFont(undefined, 'bold');
-                    doc.setTextColor(100, 100, 200);
-                    doc.text(data.recipientName || '', w / 2, y, { align: 'center' });
-                    y += 20;
-                    doc.setFontSize(14);
-                    doc.setFont(undefined, 'normal');
-                    doc.setTextColor(0, 0, 0);
-                    doc.text('has successfully completed', w / 2, y, { align: 'center' });
-                    y += 15;
-                    doc.setFontSize(18);
-                    doc.setFont(undefined, 'bold');
-                    doc.text(data.achievement || '', w / 2, y, { align: 'center' });
-                    y += 25;
-                    doc.setFontSize(12);
-                    doc.setFont(undefined, 'normal');
-                    doc.text(`Date: ${data.date || ''}`, w / 2, y, { align: 'center' });
-                    y += 30;
-                    doc.setFontSize(10);
-                    doc.text(data.signerName || '', w / 2 - 40, y, { align: 'center' });
-                    doc.text(data.organization || '', w / 2 + 40, y, { align: 'center' });
-                    y += 2;
-                    doc.line(w / 2 - 70, y, w / 2 - 10, y);
-                    doc.line(w / 2 + 10, y, w / 2 + 70, y);
-                    y += 5;
-                    doc.setFont(undefined, 'italic');
-                    doc.text(data.signerTitle || '', w / 2 - 40, y, { align: 'center' });
-                    doc.text('Organization', w / 2 + 40, y, { align: 'center' });
-                } else {
-                    // Generic document layout for other templates
-                    doc.setFontSize(20);
-                    doc.setFont(undefined, 'bold');
-                    doc.text(template.name, w / 2, y, { align: 'center' });
-                    y += 15;
-                    
-                    doc.setFontSize(10);
-                    doc.setFont(undefined, 'normal');
-                    
-                    template.fields.forEach(field => {
-                        if (field.type === 'list' && data[field.name]) {
-                            checkPageBreak(30);
-                            doc.setFont(undefined, 'bold');
-                            doc.text(field.label + ':', m, y);
-                            y += 7;
-                            doc.setFont(undefined, 'normal');
-                            data[field.name].forEach((item, idx) => {
-                                checkPageBreak(20);
-                                doc.text(`${idx + 1}.`, m, y);
-                                let itemText = '';
-                                field.sub.forEach(sf => {
-                                    if (item[sf.name]) itemText += item[sf.name] + ' ';
-                                });
-                                const lines = doc.splitTextToSize(itemText, mw - 10);
-                                doc.text(lines, m + 5, y);
-                                y += lines.length * 5 + 3;
-                            });
-                            y += 5;
-                        } else if (data[field.name]) {
-                            checkPageBreak(15);
-                            doc.setFont(undefined, 'bold');
-                            doc.text(field.label + ':', m, y);
-                            y += 6;
-                            doc.setFont(undefined, 'normal');
-                            const content = doc.splitTextToSize(data[field.name].toString(), mw);
-                            doc.text(content, m, y);
-                            y += content.length * 5 + 8;
-                        }
-                    });
-                }
-
-                doc.save(`${template.name.replace(/\s+/g, '_')}.pdf`);
-            };
-
-            const renderField = (f) => {
-                if (f.type === 'image') {
-                    return (
-                        <div key={f.name} className="mb-4">
-                            <label className="block text-sm font-medium mb-2">
-                                {f.label} {f.req && <span className="text-red-500">*</span>}
-                                {f.help && (
-                                    <span className="ml-2 text-xs text-gray-500 italic">💡 {f.help}</span>
-                                )}
-                            </label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => handleImageUpload(f.name, e)}
-                                className="w-full px-4 py-2 border rounded-lg"
-                            />
-                            {uploadedImages[f.name] && (
-                                <div className="mt-2">
-                                    <img src={uploadedImages[f.name]} alt="Preview" className="w-32 h-32 object-cover rounded-lg border" />
-                                    <button 
-                                        onClick={() => setUploadedImages(prev => {
-                                            const newImages = {...prev};
-                                            delete newImages[f.name];
-                                            return newImages;
-                                        })}
-                                        className="mt-2 text-sm text-red-600 hover:text-red-700"
+                    {/* Popular Templates */}
+                    {!search && category === "All" && (
+                        <div className="space-y-4">
+                            <h3 className="text-xl font-semibold">⭐ Most Popular Templates</h3>
+                            <div className="grid md:grid-cols-3 gap-4">
+                                {popular.map(tpl => (
+                                    <button
+                                        key={tpl.id}
+                                        onClick={() => selectTemplate(tpl)}
+                                        className="bg-white border rounded-lg p-5 text-left hover:shadow-lg transition group"
                                     >
-                                        Remove Image
+                                        <div className="flex items-start justify-between">
+                                            <div className="space-y-2 flex-1">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-2xl">{tpl.icon}</span>
+                                                    <h3 className="font-semibold text-gray-900">{tpl.name}</h3>
+                                                </div>
+                                                <p className="text-sm text-gray-600">{tpl.desc}</p>
+                                            </div>
+                                            <span className="text-gray-400 group-hover:text-blue-600 transition">→</span>
+                                        </div>
                                     </button>
-                                </div>
-                            )}
+                                ))}
+                            </div>
                         </div>
-                    );
-                }
-                
-                if (f.type === 'list') {
-                    return (
-                        <div key={f.name} className="mb-6">
-                            <label className="block text-sm font-medium mb-2">
-                                {f.label} {f.req && <span className="text-red-500">*</span>}
-                            </label>
-                            {(data[f.name] || [{}]).map((item, i) => (
-                                <div key={i} className="bg-gray-50 p-4 rounded-lg mb-3">
-                                    <div className="flex justify-between mb-3">
-                                        <span className="text-sm font-medium">Item {i + 1}</span>
-                                        {data[f.name].length > 1 && (
-                                            <button onClick={() => removeListItem(f.name, i)} className="text-red-500 hover:text-red-700 text-sm">
-                                                Remove
+                    )}
+
+                    {/* Categories */}
+                    <div className="space-y-4">
+                        <div className="flex gap-2 flex-wrap">
+                            {CATEGORIES.map(cat => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setCategory(cat)}
+                                    className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+                                        category === cat
+                                            ? "bg-blue-600 text-white"
+                                            : "bg-white text-gray-700 hover:bg-gray-100"
+                                    }`}
+                                >
+                                    {cat}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* All Templates */}
+                    <div className="space-y-4">
+                        <h3 className="text-xl font-semibold">All Templates</h3>
+                        <div className="grid md:grid-cols-3 gap-4">
+                            {filtered.map(tpl => (
+                                <button
+                                    key={tpl.id}
+                                    onClick={() => selectTemplate(tpl)}
+                                    className="bg-white border rounded-lg p-5 text-left hover:shadow-lg transition group"
+                                >
+                                    <div className="flex items-start justify-between">
+                                        <div className="space-y-2 flex-1">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-2xl">{tpl.icon}</span>
+                                                <div>
+                                                    <h3 className="font-semibold text-gray-900">{tpl.name}</h3>
+                                                    <p className="text-xs text-gray-500">{tpl.category}</p>
+                                                </div>
+                                            </div>
+                                            <p className="text-sm text-gray-600">{tpl.desc}</p>
+                                        </div>
+                                        <span className="text-gray-400 group-hover:text-blue-600 transition">→</span>
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                </div>
+            )}
+
+            {/* EDITOR */}
+            {stage === "edit" && (
+                <div className="max-w-7xl mx-auto px-6 py-8">
+                    <div className="grid md:grid-cols-2 gap-6">
+
+                        {/* FORM */}
+                        <div className="space-y-6">
+                            <div className="bg-white rounded-lg shadow p-6 space-y-6">
+                                <div className="flex items-center gap-3">
+                                    <span className="text-3xl">{template.icon}</span>
+                                    <h2 className="text-2xl font-bold">{template.name}</h2>
+                                </div>
+
+                                {template.sections.map(sec => (
+                                    <div key={sec.id} className="space-y-3">
+                                        <h3 className="font-semibold text-lg text-gray-800">{sec.title}</h3>
+
+                                        {(Array.isArray(documentData[sec.id])
+                                            ? documentData[sec.id]
+                                            : [documentData[sec.id]]
+                                        ).map((block, idx) => (
+                                            <div key={idx} className="space-y-3 border border-gray-200 p-4 rounded-lg bg-gray-50">
+                                                {sec.fields.map(f => (
+                                                    <div key={f.name}>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                            {f.label}
+                                                        </label>
+                                                        {f.type === "textarea" ? (
+                                                            <textarea
+                                                                className="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                                rows="3"
+                                                                value={block[f.name]}
+                                                                onChange={e =>
+                                                                    updateField(sec.id, idx, f.name, e.target.value)
+                                                                }
+                                                            />
+                                                        ) : (
+                                                            <input
+                                                                className="w-full border border-gray-300 rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                                value={block[f.name]}
+                                                                onChange={e =>
+                                                                    updateField(sec.id, idx, f.name, e.target.value)
+                                                                }
+                                                            />
+                                                        )}
+                                                    </div>
+                                                ))}
+                                                {sec.repeatable && documentData[sec.id].length > 1 && (
+                                                    <button
+                                                        onClick={() => removeSection(sec, idx)}
+                                                        className="text-xs text-red-600 hover:underline"
+                                                    >
+                                                        Remove this {sec.title}
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
+
+                                        {sec.repeatable && (
+                                            <button
+                                                onClick={() => addSection(sec)}
+                                                className="text-sm text-blue-600 hover:underline font-medium"
+                                            >
+                                                + Add {sec.title}
                                             </button>
                                         )}
                                     </div>
-                                    {f.sub.map(sf => (
-                                        <div key={sf.name} className="mb-2">
-                                            <label className="block text-xs mb-1">{sf.label}</label>
-                                            {sf.type === 'textarea' ? (
-                                                <textarea
-                                                    value={item[sf.name] || ''}
-                                                    onChange={(e) => updateListItem(f.name, i, sf.name, e.target.value)}
-                                                    className="w-full px-3 py-2 border rounded-lg text-sm"
-                                                    rows="2"
-                                                />
-                                            ) : (
-                                                <input
-                                                    type={sf.type || 'text'}
-                                                    value={item[sf.name] || ''}
-                                                    onChange={(e) => updateListItem(f.name, i, sf.name, e.target.value)}
-                                                    className="w-full px-3 py-2 border rounded-lg text-sm"
-                                                />
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            ))}
-                            <button onClick={() => addListItem(f.name)} className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-                                + Add {f.label}
-                            </button>
-                        </div>
-                    );
-                }
+                                ))}
 
-                return (
-                    <div key={f.name} className="mb-4">
-                        <label className="block text-sm font-medium mb-2">
-                            {f.label} {f.req && <span className="text-red-500">*</span>}
-                            {f.help && (
-                                <span className="ml-2 text-xs text-gray-500 italic">💡 {f.help}</span>
-                            )}
-                        </label>
-                        {f.type === 'textarea' ? (
-                            <textarea
-                                value={data[f.name] || ''}
-                                onChange={(e) => updateData(f.name, e.target.value)}
-                                className="w-full px-4 py-2 border rounded-lg"
-                                rows="4"
-                            />
-                        ) : (
-                            <input
-                                type={f.type || 'text'}
-                                value={data[f.name] || ''}
-                                onChange={(e) => updateData(f.name, e.target.value)}
-                                className="w-full px-4 py-2 border rounded-lg"
-                            />
-                        )}
-                    </div>
-                );
-            };
-
-            if (view === 'editor' && template) {
-                console.log('Editor View Active - Template:', template.name);
-                console.log('Has Layouts:', !!template.layouts);
-                console.log('Has Optional Content:', !!template.optionalContent);
-                
-                const styleVisuals = {
-                    classic: {
-                        name: 'Classic',
-                        icon: '📄',
-                        preview: (
-                            <div className="w-full h-24 bg-white border-2 border-gray-300 rounded p-2">
-                                <div className="h-3 bg-gray-800 w-1/2 mx-auto mb-2"></div>
-                                <div className="h-2 bg-gray-400 w-3/4 mx-auto mb-1"></div>
-                                <div className="h-2 bg-gray-300 w-full mb-1"></div>
-                                <div className="h-2 bg-gray-300 w-full"></div>
-                            </div>
-                        )
-                    },
-                    modern: {
-                        name: 'Modern',
-                        icon: '✨',
-                        preview: (
-                            <div className="w-full h-24 bg-white border-2 border-blue-400 rounded overflow-hidden">
-                                <div className="h-8 bg-blue-500 flex items-center justify-center">
-                                    <div className="h-2 bg-white w-1/3"></div>
-                                </div>
-                                <div className="p-2">
-                                    <div className="h-2 bg-gray-300 w-full mb-1"></div>
-                                    <div className="h-2 bg-gray-300 w-3/4"></div>
-                                </div>
-                            </div>
-                        )
-                    },
-                    minimal: {
-                        name: 'Minimal',
-                        icon: '◻️',
-                        preview: (
-                            <div className="w-full h-24 bg-white border-2 border-gray-200 rounded p-2">
-                                <div className="h-2 bg-gray-800 w-1/3 mb-2"></div>
-                                <div className="h-1 bg-gray-300 w-1/2 mb-2"></div>
-                                <div className="space-y-1">
-                                    <div className="h-1 bg-gray-200 w-full"></div>
-                                    <div className="h-1 bg-gray-200 w-full"></div>
-                                    <div className="h-1 bg-gray-200 w-4/5"></div>
-                                </div>
-                            </div>
-                        )
-                    },
-                    creative: {
-                        name: 'Creative',
-                        icon: '🎨',
-                        preview: (
-                            <div className="w-full h-24 bg-white border-2 border-purple-400 rounded overflow-hidden">
-                                <div className="h-10 bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                                    <div className="h-2 bg-white w-1/3"></div>
-                                </div>
-                                <div className="p-2">
-                                    <div className="h-2 bg-purple-300 w-full mb-1"></div>
-                                    <div className="h-2 bg-purple-200 w-3/4"></div>
-                                </div>
-                            </div>
-                        )
-                    }
-                };
-
-                return (
-                    <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-blue-50 to-indigo-100'} p-6`}>
-                        <div className={`max-w-4xl mx-auto ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-lg p-8`}>
-                            <button onClick={() => { setView('home'); setTemplate(null); }} className={`${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-800'} mb-6 flex items-center gap-2`}>
-                                ← {t.backToTemplates}
-                            </button>
-                            <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-                                <div className="flex items-center gap-3">
-                                    <span className="text-4xl">{template.icon}</span>
-                                    <div>
-                                        <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : ''}`}>{template.name}</h2>
-                                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{template.desc}</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-2 flex-wrap">
-                                    <button onClick={() => setShowLoadModal(true)} className={`px-4 py-2 ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'} rounded-lg text-sm font-medium`}>
-                                        📂 {t.load}
-                                    </button>
-                                    <button onClick={() => setShowSaveModal(true)} className="px-4 py-2 bg-blue-100 hover:bg-blue-200 rounded-lg text-sm font-medium text-blue-700">
-                                        💾 {t.saveDraft}
-                                    </button>
-                                    <button onClick={fillSampleData} className="px-4 py-2 bg-green-100 hover:bg-green-200 rounded-lg text-sm font-medium text-green-700">
-                                        ✨ {t.sampleData}
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* SECTION 1: EDITING OPTIONS */}
-                            <div className={`mb-8 p-6 ${darkMode ? 'bg-gray-700' : 'bg-blue-50'} rounded-xl border-2 ${darkMode ? 'border-blue-800' : 'border-blue-200'}`}>
-                                <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} mb-2`}>
-                                    🎨 {t.editingOptions}
-                                </h3>
-                                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-6`}>{t.editingDesc}</p>
-
-                                {/* Font & Color Picker */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                    <div>
-                                        <h4 className={`text-sm font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>{t.customizeColors}</h4>
-                                        <div className="flex items-center gap-3">
-                                            <input 
-                                                type="color" 
-                                                value={accentColor} 
-                                                onChange={(e) => setAccentColor(e.target.value)}
-                                                className="w-12 h-12 rounded cursor-pointer border-2 border-white shadow"
-                                            />
-                                            <div className="text-sm font-mono">{accentColor}</div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h4 className={`text-sm font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>{t.font}</h4>
-                                        <select
-                                            value={selectedFont}
-                                            onChange={(e) => setSelectedFont(e.target.value)}
-                                            className={`w-full px-4 py-2 ${darkMode ? 'bg-gray-600 text-white' : 'bg-white'} rounded-lg border ${darkMode ? 'border-gray-500' : 'border-gray-300'}`}
-                                        >
-                                            <option value="helvetica" style={{fontFamily: 'Helvetica, Arial, sans-serif'}}>Helvetica</option>
-                                            <option value="times" style={{fontFamily: 'Times, serif'}}>Times New Roman</option>
-                                            <option value="courier" style={{fontFamily: 'Courier, monospace'}}>Courier</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                {/* Style Selector */}
-                                <div>
-                                    <h4 className={`text-sm font-semibold mb-4 ${darkMode ? 'text-white' : ''}`}>{t.chooseStyle}</h4>
-                                    <div className="grid grid-cols-3 gap-4">
-                                        {(template.hasStyles ? template.styles : ['classic', 'modern', 'minimal']).map(style => (
-                                            <div
-                                                key={style}
-                                                onClick={() => setSelectedStyle(style)}
-                                                className={`cursor-pointer rounded-lg p-3 transition ${
-                                                    selectedStyle === style
-                                                        ? 'ring-2 ring-blue-500 bg-blue-50'
-                                                        : darkMode ? 'bg-gray-600 hover:bg-gray-500' : 'bg-white hover:shadow-md'
-                                                }`}
-                                            >
-                                                <div className="text-center mb-2">
-                                                    <span className="text-2xl">{styleVisuals[style]?.icon || '📄'}</span>
-                                                    <p className="text-sm font-medium mt-1">{styleVisuals[style]?.name || style}</p>
-                                                </div>
-                                                {styleVisuals[style]?.preview}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Layout Selector - NEW */}
-                                {template.layouts && (
-                                    <div className="mt-6 pt-6 border-t border-gray-300">
-                                        <h4 className={`text-sm font-semibold mb-4 ${darkMode ? 'text-white' : ''}`}>{t.chooseLayout}</h4>
-                                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-3`}>{t.layoutDesc}</p>
-                                        <div className="grid grid-cols-3 gap-3">
-                                            {Object.keys(template.layouts).map(layoutKey => {
-                                                const layout = template.layouts[layoutKey];
-                                                return (
-                                                    <div
-                                                        key={layoutKey}
-                                                        onClick={() => setSelectedLayout(layoutKey)}
-                                                        className={`cursor-pointer rounded-lg p-3 border-2 transition ${
-                                                            selectedLayout === layoutKey
-                                                                ? 'border-blue-500 bg-blue-50'
-                                                                : darkMode ? 'border-gray-600 bg-gray-600 hover:bg-gray-500' : 'border-gray-300 bg-white hover:shadow-md'
-                                                        }`}
-                                                    >
-                                                        <div className="text-center">
-                                                            <p className={`text-sm font-semibold mb-1 ${darkMode ? 'text-white' : ''}`}>{layout.name}</p>
-                                                            <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{layout.desc}</p>
-                                                            {/* Visual representation */}
-                                                            <div className="mt-2">
-                                                                {layoutKey === 'layout1' && (
-                                                                    <div className="space-y-1">
-                                                                        <div className="h-2 bg-gray-400 w-full rounded"></div>
-                                                                        <div className="h-2 bg-gray-300 w-full rounded"></div>
-                                                                        <div className="h-2 bg-gray-300 w-full rounded"></div>
-                                                                    </div>
-                                                                )}
-                                                                {layoutKey === 'layout2' && (
-                                                                    <div className="flex gap-1">
-                                                                        <div className="space-y-1 flex-1">
-                                                                            <div className="h-2 bg-gray-400 w-full rounded"></div>
-                                                                            <div className="h-2 bg-gray-300 w-full rounded"></div>
-                                                                        </div>
-                                                                        <div className="space-y-1 flex-1">
-                                                                            <div className="h-2 bg-gray-400 w-full rounded"></div>
-                                                                            <div className="h-2 bg-gray-300 w-full rounded"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                )}
-                                                                {layoutKey === 'layout3' && (
-                                                                    <div className="flex gap-1">
-                                                                        <div className="w-1/3 h-6 bg-gray-400 rounded"></div>
-                                                                        <div className="flex-1 space-y-1">
-                                                                            <div className="h-2 bg-gray-300 w-full rounded"></div>
-                                                                            <div className="h-2 bg-gray-300 w-full rounded"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* SECTION 2: DOCUMENT CONTENT */}
-                            <div className={`p-6 ${darkMode ? 'bg-gray-700' : 'bg-green-50'} rounded-xl border-2 ${darkMode ? 'border-green-800' : 'border-green-200'}`}>
-                                <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} mb-2`}>
-                                    📝 {t.documentContent}
-                                </h3>
-                                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-6`}>{t.contentDesc}</p>
-
-                                {/* Add Optional Content Button */}
-                                {template.optionalContent && template.optionalContent.length > 0 && (
-                                    <div className="mb-6">
-                                        <button
-                                            onClick={() => setShowAddContent(true)}
-                                            className="px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 flex items-center gap-2"
-                                        >
-                                            ➕ {t.addOptionalContent}
-                                        </button>
-                                    </div>
-                                )}
-
-                                <div className="space-y-4">
-                                    {template.fields.map(renderField)}
-                                    
-                                    {/* Render Additional Optional Sections */}
-                                    {additionalSections.map(sectionId => {
-                                        const section = template.optionalContent?.find(s => s.id === sectionId);
-                                        if (!section) return null;
-                                        return (
-                                            <div key={sectionId} className={`p-4 ${darkMode ? 'bg-purple-900' : 'bg-purple-50'} rounded-lg border-2 ${darkMode ? 'border-purple-700' : 'border-purple-200'}`}>
-                                                <div className="flex justify-between items-center mb-3">
-                                                    <h4 className={`font-semibold ${darkMode ? 'text-white' : 'text-purple-900'}`}>✨ {section.name}</h4>
-                                                    <button
-                                                        onClick={() => removeOptionalSection(sectionId)}
-                                                        className="text-red-600 hover:text-red-700 text-sm font-medium"
-                                                    >
-                                                        {t.removeSection}
-                                                    </button>
-                                                </div>
-                                                {section.fields.map(renderField)}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-
-                            {/* Download Button */}
-                            <button onClick={generatePDF} className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 mt-6 text-lg">
-                                {t.downloadPDF}
-                            </button>
-                        </div>
-
-                        {/* Add Optional Content Modal */}
-                        {showAddContent && template.optionalContent && (
-                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                                <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 max-w-md w-full`}>
-                                    <h3 className={`text-xl font-bold mb-4 ${darkMode ? 'text-white' : ''}`}>{t.optionalSections}</h3>
-                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-4`}>Choose additional sections to add to your document:</p>
-                                    <div className="space-y-2 max-h-64 overflow-y-auto">
-                                        {template.optionalContent.map(section => {
-                                            const isAdded = additionalSections.includes(section.id);
-                                            return (
-                                                <button
-                                                    key={section.id}
-                                                    onClick={() => addOptionalSection(section.id)}
-                                                    disabled={isAdded}
-                                                    className={`w-full p-3 rounded-lg text-left transition ${
-                                                        isAdded
-                                                            ? darkMode ? 'bg-gray-700 text-gray-500 cursor-not-allowed' : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                                                            : darkMode ? 'bg-purple-900 hover:bg-purple-800 text-white' : 'bg-purple-100 hover:bg-purple-200 text-purple-900'
-                                                    }`}
-                                                >
-                                                    <div className="font-semibold">{section.name}</div>
-                                                    {isAdded && <div className="text-xs mt-1">✓ Already added</div>}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                    <button 
-                                        onClick={() => setShowAddContent(false)} 
-                                        className={`w-full mt-4 ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} px-4 py-2 rounded-lg font-semibold`}
+                                <div className="flex gap-3 pt-4 border-t">
+                                    <button
+                                        onClick={() => setStage("home")}
+                                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md"
                                     >
-                                        {t.close}
+                                        ← Back
+                                    </button>
+                                    <button
+                                        onClick={saveDraft}
+                                        className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+                                    >
+                                        💾 Save Draft
+                                    </button>
+                                    <button
+                                        onClick={exportPDF}
+                                        className="px-6 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
+                                    >
+                                        Download PDF
                                     </button>
                                 </div>
                             </div>
-                        )}
-
-                        {/* Save Modal */}
-                        {showSaveModal && (
-                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                                <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
-                                    <h3 className="text-xl font-bold mb-4">{t.saveDraftTitle}</h3>
-                                    <input
-                                        type="text"
-                                        value={draftName}
-                                        onChange={(e) => setDraftName(e.target.value)}
-                                        placeholder={t.enterName}
-                                        className="w-full px-4 py-2 border rounded-lg mb-4"
-                                    />
-                                    <div className="flex gap-2">
-                                        <button onClick={saveDraft} className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700">
-                                            {t.save}
-                                        </button>
-                                        <button onClick={() => { setShowSaveModal(false); setDraftName(''); }} className="flex-1 bg-gray-200 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300">
-                                            {t.cancel}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Load Modal */}
-                        {showLoadModal && (
-                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                                <div className="bg-white rounded-xl p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
-                                    <h3 className="text-xl font-bold mb-4">{t.loadDraftTitle}</h3>
-                                    {savedDrafts.length === 0 ? (
-                                        <p className="text-gray-500 text-center py-8">{t.noSavedDrafts}</p>
-                                    ) : (
-                                        <div className="space-y-2">
-                                            {savedDrafts.map(draft => (
-                                                <div key={draft.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
-                                                    <div className="flex-1">
-                                                        <div className="font-semibold">{draft.name}</div>
-                                                        <div className="text-sm text-gray-600">{draft.template.name} • {draft.date}</div>
-                                                    </div>
-                                                    <div className="flex gap-2">
-                                                        <button onClick={() => loadDraft(draft)} className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
-                                                            {t.load}
-                                                        </button>
-                                                        <button onClick={() => deleteDraft(draft.id)} className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm">
-                                                            {t.delete}
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                    <button onClick={() => setShowLoadModal(false)} className="w-full mt-4 bg-gray-200 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300">
-                                        {t.close}
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                );
-            }
-
-            const featuredTemplates = templates.filter(t => t.featured);
-            
-            // Filter templates by search query and category
-            const filteredTemplates = templates.filter(t => {
-                const matchesSearch = t.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                                     t.desc.toLowerCase().includes(searchQuery.toLowerCase());
-                const matchesCategory = selectedCategory === 'all' || t.category === selectedCategory;
-                return matchesSearch && matchesCategory;
-            });
-
-            return (
-                <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-blue-50 to-indigo-100'} p-6`}>
-                    <div className="max-w-7xl mx-auto">
-                        {/* Top Bar */}
-                        <div className="flex justify-between items-center mb-4 flex-wrap gap-4">
-                            <div className="flex gap-3">
-                                <button 
-                                    onClick={() => setDarkMode(!darkMode)}
-                                    className={`px-4 py-2 ${darkMode ? 'bg-gray-700' : 'bg-white'} rounded-lg shadow border ${darkMode ? 'border-gray-600' : 'border-gray-300'} font-medium`}
-                                >
-                                    {darkMode ? '☀️' : '🌙'} {t.darkMode}
-                                </button>
-                                <button 
-                                    onClick={() => setShowExportImport(true)}
-                                    className={`px-4 py-2 ${darkMode ? 'bg-gray-700' : 'bg-white'} rounded-lg shadow border ${darkMode ? 'border-gray-600' : 'border-gray-300'} font-medium`}
-                                >
-                                    💾 {t.exportImport}
-                                </button>
-                            </div>
-                            <select 
-                                value={language} 
-                                onChange={(e) => setLanguage(e.target.value)}
-                                className={`px-4 py-2 ${darkMode ? 'bg-gray-700' : 'bg-white'} rounded-lg shadow border ${darkMode ? 'border-gray-600' : 'border-gray-300'} font-medium`}
-                            >
-                                <option value="en">🇬🇧 English</option>
-                                <option value="pt">🇵🇹 Português</option>
-                                <option value="es">🇪🇸 Español</option>
-                                <option value="fr">🇫🇷 Français</option>
-                            </select>
                         </div>
 
-                        <div className="text-center mb-8">
-                            <h1 className={`text-5xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} mb-4`}>{t.title}</h1>
-                            <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} text-lg mb-4`}>{t.subtitle}</p>
-                            
-                            {/* Search Bar */}
-                            <div className="max-w-xl mx-auto mb-4">
-                                <input
-                                    type="text"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    placeholder={t.search}
-                                    className={`w-full px-6 py-3 ${darkMode ? 'bg-gray-700 text-white' : 'bg-white'} rounded-lg shadow-lg border ${darkMode ? 'border-gray-600' : 'border-gray-300'} text-lg`}
-                                />
-                            </div>
+                        {/* PREVIEW */}
+                        <div className="bg-white rounded-lg shadow p-6 h-fit sticky top-6">
+                            <h3 className="font-semibold text-lg mb-4 text-gray-800">Live Preview</h3>
+                            <div className="border rounded p-6 bg-gray-50 min-h-96">
+                                {template.sections.map(sec => (
+                                    <div key={sec.id} className="mb-5">
+                                        <h4 className="font-semibold text-sm uppercase text-gray-600 mb-2">
+                                            {sec.title}
+                                        </h4>
 
-                            <div className="flex gap-3 justify-center flex-wrap">
-                                <button 
-                                    onClick={() => setShowHistory(true)}
-                                    className={`px-6 py-2 ${darkMode ? 'bg-gray-700' : 'bg-white'} rounded-lg shadow hover:shadow-lg transition font-medium ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}
-                                >
-                                    📊 {t.recentDocs} ({documentHistory.length})
-                                </button>
-                                {showTips && (
-                                    <div className={`flex items-center gap-2 px-6 py-2 ${darkMode ? 'bg-blue-900 border-blue-700' : 'bg-blue-50 border-blue-200'} rounded-lg border`}>
-                                        <span className={`text-sm ${darkMode ? 'text-blue-200' : 'text-blue-800'}`}>💡 <strong>{t.tip.split(':')[0]}:</strong> {t.tip.split(':')[1]}</span>
-                                        <button onClick={() => setShowTips(false)} className={`${darkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'}`}>✕</button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Featured Templates */}
-                        {searchQuery === '' && (
-                            <div className="mb-12">
-                                <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'} mb-6 flex items-center gap-2`}>
-                                    <span className="text-yellow-500">⭐</span> {t.mostPopular}
-                                </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                {featuredTemplates.map(t => (
-                                    <div key={t.id} onClick={() => selectTemplate(t)} className={`${darkMode ? 'bg-gray-800 border-yellow-600' : 'bg-white border-yellow-200'} rounded-xl shadow-lg p-6 hover:shadow-2xl cursor-pointer border-2 hover:border-yellow-400 transition transform hover:-translate-y-1`}>
-                                        <div className="text-center">
-                                            <span className="text-5xl block mb-3">{t.icon}</span>
-                                            <h3 className={`text-lg font-bold mb-2 ${darkMode ? 'text-white' : ''}`}>{t.name}</h3>
-                                            <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} text-sm mb-4`}>{t.desc}</p>
-                                            <span className="text-blue-600 font-semibold text-sm">{t.createDoc} →</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        )}
-
-                        {/* All Templates Section */}
-                        <div>
-                            <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-                                <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                                    {searchQuery ? `${t.search.split('...')[0]} "${searchQuery}"` : t.allTemplates}
-                                </h2>
-                                <div className="flex gap-2 flex-wrap">
-                                    {categories.map(cat => (
-                                        <button
-                                            key={cat}
-                                            onClick={() => setSelectedCategory(cat)}
-                                            className={`px-4 py-2 rounded-lg font-medium text-sm transition ${
-                                                selectedCategory === cat
-                                                    ? 'bg-blue-600 text-white'
-                                                    : darkMode ? 'bg-gray-700 text-gray-200 hover:bg-gray-600' : 'bg-white text-gray-700 hover:bg-gray-100'
-                                            }`}
-                                        >
-                                            {t[cat.toLowerCase()] || cat}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {filteredTemplates.map(t => (
-                                    <div key={t.id} onClick={() => selectTemplate(t)} className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl shadow-lg p-6 hover:shadow-xl cursor-pointer border-2 ${darkMode ? 'border-gray-700 hover:border-blue-500' : 'border-transparent hover:border-blue-300'} transition`}>
-                                        <div className="flex items-start gap-4">
-                                            <span className="text-4xl">{t.icon}</span>
-                                            <div className="flex-1">
-                                                <div className="flex items-start justify-between mb-2">
-                                                    <h3 className={`text-lg font-bold ${darkMode ? 'text-white' : ''}`}>{t.name}</h3>
-                                                    <span className={`text-xs ${darkMode ? 'bg-gray-700' : 'bg-gray-100'} px-2 py-1 rounded`}>{t.category}</span>
-                                                </div>
-                                                <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} text-sm mb-3`}>{t.desc}</p>
-                                                <span className="text-blue-600 font-semibold text-sm">{t.createDoc} →</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            {filteredTemplates.length === 0 && (
-                                <div className="text-center py-12">
-                                    <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} text-lg`}>No templates found matching "{searchQuery}"</p>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Footer Info */}
-                        <div className="mt-16 bg-white rounded-xl shadow-lg p-8">
-                            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">{t.howItWorks}</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                <div className="text-center">
-                                    <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <span className="text-3xl">1️⃣</span>
-                                    </div>
-                                    <h3 className="font-semibold text-gray-800 mb-2">{t.step1}</h3>
-                                    <p className="text-gray-600 text-sm">{t.step1desc}</p>
-                                </div>
-                                <div className="text-center">
-                                    <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <span className="text-3xl">2️⃣</span>
-                                    </div>
-                                    <h3 className="font-semibold text-gray-800 mb-2">{t.step2}</h3>
-                                    <p className="text-gray-600 text-sm">{t.step2desc}</p>
-                                </div>
-                                <div className="text-center">
-                                    <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <span className="text-3xl">3️⃣</span>
-                                    </div>
-                                    <h3 className="font-semibold text-gray-800 mb-2">{t.step3}</h3>
-                                    <p className="text-gray-600 text-sm">{t.step3desc}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Document History Modal */}
-                    {showHistory && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                            <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto`}>
-                                <h3 className={`text-xl font-bold mb-4 ${darkMode ? 'text-white' : ''}`}>{t.recentDocs}</h3>
-                                {documentHistory.length === 0 ? (
-                                    <p className={`${darkMode ? 'text-gray-400' : 'text-gray-500'} text-center py-8`}>{t.noDocs}</p>
-                                ) : (
-                                    <div className="space-y-2">
-                                        {documentHistory.map(item => (
-                                            <div key={item.id} className={`flex items-center justify-between p-3 ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} rounded-lg`}>
-                                                <div>
-                                                    <div className={`font-semibold ${darkMode ? 'text-white' : ''}`}>{item.templateName}</div>
-                                                    <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{item.date}</div>
-                                                </div>
+                                        {(Array.isArray(documentData[sec.id])
+                                            ? documentData[sec.id]
+                                            : [documentData[sec.id]]
+                                        ).map((block, idx) => (
+                                            <div key={idx} className="text-sm text-gray-800 mb-3">
+                                                {Object.values(block).map((val, i) =>
+                                                    val ? (
+                                                        <div key={i} className="mb-1 whitespace-pre-wrap">
+                                                            {val}
+                                                        </div>
+                                                    ) : null
+                                                )}
                                             </div>
                                         ))}
                                     </div>
-                                )}
-                                <button onClick={() => setShowHistory(false)} className={`w-full mt-4 ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} px-4 py-2 rounded-lg font-semibold`}>
-                                    {t.close}
-                                </button>
+                                ))}
                             </div>
                         </div>
-                    )}
 
-                    {/* Export/Import Modal */}
-                    {showExportImport && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                            <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-6 max-w-md w-full`}>
-                                <h3 className={`text-xl font-bold mb-4 ${darkMode ? 'text-white' : ''}`}>{t.exportImport}</h3>
-                                <div className="space-y-4">
-                                    <div className={`${darkMode ? 'bg-gray-700' : 'bg-gray-50'} p-4 rounded-lg`}>
-                                        <h4 className={`font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>{t.exportData}</h4>
-                                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-3`}>{t.exportDesc}</p>
-                                        <button 
-                                            onClick={exportAllData}
-                                            className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700"
-                                        >
-                                            📥 {t.export}
-                                        </button>
-                                    </div>
-                                    <div className={`${darkMode ? 'bg-gray-700' : 'bg-gray-50'} p-4 rounded-lg`}>
-                                        <h4 className={`font-semibold mb-2 ${darkMode ? 'text-white' : ''}`}>{t.importData}</h4>
-                                        <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-3`}>{t.importDesc}</p>
-                                        <label className="w-full bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 cursor-pointer block text-center">
-                                            📤 {t.selectFile}
-                                            <input type="file" accept=".json" onChange={importData} className="hidden" />
-                                        </label>
-                                    </div>
-                                </div>
-                                <button onClick={() => setShowExportImport(false)} className={`w-full mt-4 ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} px-4 py-2 rounded-lg font-semibold`}>
-                                    {t.close}
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                    </div>
                 </div>
-            );
-        };
+            )}
 
-        ReactDOM.render(<App />, document.getElementById('root'));
-    </script>
+        </div>
+    );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
 </body>
 </html>
