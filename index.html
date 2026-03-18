@@ -37,6 +37,7 @@
         --accent-soft: #eff6ff;
         --success: #10b981;
         --danger: #ef4444;
+        --warning: #f59e0b;
         --text-primary: #0f172a;
         --text-secondary: #64748b;
         --text-muted: #94a3b8;
@@ -170,7 +171,6 @@
         margin: 0;
       }
 
-      /* ---- Featured section heading ---- */
       .home-section-heading {
         display: flex;
         align-items: center;
@@ -194,14 +194,12 @@
         background: var(--border);
       }
 
-      /* ---- Divider between featured and all-docs ---- */
       .home-divider {
         border: none;
         border-top: 1px solid var(--border);
         margin: 48px 0;
       }
 
-      /* ---- Search bar ---- */
       .search-bar-wrapper {
         position: relative;
         margin-bottom: 28px;
@@ -242,7 +240,6 @@
         color: var(--text-muted);
       }
 
-      /* ---- All docs count label ---- */
       .all-docs-header {
         display: flex;
         align-items: center;
@@ -257,7 +254,6 @@
         font-family: "DM Mono", monospace;
       }
 
-      /* ---- No results state ---- */
       .no-results {
         text-align: center;
         padding: 52px 20px;
@@ -276,7 +272,6 @@
         margin: 0;
       }
 
-      /* ---- Template grid (shared by featured + all-docs) ---- */
       .template-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -517,6 +512,149 @@
         line-height: 1.5;
       }
 
+      /* =====================================================
+           VALIDATION STATES
+        ===================================================== */
+
+      /* Valid — green border + glow */
+      .field-input.is-valid {
+        border-color: var(--success);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+      }
+
+      .field-input.is-valid:focus {
+        border-color: var(--success);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+      }
+
+      /* Invalid — red border + glow */
+      .field-input.is-invalid {
+        border-color: var(--danger);
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+      }
+
+      .field-input.is-invalid:focus {
+        border-color: var(--danger);
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+      }
+
+      /* Error message below the field */
+      .field-error {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 5px;
+        font-size: 11.5px;
+        font-weight: 500;
+        color: var(--danger);
+        line-height: 1.4;
+      }
+
+      .field-error .error-icon {
+        font-size: 12px;
+        flex-shrink: 0;
+      }
+
+      /* Character counter below textarea / long text */
+      .field-counter {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 4px;
+        font-size: 11px;
+        font-family: "DM Mono", monospace;
+        color: var(--text-muted);
+        transition: color 0.15s;
+      }
+
+      .field-counter.counter-warn {
+        color: var(--warning);
+      }
+
+      .field-counter.counter-over {
+        color: var(--danger);
+        font-weight: 600;
+      }
+
+      /* =====================================================
+           DATE FIELD — custom picker wrapper
+        ===================================================== */
+      .date-field-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0;
+      }
+
+      .date-field-wrapper .field-input {
+        flex: 1;
+        border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+        border-right: none;
+      }
+
+      .date-field-wrapper .field-input:focus {
+        z-index: 1;
+        border-right: none;
+      }
+
+      .date-calendar-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 100%;
+        min-height: 38px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-left: none;
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        cursor: pointer;
+        font-size: 15px;
+        color: var(--text-secondary);
+        transition: var(--transition);
+        flex-shrink: 0;
+      }
+
+      .date-calendar-btn:hover {
+        background: var(--accent-soft);
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+
+      /* When the date input is valid/invalid, mirror to calendar btn */
+      .date-field-wrapper.date-valid .field-input {
+        border-color: var(--success);
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+      }
+
+      .date-field-wrapper.date-valid .date-calendar-btn {
+        border-color: var(--success);
+      }
+
+      .date-field-wrapper.date-invalid .field-input {
+        border-color: var(--danger);
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+      }
+
+      .date-field-wrapper.date-invalid .date-calendar-btn {
+        border-color: var(--danger);
+      }
+
+      /* The hidden native date input used for the calendar pop-up */
+      .date-native-picker {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        width: 0;
+        height: 0;
+        opacity: 0;
+        pointer-events: none;
+        border: none;
+        padding: 0;
+      }
+
+      /* =====================================================
+           BUTTONS
+        ===================================================== */
       .btn-remove {
         display: inline-flex;
         align-items: center;
@@ -688,7 +826,6 @@
         font-family: "DM Sans", sans-serif;
       }
 
-      /* Resume Preview */
       .preview-doc .resume-name {
         font-size: 24px;
         font-weight: 700;
@@ -768,7 +905,6 @@
         font-family: "DM Mono", monospace;
       }
 
-      /* Invoice Preview */
       .preview-doc .invoice-header {
         display: flex;
         justify-content: space-between;
@@ -1028,11 +1164,103 @@
   <body>
     <div id="root"></div>
     <script type="text/babel">
-      const { useState } = React;
+      const { useState, useRef } = React;
       const { jsPDF } = window.jspdf;
 
       /* ============================================================
+   VALIDATION RULES
+============================================================ */
+
+      const MAX_TEXT = 3000;
+      const MAX_NUMBER = 1000000000;
+
+      const VALIDATORS = {
+        email: {
+          validate: (v) => {
+            if (!v) return null;
+            const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+            return ok ? null : "Please enter a valid email address (e.g. name@domain.com)";
+          },
+        },
+
+        phone: {
+          validate: (v) => {
+            if (!v) return null;
+            const ok = /^[+\d][\d\s\-().]{3,24}$/.test(v.trim());
+            return ok ? null : "Phone can only contain digits, spaces, +, -, ( )";
+          },
+        },
+
+        number: {
+          validate: (v) => {
+            if (!v) return null;
+            const n = parseFloat(String(v).replace(/,/g, ""));
+            if (isNaN(n)) return "Please enter a valid number (e.g. 150.00)";
+            if (n < 0) return "Number cannot be negative";
+            if (n > MAX_NUMBER) return "Number cannot exceed 1,000,000,000";
+            return null;
+          },
+        },
+
+        year: {
+          validate: (v) => {
+            if (!v) return null;
+            const trimmed = v.trim();
+            if (!/^\d{4}$/.test(trimmed)) return "Please enter a 4-digit year (e.g. 2019)";
+            const n = parseInt(trimmed, 10);
+            if (n < 1900 || n > 2100) return "Year must be between 1900 and 2100";
+            return null;
+          },
+        },
+
+        date: {
+          validate: (v) => {
+            if (!v) return null;
+            const trimmed = v.trim();
+            const patterns = [/^\d{2}\/\d{2}\/\d{4}$/, /^\d{2}-\d{2}-\d{4}$/, /^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/];
+            const matches = patterns.some((p) => p.test(trimmed));
+            if (!matches) return "Use DD/MM/YYYY, DD-MM-YYYY or e.g. 23 Feb 2026";
+            return null;
+          },
+        },
+
+        text: {
+          validate: (v) => {
+            if (!v) return null;
+            if (v.length > MAX_TEXT) return `Maximum ${MAX_TEXT.toLocaleString()} characters allowed`;
+            return null;
+          },
+        },
+
+        textarea: {
+          validate: (v) => {
+            if (!v) return null;
+            if (v.length > MAX_TEXT) return `Maximum ${MAX_TEXT.toLocaleString()} characters allowed`;
+            return null;
+          },
+        },
+      };
+
+      /* Runs the right validator for a field definition */
+      function validateField(field, value) {
+        const key = field.validate || field.type || "text";
+        const validator = VALIDATORS[key];
+        if (!validator) return null;
+        return validator.validate(value);
+      }
+
+      /* Converts a native date input value (YYYY-MM-DD) to DD/MM/YYYY */
+      function nativeDateToDisplay(nativeVal) {
+        if (!nativeVal) return "";
+        const [y, m, d] = nativeVal.split("-");
+        return `${d}/${m}/${y}`;
+      }
+
+      /* ============================================================
    TEMPLATE CONFIGURATION
+   New field property: validate — controls which rule to apply.
+   Options: "email" | "phone" | "number" | "date" | "year" | "text" | "textarea"
+   If omitted the field type ("textarea" or default "text") is used.
 ============================================================ */
 
       const TEMPLATES = [
@@ -1047,10 +1275,15 @@
               id: "header",
               title: "Personal Info",
               fields: [
-                { name: "name", label: "Full Name", placeholder: "e.g. Alexandra Reyes" },
-                { name: "title", label: "Professional Title", placeholder: "e.g. Senior Product Designer" },
-                { name: "email", label: "Email Address", placeholder: "e.g. alex@email.com" },
-                { name: "phone", label: "Phone Number", placeholder: "e.g. +1 555 000 1234" },
+                { name: "name", label: "Full Name", placeholder: "e.g. Alexandra Reyes", validate: "text" },
+                {
+                  name: "title",
+                  label: "Professional Title",
+                  placeholder: "e.g. Senior Product Designer",
+                  validate: "text",
+                },
+                { name: "email", label: "Email Address", placeholder: "e.g. alex@email.com", validate: "email" },
+                { name: "phone", label: "Phone Number", placeholder: "e.g. +1 555 000 1234", validate: "phone" },
               ],
             },
             {
@@ -1062,6 +1295,7 @@
                   label: "Summary",
                   type: "textarea",
                   placeholder: "Write a short professional summary...",
+                  validate: "textarea",
                 },
               ],
             },
@@ -1070,14 +1304,15 @@
               title: "Experience",
               repeatable: true,
               fields: [
-                { name: "role", label: "Job Title", placeholder: "e.g. Product Designer" },
-                { name: "company", label: "Company", placeholder: "e.g. Acme Corp" },
-                { name: "period", label: "Period", placeholder: "e.g. Jan 2022 – Present" },
+                { name: "role", label: "Job Title", placeholder: "e.g. Product Designer", validate: "text" },
+                { name: "company", label: "Company", placeholder: "e.g. Acme Corp", validate: "text" },
+                { name: "period", label: "Period", placeholder: "e.g. Jan 2022 – Present", validate: "text" },
                 {
                   name: "description",
                   label: "Description",
                   type: "textarea",
-                  placeholder: "Describe your responsibilities and achievements...",
+                  placeholder: "Describe your responsibilities...",
+                  validate: "textarea",
                 },
               ],
             },
@@ -1086,9 +1321,14 @@
               title: "Education",
               repeatable: true,
               fields: [
-                { name: "degree", label: "Degree / Qualification", placeholder: "e.g. BSc Computer Science" },
-                { name: "school", label: "Institution", placeholder: "e.g. University of Lisbon" },
-                { name: "year", label: "Year", placeholder: "e.g. 2019" },
+                {
+                  name: "degree",
+                  label: "Degree / Qualification",
+                  placeholder: "e.g. BSc Computer Science",
+                  validate: "text",
+                },
+                { name: "school", label: "Institution", placeholder: "e.g. University of Lisbon", validate: "text" },
+                { name: "year", label: "Year", placeholder: "e.g. 2019", validate: "year" },
               ],
             },
           ],
@@ -1104,37 +1344,49 @@
               id: "sender",
               title: "Your Details",
               fields: [
-                { name: "senderName", label: "Your Name / Business Name", placeholder: "e.g. Studio Nova" },
+                {
+                  name: "senderName",
+                  label: "Your Name / Business Name",
+                  placeholder: "e.g. Studio Nova",
+                  validate: "text",
+                },
                 {
                   name: "senderAddress",
                   label: "Address",
                   placeholder: "e.g. 12 Oak Street, Lisbon",
                   type: "textarea",
+                  validate: "textarea",
                 },
-                { name: "senderEmail", label: "Email", placeholder: "e.g. billing@studionova.com" },
+                { name: "senderEmail", label: "Email", placeholder: "e.g. billing@studionova.com", validate: "email" },
               ],
             },
             {
               id: "header",
               title: "Invoice Details",
               fields: [
-                { name: "invoiceNumber", label: "Invoice Number", placeholder: "e.g. INV-0042" },
-                { name: "date", label: "Issue Date", placeholder: "e.g. 23 Feb 2026" },
-                { name: "dueDate", label: "Due Date", placeholder: "e.g. 09 Mar 2026" },
+                { name: "invoiceNumber", label: "Invoice Number", placeholder: "e.g. INV-0042", validate: "text" },
+                { name: "date", label: "Issue Date", placeholder: "DD/MM/YYYY", validate: "date" },
+                { name: "dueDate", label: "Due Date", placeholder: "DD/MM/YYYY", validate: "date" },
               ],
             },
             {
               id: "client",
               title: "Bill To",
               fields: [
-                { name: "clientName", label: "Client Name", placeholder: "e.g. Bright Ideas Ltd" },
+                { name: "clientName", label: "Client Name", placeholder: "e.g. Bright Ideas Ltd", validate: "text" },
                 {
                   name: "clientAddress",
                   label: "Client Address",
                   placeholder: "e.g. 99 Park Ave, Porto",
                   type: "textarea",
+                  validate: "textarea",
                 },
-                { name: "clientEmail", label: "Client Email", placeholder: "e.g. accounts@brightideas.com" },
+                {
+                  name: "clientEmail",
+                  label: "Client Email",
+                  placeholder: "e.g. accounts@brightideas.com",
+                  validate: "email",
+                },
               ],
             },
             {
@@ -1142,9 +1394,9 @@
               title: "Line Items",
               repeatable: true,
               fields: [
-                { name: "item", label: "Description", placeholder: "e.g. Website Design" },
-                { name: "qty", label: "Qty", placeholder: "1" },
-                { name: "price", label: "Unit Price", placeholder: "0.00" },
+                { name: "item", label: "Description", placeholder: "e.g. Website Design", validate: "text" },
+                { name: "qty", label: "Qty", placeholder: "1", validate: "number" },
+                { name: "price", label: "Unit Price", placeholder: "0.00", validate: "number" },
               ],
             },
           ],
@@ -1152,7 +1404,7 @@
       ];
 
       /* ============================================================
-   FEATURED TEMPLATE IDs — hardcoded, never touched by search
+   FEATURED TEMPLATE IDs
 ============================================================ */
 
       const FEATURED_IDS = ["resume", "invoice"];
@@ -1196,10 +1448,8 @@
           const price = parseNumber(row.price);
           return sum + qty * price;
         }, 0);
-
         const taxAmount = subtotal * (parseNumber(taxRate) / 100);
         const total = subtotal + taxAmount;
-
         return { subtotal, taxAmount, total };
       }
 
@@ -1217,7 +1467,6 @@
         const pageHeight = pdf.internal.pageSize.getHeight();
         const pageWidth = pdf.internal.pageSize.getWidth();
         const usableWidth = pageWidth - margin * 2;
-
         let cursorY = margin;
 
         function ensureSpace(heightNeeded) {
@@ -1335,13 +1584,11 @@
           pageWidth,
           usableWidth,
           addText,
-          addTextRight,
           addSpacing,
           addHRule,
           addSectionHeading,
           ensureSpace,
           setCursorY,
-          cursorY,
         } = eng;
 
         const hdr = documentData.header || {};
@@ -1350,12 +1597,10 @@
           addText(hdr.name, 22, true, [15, 23, 42]);
           addSpacing(1);
         }
-
         if (hdr.title) {
           addText(hdr.title, 11, false, [59, 130, 246]);
           addSpacing(2);
         }
-
         const contactParts = [hdr.email, hdr.phone].filter(Boolean);
         if (contactParts.length > 0) {
           addText(contactParts.join("   •   "), 9, false, [100, 116, 139]);
@@ -1382,9 +1627,7 @@
           expList.forEach((exp) => {
             if (!exp.role && !exp.company) return;
             ensureSpace(14);
-            if (exp.role) {
-              addText(exp.role, 11, true, [15, 23, 42]);
-            }
+            if (exp.role) addText(exp.role, 11, true, [15, 23, 42]);
             if (exp.company || exp.period) {
               const line = [exp.company, exp.period].filter(Boolean).join("  ·  ");
               addText(line, 9.5, false, [100, 116, 139]);
@@ -1404,9 +1647,7 @@
           eduList.forEach((edu) => {
             if (!edu.degree && !edu.school) return;
             ensureSpace(10);
-            if (edu.degree) {
-              addText(edu.degree, 11, true, [15, 23, 42]);
-            }
+            if (edu.degree) addText(edu.degree, 11, true, [15, 23, 42]);
             if (edu.school || edu.year) {
               const line = [edu.school, edu.year].filter(Boolean).join("  ·  ");
               addText(line, 9.5, false, [100, 116, 139]);
@@ -1424,19 +1665,8 @@
 
       function exportInvoicePDF(documentData, taxRate) {
         const eng = createPDFEngine();
-        const {
-          pdf,
-          margin,
-          pageWidth,
-          usableWidth,
-          addText,
-          addSpacing,
-          addHRule,
-          ensureSpace,
-          addRect,
-          cursorY,
-          setCursorY,
-        } = eng;
+        const { pdf, margin, pageWidth, usableWidth, addText, addSpacing, addHRule, ensureSpace, addRect, setCursorY } =
+          eng;
 
         const sender = documentData.sender || {};
         const hdr = documentData.header || {};
@@ -1473,7 +1703,6 @@
           pdf.setFontSize(8);
           pdf.setTextColor(100, 116, 139);
           pdf.text(row[0], metaX, rowY);
-
           pdf.setFont("helvetica", "bold");
           pdf.setFontSize(8.5);
           pdf.setTextColor(15, 23, 42);
@@ -1489,21 +1718,15 @@
         pdf.setFontSize(7.5);
         pdf.setTextColor(148, 163, 184);
         pdf.text("FROM", margin + 5, boxY + 7);
-
         pdf.setFont("helvetica", "bold");
         pdf.setFontSize(9.5);
         pdf.setTextColor(15, 23, 42);
         pdf.text(sender.senderName || "", margin + 5, boxY + 14, { maxWidth: boxW - 10 });
-
         pdf.setFont("helvetica", "normal");
         pdf.setFontSize(8);
         pdf.setTextColor(100, 116, 139);
-        if (sender.senderAddress) {
-          pdf.text(sender.senderAddress, margin + 5, boxY + 20, { maxWidth: boxW - 10 });
-        }
-        if (sender.senderEmail) {
-          pdf.text(sender.senderEmail, margin + 5, boxY + 30, { maxWidth: boxW - 10 });
-        }
+        if (sender.senderAddress) pdf.text(sender.senderAddress, margin + 5, boxY + 20, { maxWidth: boxW - 10 });
+        if (sender.senderEmail) pdf.text(sender.senderEmail, margin + 5, boxY + 30, { maxWidth: boxW - 10 });
 
         const toBoxX = margin + boxW + 6;
         addRect(toBoxX, boxY, boxW, 36, [239, 246, 255]);
@@ -1511,21 +1734,15 @@
         pdf.setFontSize(7.5);
         pdf.setTextColor(59, 130, 246);
         pdf.text("BILL TO", toBoxX + 5, boxY + 7);
-
         pdf.setFont("helvetica", "bold");
         pdf.setFontSize(9.5);
         pdf.setTextColor(15, 23, 42);
         pdf.text(client.clientName || "", toBoxX + 5, boxY + 14, { maxWidth: boxW - 10 });
-
         pdf.setFont("helvetica", "normal");
         pdf.setFontSize(8);
         pdf.setTextColor(100, 116, 139);
-        if (client.clientAddress) {
-          pdf.text(client.clientAddress, toBoxX + 5, boxY + 20, { maxWidth: boxW - 10 });
-        }
-        if (client.clientEmail) {
-          pdf.text(client.clientEmail, toBoxX + 5, boxY + 30, { maxWidth: boxW - 10 });
-        }
+        if (client.clientAddress) pdf.text(client.clientAddress, toBoxX + 5, boxY + 20, { maxWidth: boxW - 10 });
+        if (client.clientEmail) pdf.text(client.clientEmail, toBoxX + 5, boxY + 30, { maxWidth: boxW - 10 });
 
         setCursorY(boxY + 44);
 
@@ -1534,7 +1751,6 @@
         const colQty = margin + usableWidth * 0.52;
         const colPrice = margin + usableWidth * 0.67;
         const colTotal = margin + usableWidth * 0.82;
-        const tableRight = pageWidth - margin;
 
         addRect(margin, tableTop, usableWidth, 8, [15, 23, 42]);
         pdf.setFont("helvetica", "bold");
@@ -1565,12 +1781,9 @@
           pdf.setFontSize(9);
           pdf.setTextColor(30, 41, 59);
           pdf.text(row.item || "", colDesc + 3, rowY + 5, { maxWidth: colQty - colDesc - 6 });
-
           pdf.setTextColor(100, 116, 139);
           pdf.text(String(qty > 0 ? qty : row.qty || ""), colQty, rowY + 5);
-
           pdf.text(price > 0 ? formatMoney(price) : row.price || "", colPrice, rowY + 5);
-
           pdf.setFont("helvetica", "bold");
           pdf.setTextColor(15, 23, 42);
           pdf.text(line > 0 ? formatMoney(line) : "", colTotal, rowY + 5);
@@ -1597,7 +1810,6 @@
           pdf.setFontSize(big ? 10.5 : 9);
           pdf.setTextColor(bold && big ? 15 : 100, bold && big ? 23 : 116, bold && big ? 42 : 139);
           pdf.text(label, totX, totY);
-
           const valStr = formatMoney(value);
           const valW = pdf.getTextWidth(valStr);
           pdf.setFont("helvetica", bold ? "bold" : "normal");
@@ -1639,11 +1851,8 @@
 ============================================================ */
 
       function exportPDF(template, documentData, taxRate) {
-        if (template.id === "resume") {
-          exportResumePDF(documentData);
-        } else if (template.id === "invoice") {
-          exportInvoicePDF(documentData, taxRate);
-        }
+        if (template.id === "resume") exportResumePDF(documentData);
+        if (template.id === "invoice") exportInvoicePDF(documentData, taxRate);
       }
 
       /* ============================================================
@@ -1684,14 +1893,12 @@
                 {hdr.phone && <span>{hdr.phone}</span>}
               </div>
             )}
-
             {sum.summary && (
               <div>
                 <div className="section-heading">Professional Summary</div>
                 <p style={{ margin: 0, fontSize: "11px", color: "#475569", whiteSpace: "pre-wrap" }}>{sum.summary}</p>
               </div>
             )}
-
             {exp.some((e) => e.role || e.company) && (
               <div>
                 <div className="section-heading">Experience</div>
@@ -1712,7 +1919,6 @@
                 )}
               </div>
             )}
-
             {edu.some((e) => e.degree || e.school) && (
               <div>
                 <div className="section-heading">Education</div>
@@ -1877,18 +2083,168 @@
 
       function Preview({ template, data, taxRate }) {
         if (!template) return null;
-
-        if (template.id === "resume") {
-          return <ResumePreview data={data} />;
-        }
-
-        if (template.id === "invoice") {
-          return <InvoicePreview data={data} taxRate={taxRate} />;
-        }
-
+        if (template.id === "resume") return <ResumePreview data={data} />;
+        if (template.id === "invoice") return <InvoicePreview data={data} taxRate={taxRate} />;
         return null;
       }
 
+      /* ============================================================
+   SMART FIELD COMPONENT
+   Handles all validation states, date picker, char counter
+============================================================ */
+
+      function SmartField({ field, value, onChange }) {
+        const [touched, setTouched] = useState(false);
+        const datePickerRef = useRef(null);
+
+        const isDateField = field.validate === "date";
+        const isNumberField = field.validate === "number";
+        const isTextarea = field.type === "textarea";
+        const showCounter = isTextarea || field.validate === "textarea" || field.validate === "text";
+
+        /* Run validation only after the field has been touched */
+        const errorMsg = touched ? validateField(field, value) : null;
+        const isValid = touched && !errorMsg && value.length > 0;
+
+        /* Character counter colour */
+        const charCount = value.length;
+        const counterClass =
+          charCount > MAX_TEXT
+            ? "field-counter counter-over"
+            : charCount > MAX_TEXT * 0.85
+              ? "field-counter counter-warn"
+              : "field-counter";
+
+        /* Shared props for the input / textarea */
+        const inputClass = ["field-input", isValid ? "is-valid" : "", errorMsg ? "is-invalid" : ""]
+          .filter(Boolean)
+          .join(" ");
+
+        function handleChange(e) {
+          let val = e.target.value;
+          /* For number fields, block any character that isn't a digit or dot */
+          if (isNumberField) {
+            val = val.replace(/[^0-9.]/g, "");
+            /* Allow only one decimal point */
+            const parts = val.split(".");
+            if (parts.length > 2) val = parts[0] + "." + parts.slice(1).join("");
+          }
+          onChange(val);
+        }
+
+        function handleBlur() {
+          setTouched(true);
+        }
+
+        /* Opens the hidden native date picker */
+        function openCalendar() {
+          if (datePickerRef.current) {
+            datePickerRef.current.showPicker ? datePickerRef.current.showPicker() : datePickerRef.current.click();
+          }
+        }
+
+        /* When user picks a date from the calendar, convert to DD/MM/YYYY */
+        function handleNativeDateChange(e) {
+          const formatted = nativeDateToDisplay(e.target.value);
+          onChange(formatted);
+          setTouched(true);
+        }
+
+        /* Date wrapper class for border mirroring */
+        const dateWrapClass = isDateField
+          ? ["date-field-wrapper", isValid ? "date-valid" : "", errorMsg ? "date-invalid" : ""]
+              .filter(Boolean)
+              .join(" ")
+          : null;
+
+        /* ---- TEXTAREA ---- */
+        if (isTextarea) {
+          return (
+            <div>
+              <textarea
+                className={inputClass}
+                rows="3"
+                placeholder={field.placeholder || ""}
+                value={value}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                maxLength={MAX_TEXT + 1}
+              />
+              {showCounter && (
+                <div className={counterClass}>
+                  {charCount.toLocaleString()} / {MAX_TEXT.toLocaleString()}
+                </div>
+              )}
+              {errorMsg && (
+                <div className="field-error">
+                  <span className="error-icon">⚠</span>
+                  {errorMsg}
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        /* ---- DATE FIELD ---- */
+        if (isDateField) {
+          return (
+            <div>
+              <div className={dateWrapClass}>
+                <input
+                  className={inputClass}
+                  type="text"
+                  placeholder={field.placeholder || "DD/MM/YYYY"}
+                  value={value}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                <button type="button" className="date-calendar-btn" onClick={openCalendar} title="Open calendar">
+                  📅
+                </button>
+                <input
+                  ref={datePickerRef}
+                  type="date"
+                  className="date-native-picker"
+                  onChange={handleNativeDateChange}
+                  tabIndex="-1"
+                />
+              </div>
+              {errorMsg && (
+                <div className="field-error">
+                  <span className="error-icon">⚠</span>
+                  {errorMsg}
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        /* ---- ALL OTHER FIELDS (text, email, phone, number, year) ---- */
+        return (
+          <div>
+            <input
+              className={inputClass}
+              type="text"
+              placeholder={field.placeholder || ""}
+              value={value}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              inputMode={isNumberField ? "decimal" : "text"}
+            />
+            {showCounter && (
+              <div className={counterClass}>
+                {charCount.toLocaleString()} / {MAX_TEXT.toLocaleString()}
+              </div>
+            )}
+            {errorMsg && (
+              <div className="field-error">
+                <span className="error-icon">⚠</span>
+                {errorMsg}
+              </div>
+            )}
+          </div>
+        );
+      }
       /* ============================================================
    MAIN APP COMPONENT
 ============================================================ */
@@ -1941,10 +2297,10 @@
           exportPDF(template, documentData, taxRate);
         }
 
-        /* Featured — hardcoded list, completely independent of search */
+        /* Featured — hardcoded, never affected by search */
         const featuredTemplates = TEMPLATES.filter((tpl) => FEATURED_IDS.includes(tpl.id));
 
-        /* All templates — filtered only by the search bar */
+        /* All templates — filtered only by search */
         const filteredTemplates = TEMPLATES.filter(
           (tpl) =>
             tpl.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -1976,13 +2332,12 @@
             ================================================ */}
             {stage === "home" && (
               <div className="home-wrapper">
-                {/* Page heading */}
                 <div className="home-heading">
                   <h2>What would you like to create?</h2>
                   <p>Choose a template and build a professional document in minutes</p>
                 </div>
 
-                {/* ── FEATURED SECTION ── never touched by search ── */}
+                {/* ── FEATURED — never touched by search ── */}
                 <div className="home-section-heading">
                   <h3>⭐ Featured</h3>
                   <div className="section-rule"></div>
@@ -2007,7 +2362,7 @@
                 {/* ── DIVIDER ── */}
                 <hr className="home-divider" />
 
-                {/* ── ALL DOCUMENTS SECTION ── search only affects this ── */}
+                {/* ── ALL DOCUMENTS — search only affects this ── */}
                 <div className="search-bar-wrapper">
                   <span className="search-icon">🔍</span>
                   <input
@@ -2055,6 +2410,7 @@
                 )}
               </div>
             )}
+
             {/* ================================================
                 EDITOR SCREEN
             ================================================ */}
@@ -2092,23 +2448,11 @@
                               {section.fields.map((field) => (
                                 <div key={field.name} className="field-group">
                                   <label className="field-label">{field.label}</label>
-                                  {field.type === "textarea" ? (
-                                    <textarea
-                                      className="field-input"
-                                      rows="3"
-                                      placeholder={field.placeholder || ""}
-                                      value={block[field.name]}
-                                      onChange={(e) => updateField(section.id, idx, field.name, e.target.value)}
-                                    />
-                                  ) : (
-                                    <input
-                                      className="field-input"
-                                      type="text"
-                                      placeholder={field.placeholder || ""}
-                                      value={block[field.name]}
-                                      onChange={(e) => updateField(section.id, idx, field.name, e.target.value)}
-                                    />
-                                  )}
+                                  <SmartField
+                                    field={field}
+                                    value={block[field.name]}
+                                    onChange={(val) => updateField(section.id, idx, field.name, val)}
+                                  />
                                 </div>
                               ))}
                             </div>
@@ -2122,7 +2466,7 @@
                         </div>
                       ))}
 
-                      {/* Tax rate field — only shown for invoice */}
+                      {/* Tax rate — invoice only */}
                       {template.id === "invoice" && (
                         <div className="tax-row">
                           <label>Tax Rate</label>
