@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EasyDoc — Document Generator</title>
 
     <!-- Google Fonts: DM Sans + DM Mono -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=DM+Mono:wght@400;500&amp;display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- React -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
@@ -25,2495 +22,2807 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
-      /* =====================================================
+        /* =====================================================
            CSS VARIABLES & RESET
         ===================================================== */
-      :root {
-        --navy: #0f172a;
-        --navy-mid: #1e293b;
-        --navy-light: #334155;
-        --accent: #3b82f6;
-        --accent-dark: #2563eb;
-        --accent-soft: #eff6ff;
-        --success: #10b981;
-        --danger: #ef4444;
-        --warning: #f59e0b;
-        --text-primary: #0f172a;
-        --text-secondary: #64748b;
-        --text-muted: #94a3b8;
-        --border: #e2e8f0;
-        --border-focus: #3b82f6;
-        --bg-page: #f8fafc;
-        --bg-card: #ffffff;
-        --bg-input: #f8fafc;
-        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
-        --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
-        --radius-sm: 6px;
-        --radius-md: 10px;
-        --radius-lg: 16px;
-        --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      }
+        :root {
+            --navy:        #0f172a;
+            --navy-mid:    #1e293b;
+            --navy-light:  #334155;
+            --accent:      #3b82f6;
+            --accent-dark: #2563eb;
+            --accent-soft: #eff6ff;
+            --success:     #10b981;
+            --danger:      #ef4444;
+            --warning:     #f59e0b;
+            --text-primary:   #0f172a;
+            --text-secondary: #64748b;
+            --text-muted:     #94a3b8;
+            --border:      #e2e8f0;
+            --border-focus:#3b82f6;
+            --bg-page:     #f8fafc;
+            --bg-card:     #ffffff;
+            --bg-input:    #f8fafc;
+            --shadow-sm:   0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md:   0 4px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+            --shadow-lg:   0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+            --radius-sm:   6px;
+            --radius-md:   10px;
+            --radius-lg:   16px;
+            --transition:  all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-      }
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
 
-      body {
-        margin: 0;
-        font-family: "DM Sans", sans-serif;
-        background: var(--bg-page);
-        color: var(--text-primary);
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
+        body {
+            margin: 0;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-page);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-      /* =====================================================
+        /* =====================================================
            APP HEADER
         ===================================================== */
-      .app-header {
-        background: var(--navy);
-        border-bottom: 1px solid var(--navy-light);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-      }
+        .app-header {
+            background: var(--navy);
+            border-bottom: 1px solid var(--navy-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-      .app-header .header-inner {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 24px;
-        height: 58px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
+        .app-header .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-      .app-logo {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        text-decoration: none;
-      }
+        .app-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
 
-      .app-logo .logo-mark {
-        width: 30px;
-        height: 30px;
-        background: var(--accent);
-        border-radius: 7px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        font-weight: 700;
-        color: white;
-        letter-spacing: -0.5px;
-        flex-shrink: 0;
-      }
+        .app-logo .logo-mark {
+            width: 30px;
+            height: 30px;
+            background: var(--accent);
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.5px;
+            flex-shrink: 0;
+        }
 
-      .app-logo .logo-text {
-        font-size: 17px;
-        font-weight: 700;
-        color: white;
-        letter-spacing: -0.3px;
-      }
+        .app-logo .logo-text {
+            font-size: 17px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.3px;
+        }
 
-      .btn-back {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 7px 14px;
-        font-family: "DM Sans", sans-serif;
-        font-size: 13px;
-        font-weight: 500;
-        color: rgba(255, 255, 255, 0.75);
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: var(--radius-sm);
-        cursor: pointer;
-        transition: var(--transition);
-        text-decoration: none;
-      }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.75);
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
 
-      .btn-back:hover {
-        color: white;
-        background: rgba(255, 255, 255, 0.14);
-        border-color: rgba(255, 255, 255, 0.22);
-      }
+        .btn-back:hover {
+            color: white;
+            background: rgba(255,255,255,0.14);
+            border-color: rgba(255,255,255,0.22);
+        }
 
-      /* =====================================================
+        /* =====================================================
            HOME SCREEN
         ===================================================== */
-      .home-wrapper {
-        max-width: 1100px;
-        margin: 0 auto;
-        padding: 60px 24px 80px;
-      }
+        .home-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 24px 80px;
+        }
 
-      .home-heading {
-        text-align: center;
-        margin-bottom: 48px;
-      }
+        .home-heading {
+            text-align: center;
+            margin-bottom: 48px;
+        }
 
-      .home-heading h2 {
-        font-size: 32px;
-        font-weight: 700;
-        letter-spacing: -0.6px;
-        color: var(--text-primary);
-        margin-bottom: 10px;
-      }
+        .home-heading h2 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.6px;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
 
-      .home-heading p {
-        font-size: 16px;
-        color: var(--text-secondary);
-        margin: 0;
-      }
+        .home-heading p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
 
-      .home-section-heading {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 20px;
-      }
+        .home-section-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
 
-      .home-section-heading h3 {
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 0.8px;
-        text-transform: uppercase;
-        color: var(--text-muted);
-        margin: 0;
-        white-space: nowrap;
-      }
+        .home-section-heading h3 {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin: 0;
+            white-space: nowrap;
+        }
 
-      .home-section-heading .section-rule {
-        flex: 1;
-        height: 1px;
-        background: var(--border);
-      }
+        .home-section-heading .section-rule {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
 
-      .home-divider {
-        border: none;
-        border-top: 1px solid var(--border);
-        margin: 48px 0;
-      }
+        .home-divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 48px 0;
+        }
 
-      .search-bar-wrapper {
-        position: relative;
-        margin-bottom: 28px;
-      }
+        .search-bar-wrapper {
+            position: relative;
+            margin-bottom: 28px;
+        }
 
-      .search-bar-wrapper .search-icon {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--text-muted);
-        font-size: 14px;
-        pointer-events: none;
-      }
+        .search-bar-wrapper .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+            pointer-events: none;
+        }
 
-      .search-bar-input {
-        width: 100%;
-        padding: 10px 14px 10px 40px;
-        font-family: "DM Sans", sans-serif;
-        font-size: 14px;
-        color: var(--text-primary);
-        background: var(--bg-card);
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius-md);
-        outline: none;
-        transition:
-          border-color 0.15s,
-          box-shadow 0.15s;
-        box-shadow: var(--shadow-sm);
-      }
+        .search-bar-input {
+            width: 100%;
+            padding: 10px 14px 10px 40px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: var(--bg-card);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            box-shadow: var(--shadow-sm);
+        }
 
-      .search-bar-input:focus {
-        border-color: var(--border-focus);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-      }
+        .search-bar-input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+        }
 
-      .search-bar-input::placeholder {
-        color: var(--text-muted);
-      }
+        .search-bar-input::placeholder {
+            color: var(--text-muted);
+        }
 
-      .all-docs-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
-      }
+        .all-docs-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
 
-      .all-docs-count {
-        font-size: 12px;
-        font-weight: 500;
-        color: var(--text-muted);
-        font-family: "DM Mono", monospace;
-      }
+        .all-docs-count {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            font-family: 'DM Mono', monospace;
+        }
 
-      .no-results {
-        text-align: center;
-        padding: 52px 20px;
-        color: var(--text-muted);
-      }
+        .no-results {
+            text-align: center;
+            padding: 52px 20px;
+            color: var(--text-muted);
+        }
 
-      .no-results .no-results-icon {
-        font-size: 32px;
-        margin-bottom: 12px;
-        opacity: 0.4;
-        display: block;
-      }
+        .no-results .no-results-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            opacity: 0.4;
+            display: block;
+        }
 
-      .no-results p {
-        font-size: 14px;
-        margin: 0;
-      }
+        .no-results p {
+            font-size: 14px;
+            margin: 0;
+        }
 
-      .template-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 20px;
-      }
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
 
-      .template-card {
-        background: var(--bg-card);
-        border: 1.5px solid var(--border);
-        border-radius: var(--radius-lg);
-        padding: 28px 24px;
-        cursor: pointer;
-        text-align: left;
-        width: 100%;
-        font-family: "DM Sans", sans-serif;
-        transition: var(--transition);
-        box-shadow: var(--shadow-sm);
-        position: relative;
-        overflow: hidden;
-      }
+        .template-card {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+            font-family: 'DM Sans', sans-serif;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
 
-      .template-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--accent), #818cf8);
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      }
+        .template-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), #818cf8);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-      .template-card:hover {
-        border-color: var(--accent);
-        box-shadow: var(--shadow-lg);
-        transform: translateY(-3px);
-      }
+        .template-card:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+        }
 
-      .template-card:hover::before {
-        transform: scaleX(1);
-      }
+        .template-card:hover::before {
+            transform: scaleX(1);
+        }
 
-      .template-card .card-icon {
-        font-size: 30px;
-        margin-bottom: 16px;
-        display: block;
-      }
+        .template-card .card-icon {
+            font-size: 30px;
+            margin-bottom: 16px;
+            display: block;
+        }
 
-      .template-card .card-category {
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.8px;
-        text-transform: uppercase;
-        color: var(--accent);
-        margin-bottom: 6px;
-      }
+        .template-card .card-category {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 6px;
+        }
 
-      .template-card .card-name {
-        font-size: 18px;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 6px;
-        letter-spacing: -0.2px;
-      }
+        .template-card .card-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            letter-spacing: -0.2px;
+        }
 
-      .template-card .card-desc {
-        font-size: 13px;
-        color: var(--text-secondary);
-        line-height: 1.5;
-      }
+        .template-card .card-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
 
-      /* =====================================================
+        /* =====================================================
            EDITOR LAYOUT
         ===================================================== */
-      .editor-wrapper {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 32px 24px 60px;
-      }
-
-      .editor-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 28px;
-        align-items: start;
-      }
-
-      @media (max-width: 900px) {
-        .editor-grid {
-          grid-template-columns: 1fr;
+        .editor-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px 60px;
         }
-      }
 
-      /* =====================================================
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .editor-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* =====================================================
            FORM PANEL
         ===================================================== */
-      .form-panel {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
-        overflow: hidden;
-      }
+        .form-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
 
-      .form-panel-header {
-        padding: 20px 24px 16px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
+        .form-panel-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-      .form-panel-header .panel-icon {
-        font-size: 22px;
-      }
+        .form-panel-header .panel-icon {
+            font-size: 22px;
+        }
 
-      .form-panel-header .panel-title {
-        font-size: 16px;
-        font-weight: 600;
-        letter-spacing: -0.2px;
-        color: var(--text-primary);
-        margin: 0;
-      }
+        .form-panel-header .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            color: var(--text-primary);
+            margin: 0;
+        }
 
-      .form-panel-body {
-        padding: 24px;
-        max-height: calc(100vh - 200px);
-        overflow-y: auto;
-      }
+        .form-panel-body {
+            padding: 24px;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
 
-      .form-panel-body::-webkit-scrollbar {
-        width: 4px;
-      }
+        .form-panel-body::-webkit-scrollbar {
+            width: 4px;
+        }
 
-      .form-panel-body::-webkit-scrollbar-track {
-        background: transparent;
-      }
+        .form-panel-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
 
-      .form-panel-body::-webkit-scrollbar-thumb {
-        background: var(--border);
-        border-radius: 2px;
-      }
+        .form-panel-body::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
 
-      .section-block {
-        margin-bottom: 28px;
-      }
+        .section-block {
+            margin-bottom: 28px;
+        }
 
-      .section-label {
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.9px;
-        text-transform: uppercase;
-        color: var(--text-muted);
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.9px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-      .section-label::after {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: var(--border);
-      }
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
 
-      .repeatable-block {
-        border: 1px solid var(--border);
-        border-radius: var(--radius-md);
-        padding: 16px;
-        margin-bottom: 10px;
-        background: var(--bg-input);
-        position: relative;
-      }
+        .repeatable-block {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 10px;
+            background: var(--bg-input);
+            position: relative;
+        }
 
-      .repeatable-block-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 12px;
-      }
+        .repeatable-block-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
 
-      .repeatable-block-index {
-        font-size: 11px;
-        font-weight: 600;
-        color: var(--text-muted);
-        font-family: "DM Mono", monospace;
-      }
+        .repeatable-block-index {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-family: 'DM Mono', monospace;
+        }
 
-      .field-group {
-        margin-bottom: 14px;
-      }
+        .field-group {
+            margin-bottom: 14px;
+        }
 
-      .field-group:last-child {
-        margin-bottom: 0;
-      }
+        .field-group:last-child {
+            margin-bottom: 0;
+        }
 
-      .field-label {
-        display: block;
-        font-size: 12px;
-        font-weight: 500;
-        color: var(--text-secondary);
-        margin-bottom: 5px;
-        letter-spacing: 0.1px;
-      }
+        .field-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            letter-spacing: 0.1px;
+        }
 
-      .field-input {
-        width: 100%;
-        padding: 9px 12px;
-        font-family: "DM Sans", sans-serif;
-        font-size: 13.5px;
-        color: var(--text-primary);
-        background: white;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        outline: none;
-        transition:
-          border-color 0.15s,
-          box-shadow 0.15s;
-        appearance: none;
-        -webkit-appearance: none;
-      }
+        .field-input {
+            width: 100%;
+            padding: 9px 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13.5px;
+            color: var(--text-primary);
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            appearance: none;
+            -webkit-appearance: none;
+        }
 
-      .field-input:focus {
-        border-color: var(--border-focus);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-      }
+        .field-input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+        }
 
-      .field-input::placeholder {
-        color: var(--text-muted);
-      }
+        .field-input::placeholder {
+            color: var(--text-muted);
+        }
 
-      textarea.field-input {
-        resize: vertical;
-        min-height: 80px;
-        line-height: 1.5;
-      }
+        textarea.field-input {
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.5;
+        }
 
-      /* =====================================================
+        /* =====================================================
            VALIDATION STATES
         ===================================================== */
+        .field-input.is-valid {
+            border-color: var(--success);
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.10);
+        }
 
-      /* Valid — green border + glow */
-      .field-input.is-valid {
-        border-color: var(--success);
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-      }
+        .field-input.is-valid:focus {
+            border-color: var(--success);
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.18);
+        }
 
-      .field-input.is-valid:focus {
-        border-color: var(--success);
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
-      }
+        .field-input.is-invalid {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.10);
+        }
 
-      /* Invalid — red border + glow */
-      .field-input.is-invalid {
-        border-color: var(--danger);
-        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-      }
+        .field-input.is-invalid:focus {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.18);
+        }
 
-      .field-input.is-invalid:focus {
-        border-color: var(--danger);
-        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
-      }
+        .field-error {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+            font-size: 11.5px;
+            font-weight: 500;
+            color: var(--danger);
+            line-height: 1.4;
+        }
 
-      /* Error message below the field */
-      .field-error {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        margin-top: 5px;
-        font-size: 11.5px;
-        font-weight: 500;
-        color: var(--danger);
-        line-height: 1.4;
-      }
+        .field-error .error-icon {
+            font-size: 12px;
+            flex-shrink: 0;
+        }
 
-      .field-error .error-icon {
-        font-size: 12px;
-        flex-shrink: 0;
-      }
+        .field-counter {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 4px;
+            font-size: 11px;
+            font-family: 'DM Mono', monospace;
+            color: var(--text-muted);
+            transition: color 0.15s;
+        }
 
-      /* Character counter below textarea / long text */
-      .field-counter {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 4px;
-        font-size: 11px;
-        font-family: "DM Mono", monospace;
-        color: var(--text-muted);
-        transition: color 0.15s;
-      }
+        .field-counter.counter-warn {
+            color: var(--warning);
+        }
 
-      .field-counter.counter-warn {
-        color: var(--warning);
-      }
+        .field-counter.counter-over {
+            color: var(--danger);
+            font-weight: 600;
+        }
 
-      .field-counter.counter-over {
-        color: var(--danger);
-        font-weight: 600;
-      }
-
-      /* =====================================================
-           DATE FIELD — custom picker wrapper
+        /* =====================================================
+           DATE FIELD
         ===================================================== */
-      .date-field-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-        gap: 0;
-      }
+        .date-field-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
 
-      .date-field-wrapper .field-input {
-        flex: 1;
-        border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-        border-right: none;
-      }
+        .date-field-wrapper .field-input {
+            flex: 1;
+            border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+            border-right: none;
+        }
 
-      .date-field-wrapper .field-input:focus {
-        z-index: 1;
-        border-right: none;
-      }
+        .date-field-wrapper .field-input:focus {
+            z-index: 1;
+            border-right: none;
+        }
 
-      .date-calendar-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 38px;
-        height: 100%;
-        min-height: 38px;
-        background: var(--bg-input);
-        border: 1px solid var(--border);
-        border-left: none;
-        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-        cursor: pointer;
-        font-size: 15px;
-        color: var(--text-secondary);
-        transition: var(--transition);
-        flex-shrink: 0;
-      }
+        .date-calendar-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 100%;
+            min-height: 38px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-left: none;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            cursor: pointer;
+            font-size: 15px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
 
-      .date-calendar-btn:hover {
-        background: var(--accent-soft);
-        color: var(--accent);
-        border-color: var(--accent);
-      }
+        .date-calendar-btn:hover {
+            background: var(--accent-soft);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
 
-      /* When the date input is valid/invalid, mirror to calendar btn */
-      .date-field-wrapper.date-valid .field-input {
-        border-color: var(--success);
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-      }
+        .date-field-wrapper.date-valid .field-input {
+            border-color: var(--success);
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.10);
+        }
 
-      .date-field-wrapper.date-valid .date-calendar-btn {
-        border-color: var(--success);
-      }
+        .date-field-wrapper.date-valid .date-calendar-btn {
+            border-color: var(--success);
+        }
 
-      .date-field-wrapper.date-invalid .field-input {
-        border-color: var(--danger);
-        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-      }
+        .date-field-wrapper.date-invalid .field-input {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.10);
+        }
 
-      .date-field-wrapper.date-invalid .date-calendar-btn {
-        border-color: var(--danger);
-      }
+        .date-field-wrapper.date-invalid .date-calendar-btn {
+            border-color: var(--danger);
+        }
 
-      /* The hidden native date input used for the calendar pop-up */
-      .date-native-picker {
-        position: absolute;
-        right: 0;
-        top: 100%;
-        width: 0;
-        height: 0;
-        opacity: 0;
-        pointer-events: none;
-        border: none;
-        padding: 0;
-      }
+        .date-native-picker {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            width: 0;
+            height: 0;
+            opacity: 0;
+            pointer-events: none;
+            border: none;
+            padding: 0;
+        }
 
-      /* =====================================================
+        /* =====================================================
            BUTTONS
         ===================================================== */
-      .btn-remove {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 4px 10px;
-        font-family: "DM Sans", sans-serif;
-        font-size: 12px;
-        font-weight: 500;
-        color: var(--danger);
-        background: rgba(239, 68, 68, 0.06);
-        border: 1px solid rgba(239, 68, 68, 0.15);
-        border-radius: var(--radius-sm);
-        cursor: pointer;
-        transition: var(--transition);
-      }
+        .btn-remove {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--danger);
+            background: rgba(239,68,68,0.06);
+            border: 1px solid rgba(239,68,68,0.15);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
 
-      .btn-remove:hover {
-        background: rgba(239, 68, 68, 0.12);
-        border-color: rgba(239, 68, 68, 0.3);
-      }
+        .btn-remove:hover {
+            background: rgba(239,68,68,0.12);
+            border-color: rgba(239,68,68,0.3);
+        }
 
-      .btn-add {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 14px;
-        font-family: "DM Sans", sans-serif;
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--accent);
-        background: var(--accent-soft);
-        border: 1.5px dashed rgba(59, 130, 246, 0.35);
-        border-radius: var(--radius-sm);
-        cursor: pointer;
-        transition: var(--transition);
-        width: 100%;
-        justify-content: center;
-        margin-top: 4px;
-      }
+        .btn-add {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--accent);
+            background: var(--accent-soft);
+            border: 1.5px dashed rgba(59,130,246,0.35);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            justify-content: center;
+            margin-top: 4px;
+        }
 
-      .btn-add:hover {
-        background: #dbeafe;
-        border-color: var(--accent);
-      }
+        .btn-add:hover {
+            background: #dbeafe;
+            border-color: var(--accent);
+        }
 
-      .form-panel-footer {
-        padding: 16px 24px;
-        border-top: 1px solid var(--border);
-        background: var(--bg-input);
-      }
+        /* =====================================================
+           FORM PANEL FOOTER — save / load / download row
+        ===================================================== */
+        .form-panel-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            background: var(--bg-input);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-      .btn-download {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        width: 100%;
-        padding: 12px 20px;
-        font-family: "DM Sans", sans-serif;
-        font-size: 14px;
-        font-weight: 600;
-        color: white;
-        background: var(--accent);
-        border: none;
-        border-radius: var(--radius-md);
-        cursor: pointer;
-        transition: var(--transition);
-        letter-spacing: 0.1px;
-      }
+        /* Save + Load row sits above the Download button */
+        .footer-saveload-row {
+            display: flex;
+            gap: 8px;
+        }
 
-      .btn-download:hover {
-        background: var(--accent-dark);
-        box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
-        transform: translateY(-1px);
-      }
+        /* Save button — outlined style */
+        .btn-save {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex: 1;
+            padding: 9px 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
 
-      .btn-download:active {
-        transform: translateY(0);
-      }
+        .btn-save:hover {
+            color: var(--text-primary);
+            border-color: var(--navy-light);
+            box-shadow: var(--shadow-sm);
+        }
 
-      /* =====================================================
+        /* Load button — outlined style */
+        .btn-load {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex: 1;
+            padding: 9px 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-load:hover {
+            color: var(--text-primary);
+            border-color: var(--navy-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Download PDF — full width primary */
+        .btn-download {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px 20px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            background: var(--accent);
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.1px;
+        }
+
+        .btn-download:hover {
+            background: var(--accent-dark);
+            box-shadow: 0 4px 14px rgba(59,130,246,0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-download:active {
+            transform: translateY(0);
+        }
+
+        /* Disabled state for download when there are errors */
+        .btn-download:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* =====================================================
            PREVIEW PANEL
         ===================================================== */
-      .preview-panel {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
-        overflow: hidden;
-        position: sticky;
-        top: 78px;
-      }
-
-      .preview-panel-header {
-        padding: 14px 20px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .preview-panel-header .preview-label {
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.8px;
-        text-transform: uppercase;
-        color: var(--text-muted);
-      }
-
-      .preview-live-dot {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 11px;
-        font-weight: 500;
-        color: var(--success);
-      }
-
-      .preview-live-dot::before {
-        content: "";
-        width: 6px;
-        height: 6px;
-        background: var(--success);
-        border-radius: 50%;
-        animation: pulse 2s infinite;
-      }
-
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
-          transform: scale(1);
+        .preview-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            position: sticky;
+            top: 78px;
         }
-        50% {
-          opacity: 0.5;
-          transform: scale(0.85);
+
+        .preview-panel-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-      }
 
-      .preview-scroll-area {
-        max-height: calc(100vh - 250px);
-        overflow-y: auto;
-        overflow-x: hidden;
-        background: #f1f5f9;
-      }
+        .preview-panel-header .preview-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
 
-      .preview-scroll-area::-webkit-scrollbar {
-        width: 4px;
-      }
+        .preview-live-dot {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--success);
+        }
 
-      .preview-scroll-area::-webkit-scrollbar-thumb {
-        background: var(--border);
-        border-radius: 2px;
-      }
+        .preview-live-dot::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
 
-      /* =====================================================
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.5; transform: scale(0.85); }
+        }
+
+        .preview-scroll-area {
+            max-height: calc(100vh - 250px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #f1f5f9;
+        }
+
+        .preview-scroll-area::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .preview-scroll-area::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        /* =====================================================
            PREVIEW DOCUMENT STYLES
         ===================================================== */
-      .preview-doc {
-        background: white;
-        margin: 20px;
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-lg);
-        padding: 36px 36px 44px;
-        min-height: 400px;
-        font-size: 11.5px;
-        line-height: 1.65;
-        color: #1e293b;
-        font-family: "DM Sans", sans-serif;
-      }
+        .preview-doc {
+            background: white;
+            margin: 20px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            padding: 36px 36px 44px;
+            min-height: 400px;
+            font-size: 11.5px;
+            line-height: 1.65;
+            color: #1e293b;
+            font-family: 'DM Sans', sans-serif;
+        }
 
-      .preview-doc .resume-name {
-        font-size: 24px;
-        font-weight: 700;
-        letter-spacing: -0.5px;
-        color: var(--navy);
-        margin-bottom: 2px;
-      }
+        .preview-doc .resume-name {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--navy);
+            margin-bottom: 2px;
+        }
 
-      .preview-doc .resume-title {
-        font-size: 13px;
-        color: var(--accent);
-        font-weight: 500;
-        margin-bottom: 8px;
-      }
+        .preview-doc .resume-title {
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
 
-      .preview-doc .resume-contact {
-        font-size: 11px;
-        color: var(--text-secondary);
-        display: flex;
-        gap: 14px;
-        flex-wrap: wrap;
-        padding-bottom: 14px;
-        border-bottom: 2px solid var(--navy);
-        margin-bottom: 18px;
-      }
+        .preview-doc .resume-contact {
+            font-size: 11px;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            padding-bottom: 14px;
+            border-bottom: 2px solid var(--navy);
+            margin-bottom: 18px;
+        }
 
-      .preview-doc .section-heading {
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 1.2px;
-        text-transform: uppercase;
-        color: var(--accent);
-        margin-top: 20px;
-        margin-bottom: 10px;
-        padding-bottom: 4px;
-        border-bottom: 1px solid var(--border);
-      }
+        .preview-doc .section-heading {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid var(--border);
+        }
 
-      .preview-doc .exp-role {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-primary);
-      }
+        .preview-doc .exp-role {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
 
-      .preview-doc .exp-company {
-        font-size: 12px;
-        color: var(--text-secondary);
-      }
+        .preview-doc .exp-company {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
 
-      .preview-doc .exp-period {
-        font-size: 11px;
-        color: var(--text-muted);
-        font-family: "DM Mono", monospace;
-      }
+        .preview-doc .exp-period {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'DM Mono', monospace;
+        }
 
-      .preview-doc .exp-description {
-        font-size: 11.5px;
-        color: var(--text-secondary);
-        margin-top: 4px;
-        white-space: pre-wrap;
-      }
+        .preview-doc .exp-description {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            white-space: pre-wrap;
+        }
 
-      .preview-doc .edu-degree {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-primary);
-      }
+        .preview-doc .edu-degree {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
 
-      .preview-doc .edu-school {
-        font-size: 12px;
-        color: var(--text-secondary);
-      }
+        .preview-doc .edu-school {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
 
-      .preview-doc .edu-year {
-        font-size: 11px;
-        color: var(--text-muted);
-        font-family: "DM Mono", monospace;
-      }
+        .preview-doc .edu-year {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'DM Mono', monospace;
+        }
 
-      .preview-doc .invoice-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 28px;
-        padding-bottom: 20px;
-        border-bottom: 2px solid var(--navy);
-      }
+        /* Skills tags in preview */
+        .preview-doc .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
 
-      .preview-doc .invoice-brand {
-        font-size: 22px;
-        font-weight: 700;
-        color: var(--navy);
-        letter-spacing: -0.5px;
-      }
+        .preview-doc .skill-tag {
+            display: inline-block;
+            padding: 3px 9px;
+            font-size: 10.5px;
+            font-weight: 500;
+            color: var(--accent-dark);
+            background: var(--accent-soft);
+            border: 1px solid rgba(59,130,246,0.2);
+            border-radius: 20px;
+        }
 
-      .preview-doc .invoice-tag {
-        font-size: 12px;
-        font-weight: 400;
-        color: var(--text-muted);
-      }
+        /* Invoice Preview */
+        .preview-doc .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--navy);
+        }
 
-      .preview-doc .invoice-meta {
-        text-align: right;
-        font-size: 11px;
-        color: var(--text-secondary);
-        line-height: 1.8;
-      }
+        .preview-doc .invoice-brand {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--navy);
+            letter-spacing: -0.5px;
+        }
 
-      .preview-doc .invoice-meta strong {
-        color: var(--text-primary);
-        font-family: "DM Mono", monospace;
-      }
+        .preview-doc .invoice-tag {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
 
-      .preview-doc .invoice-parties {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        margin-bottom: 24px;
-      }
+        .preview-doc .invoice-meta {
+            text-align: right;
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
 
-      .preview-doc .party-box {
-        padding: 12px 14px;
-        background: #f8fafc;
-        border-radius: var(--radius-sm);
-        border-left: 3px solid var(--accent);
-      }
+        .preview-doc .invoice-meta strong {
+            color: var(--text-primary);
+            font-family: 'DM Mono', monospace;
+        }
 
-      .preview-doc .party-label {
-        font-size: 9px;
-        font-weight: 700;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        color: var(--text-muted);
-        margin-bottom: 4px;
-      }
+        .preview-doc .invoice-parties {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
 
-      .preview-doc .party-name {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 2px;
-      }
+        .preview-doc .party-box {
+            padding: 12px 14px;
+            background: #f8fafc;
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--accent);
+        }
 
-      .preview-doc .party-detail {
-        font-size: 11px;
-        color: var(--text-secondary);
-        white-space: pre-wrap;
-      }
+        .preview-doc .party-label {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
 
-      .preview-doc .items-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 16px;
-        font-size: 11.5px;
-      }
+        .preview-doc .party-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
 
-      .preview-doc .items-table thead th {
-        padding: 8px 10px;
-        text-align: left;
-        font-size: 9.5px;
-        font-weight: 700;
-        letter-spacing: 0.8px;
-        text-transform: uppercase;
-        color: white;
-        background: var(--navy);
-      }
+        .preview-doc .party-detail {
+            font-size: 11px;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+        }
 
-      .preview-doc .items-table thead th:last-child {
-        text-align: right;
-      }
+        .preview-doc .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+            font-size: 11.5px;
+        }
 
-      .preview-doc .items-table tbody tr {
-        border-bottom: 1px solid var(--border);
-      }
+        .preview-doc .items-table thead th {
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 9.5px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: white;
+            background: var(--navy);
+        }
 
-      .preview-doc .items-table tbody tr:last-child {
-        border-bottom: none;
-      }
+        .preview-doc .items-table thead th:last-child {
+            text-align: right;
+        }
 
-      .preview-doc .items-table tbody td {
-        padding: 8px 10px;
-        color: var(--text-primary);
-        vertical-align: top;
-      }
+        .preview-doc .items-table tbody tr {
+            border-bottom: 1px solid var(--border);
+        }
 
-      .preview-doc .items-table tbody td:last-child {
-        text-align: right;
-        font-family: "DM Mono", monospace;
-      }
+        .preview-doc .items-table tbody tr:last-child {
+            border-bottom: none;
+        }
 
-      .preview-doc .items-table tbody td.qty-cell {
-        color: var(--text-secondary);
-        text-align: center;
-      }
+        .preview-doc .items-table tbody td {
+            padding: 8px 10px;
+            color: var(--text-primary);
+            vertical-align: top;
+        }
 
-      .preview-doc .items-table tbody td.price-cell {
-        color: var(--text-secondary);
-        font-family: "DM Mono", monospace;
-        text-align: right;
-      }
+        .preview-doc .items-table tbody td:last-child {
+            text-align: right;
+            font-family: 'DM Mono', monospace;
+        }
 
-      .preview-doc .invoice-totals {
-        margin-left: auto;
-        width: 220px;
-      }
+        .preview-doc .items-table tbody td.qty-cell {
+            color: var(--text-secondary);
+            text-align: center;
+        }
 
-      .preview-doc .total-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 5px 0;
-        font-size: 11.5px;
-        color: var(--text-secondary);
-        border-bottom: 1px solid var(--border);
-      }
+        .preview-doc .items-table tbody td.price-cell {
+            color: var(--text-secondary);
+            font-family: 'DM Mono', monospace;
+            text-align: right;
+        }
 
-      .preview-doc .total-row:last-child {
-        border-bottom: none;
-        font-size: 13.5px;
-        font-weight: 700;
-        color: var(--navy);
-        margin-top: 4px;
-        padding-top: 8px;
-      }
+        .preview-doc .invoice-totals {
+            margin-left: auto;
+            width: 220px;
+        }
 
-      .preview-doc .total-row .total-value {
-        font-family: "DM Mono", monospace;
-      }
+        .preview-doc .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
 
-      .preview-doc .invoice-notes {
-        margin-top: 24px;
-        padding-top: 16px;
-        border-top: 1px solid var(--border);
-        font-size: 11px;
-        color: var(--text-muted);
-        text-align: center;
-      }
+        .preview-doc .total-row:last-child {
+            border-bottom: none;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-top: 4px;
+            padding-top: 8px;
+        }
 
-      /* =====================================================
+        .preview-doc .total-row .total-value {
+            font-family: 'DM Mono', monospace;
+        }
+
+        .preview-doc .invoice-notes {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* =====================================================
            EMPTY STATE
         ===================================================== */
-      .empty-preview {
-        padding: 60px 20px;
-        text-align: center;
-        color: var(--text-muted);
-      }
+        .empty-preview {
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
 
-      .empty-preview .empty-icon {
-        font-size: 36px;
-        margin-bottom: 12px;
-        opacity: 0.4;
-      }
+        .empty-preview .empty-icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
 
-      .empty-preview p {
-        font-size: 13px;
-        margin: 0;
-      }
+        .empty-preview p {
+            font-size: 13px;
+            margin: 0;
+        }
 
-      /* =====================================================
+        /* =====================================================
            INVOICE TAX FIELD
         ===================================================== */
-      .tax-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 12px;
-        padding-top: 12px;
-        border-top: 1px solid var(--border);
-      }
+        .tax-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
 
-      .tax-row label {
-        font-size: 12px;
-        font-weight: 500;
-        color: var(--text-secondary);
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
+        .tax-row label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
 
-      .tax-row input {
-        width: 80px;
-        padding: 7px 10px;
-        font-family: "DM Mono", monospace;
-        font-size: 13px;
-        color: var(--text-primary);
-        background: white;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        outline: none;
-        transition:
-          border-color 0.15s,
-          box-shadow 0.15s;
-      }
+        .tax-row input {
+            width: 80px;
+            padding: 7px 10px;
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            color: var(--text-primary);
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
 
-      .tax-row input:focus {
-        border-color: var(--border-focus);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-      }
+        .tax-row input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+        }
 
-      .tax-row .tax-hint {
-        font-size: 11px;
-        color: var(--text-muted);
-      }
+        .tax-row .tax-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
 
-      /* =====================================================
+        /* =====================================================
            ANIMATIONS
         ===================================================== */
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(16px);
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+
+        .animate-in {
+            animation: fadeInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
         }
-      }
 
-      .animate-in {
-        animation: fadeInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
-      }
+        .animate-in:nth-child(1) { animation-delay: 0ms;  }
+        .animate-in:nth-child(2) { animation-delay: 60ms; }
+        .animate-in:nth-child(3) { animation-delay: 120ms; }
+        .animate-in:nth-child(4) { animation-delay: 180ms; }
 
-      .animate-in:nth-child(1) {
-        animation-delay: 0ms;
-      }
-      .animate-in:nth-child(2) {
-        animation-delay: 60ms;
-      }
-      .animate-in:nth-child(3) {
-        animation-delay: 120ms;
-      }
-      .animate-in:nth-child(4) {
-        animation-delay: 180ms;
-      }
     </style>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="text/babel">
-      const { useState, useRef } = React;
-      const { jsPDF } = window.jspdf;
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef } = React;
+const { jsPDF } = window.jspdf;
 
-      /* ============================================================
+/* ============================================================
    VALIDATION RULES
 ============================================================ */
 
-      const MAX_TEXT = 3000;
-      const MAX_NUMBER = 1000000000;
+const MAX_TEXT   = 3000;
+const MAX_NUMBER = 1000000000;
 
-      const VALIDATORS = {
-        email: {
-          validate: (v) => {
+const VALIDATORS = {
+
+    email: {
+        validate: (v) => {
             if (!v) return null;
             const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
             return ok ? null : "Please enter a valid email address (e.g. name@domain.com)";
-          },
-        },
+        }
+    },
 
-        phone: {
-          validate: (v) => {
+    phone: {
+        validate: (v) => {
             if (!v) return null;
             const ok = /^[+\d][\d\s\-().]{3,24}$/.test(v.trim());
             return ok ? null : "Phone can only contain digits, spaces, +, -, ( )";
-          },
-        },
+        }
+    },
 
-        number: {
-          validate: (v) => {
+    number: {
+        validate: (v) => {
             if (!v) return null;
             const n = parseFloat(String(v).replace(/,/g, ""));
-            if (isNaN(n)) return "Please enter a valid number (e.g. 150.00)";
-            if (n < 0) return "Number cannot be negative";
+            if (isNaN(n))       return "Please enter a valid number (e.g. 150.00)";
+            if (n < 0)          return "Number cannot be negative";
             if (n > MAX_NUMBER) return "Number cannot exceed 1,000,000,000";
             return null;
-          },
-        },
+        }
+    },
 
-        year: {
-          validate: (v) => {
+    year: {
+        validate: (v) => {
             if (!v) return null;
             const trimmed = v.trim();
             if (!/^\d{4}$/.test(trimmed)) return "Please enter a 4-digit year (e.g. 2019)";
             const n = parseInt(trimmed, 10);
             if (n < 1900 || n > 2100) return "Year must be between 1900 and 2100";
             return null;
-          },
-        },
+        }
+    },
 
-        date: {
-          validate: (v) => {
+    date: {
+        validate: (v) => {
             if (!v) return null;
             const trimmed = v.trim();
-            const patterns = [/^\d{2}\/\d{2}\/\d{4}$/, /^\d{2}-\d{2}-\d{4}$/, /^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/];
-            const matches = patterns.some((p) => p.test(trimmed));
+            const patterns = [
+                /^\d{2}\/\d{2}\/\d{4}$/,
+                /^\d{2}-\d{2}-\d{4}$/,
+                /^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/
+            ];
+            const matches = patterns.some(p => p.test(trimmed));
             if (!matches) return "Use DD/MM/YYYY, DD-MM-YYYY or e.g. 23 Feb 2026";
             return null;
-          },
-        },
+        }
+    },
 
-        text: {
-          validate: (v) => {
+    url: {
+        validate: (v) => {
+            if (!v) return null;
+            const trimmed = v.trim();
+            const ok = /^(https?:\/\/)?(www\.)?[\w\-]+(\.[\w\-]+)+(\/[\w\-._~:/?#[\]@!$&'()*+,;=%]*)?$/.test(trimmed);
+            return ok ? null : "Please enter a valid URL (e.g. www.behance.net/yourname)";
+        }
+    },
+
+    address: {
+        validate: (v) => {
+            if (!v) return null;
+            const trimmed = v.trim();
+            if (trimmed.length < 5)   return "Address is too short — include street name and number";
+            if (trimmed.length > 200) return "Address cannot exceed 200 characters";
+            const hasLetters = /[a-zA-Z]/.test(trimmed);
+            const hasNumber  = /\d/.test(trimmed);
+            if (!hasLetters || !hasNumber) return "Address must include a street name and number (e.g. 12 Oak Street)";
+            return null;
+        }
+    },
+
+    skill: {
+        validate: (v) => {
+            if (!v) return null;
+            if (v.trim().length < 1)  return null;
+            if (v.length > 60)        return "Skill name cannot exceed 60 characters";
+            return null;
+        }
+    },
+
+    text: {
+        validate: (v) => {
             if (!v) return null;
             if (v.length > MAX_TEXT) return `Maximum ${MAX_TEXT.toLocaleString()} characters allowed`;
             return null;
-          },
-        },
+        }
+    },
 
-        textarea: {
-          validate: (v) => {
+    textarea: {
+        validate: (v) => {
             if (!v) return null;
             if (v.length > MAX_TEXT) return `Maximum ${MAX_TEXT.toLocaleString()} characters allowed`;
             return null;
-          },
-        },
-      };
+        }
+    }
+};
 
-      /* Runs the right validator for a field definition */
-      function validateField(field, value) {
-        const key = field.validate || field.type || "text";
-        const validator = VALIDATORS[key];
-        if (!validator) return null;
-        return validator.validate(value);
-      }
+/* Runs the right validator for a field definition */
+function validateField(field, value) {
+    const key = field.validate || field.type || "text";
+    const validator = VALIDATORS[key];
+    if (!validator) return null;
+    return validator.validate(value);
+}
 
-      /* Converts a native date input value (YYYY-MM-DD) to DD/MM/YYYY */
-      function nativeDateToDisplay(nativeVal) {
-        if (!nativeVal) return "";
-        const [y, m, d] = nativeVal.split("-");
-        return `${d}/${m}/${y}`;
-      }
+/* Converts a native date input value (YYYY-MM-DD) to DD/MM/YYYY */
+function nativeDateToDisplay(nativeVal) {
+    if (!nativeVal) return "";
+    const [y, m, d] = nativeVal.split("-");
+    return `${d}/${m}/${y}`;
+}
 
-      /* ============================================================
+/* ============================================================
    TEMPLATE CONFIGURATION
-   New field property: validate — controls which rule to apply.
-   Options: "email" | "phone" | "number" | "date" | "year" | "text" | "textarea"
-   If omitted the field type ("textarea" or default "text") is used.
 ============================================================ */
 
-      const TEMPLATES = [
-        {
-          id: "resume",
-          name: "Professional Resume",
-          icon: "📄",
-          category: "Personal",
-          description: "Clean, modern resume for any industry",
-          sections: [
+const TEMPLATES = [
+    {
+        id: "resume",
+        name: "Professional Resume",
+        icon: "📄",
+        category: "Personal",
+        description: "Clean, modern resume for any industry",
+        sections: [
             {
-              id: "header",
-              title: "Personal Info",
-              fields: [
-                { name: "name", label: "Full Name", placeholder: "e.g. Alexandra Reyes", validate: "text" },
-                {
-                  name: "title",
-                  label: "Professional Title",
-                  placeholder: "e.g. Senior Product Designer",
-                  validate: "text",
-                },
-                { name: "email", label: "Email Address", placeholder: "e.g. alex@email.com", validate: "email" },
-                { name: "phone", label: "Phone Number", placeholder: "e.g. +1 555 000 1234", validate: "phone" },
-              ],
+                id: "header",
+                title: "Personal Info",
+                fields: [
+                    { name: "name",    label: "Full Name",           placeholder: "e.g. Alexandra Reyes",         validate: "text"    },
+                    { name: "title",   label: "Professional Title",  placeholder: "e.g. Senior Product Designer", validate: "text"    },
+                    { name: "email",   label: "Email Address",       placeholder: "e.g. alex@email.com",          validate: "email"   },
+                    { name: "phone",   label: "Phone Number",        placeholder: "e.g. +1 555 000 1234",         validate: "phone"   },
+                    { name: "address", label: "Address",             placeholder: "e.g. 12 Oak Street, Lisbon",   validate: "address" },
+                    { name: "linkedin",label: "LinkedIn / Portfolio", placeholder: "e.g. www.linkedin.com/in/yourname", validate: "url" },
+                    { name: "website", label: "Personal Website / Behance", placeholder: "e.g. www.behance.net/yourname", validate: "url" }
+                ]
             },
             {
-              id: "summary",
-              title: "Professional Summary",
-              fields: [
-                {
-                  name: "summary",
-                  label: "Summary",
-                  type: "textarea",
-                  placeholder: "Write a short professional summary...",
-                  validate: "textarea",
-                },
-              ],
+                id: "summary",
+                title: "Professional Summary",
+                fields: [
+                    { name: "summary", label: "Summary", type: "textarea", placeholder: "Write a short professional summary...", validate: "textarea" }
+                ]
             },
             {
-              id: "experience",
-              title: "Experience",
-              repeatable: true,
-              fields: [
-                { name: "role", label: "Job Title", placeholder: "e.g. Product Designer", validate: "text" },
-                { name: "company", label: "Company", placeholder: "e.g. Acme Corp", validate: "text" },
-                { name: "period", label: "Period", placeholder: "e.g. Jan 2022 – Present", validate: "text" },
-                {
-                  name: "description",
-                  label: "Description",
-                  type: "textarea",
-                  placeholder: "Describe your responsibilities...",
-                  validate: "textarea",
-                },
-              ],
+                id: "skills",
+                title: "Skills",
+                repeatable: true,
+                fields: [
+                    { name: "skill", label: "Skill", placeholder: "e.g. Figma, React, Project Management", validate: "skill" }
+                ]
             },
             {
-              id: "education",
-              title: "Education",
-              repeatable: true,
-              fields: [
-                {
-                  name: "degree",
-                  label: "Degree / Qualification",
-                  placeholder: "e.g. BSc Computer Science",
-                  validate: "text",
-                },
-                { name: "school", label: "Institution", placeholder: "e.g. University of Lisbon", validate: "text" },
-                { name: "year", label: "Year", placeholder: "e.g. 2019", validate: "year" },
-              ],
-            },
-          ],
-        },
-        {
-          id: "invoice",
-          name: "Invoice",
-          icon: "💰",
-          category: "Business",
-          description: "Professional invoice with totals and tax",
-          sections: [
-            {
-              id: "sender",
-              title: "Your Details",
-              fields: [
-                {
-                  name: "senderName",
-                  label: "Your Name / Business Name",
-                  placeholder: "e.g. Studio Nova",
-                  validate: "text",
-                },
-                {
-                  name: "senderAddress",
-                  label: "Address",
-                  placeholder: "e.g. 12 Oak Street, Lisbon",
-                  type: "textarea",
-                  validate: "textarea",
-                },
-                { name: "senderEmail", label: "Email", placeholder: "e.g. billing@studionova.com", validate: "email" },
-              ],
+                id: "experience",
+                title: "Experience",
+                repeatable: true,
+                fields: [
+                    { name: "role",        label: "Job Title",   placeholder: "e.g. Product Designer",                            validate: "text"     },
+                    { name: "company",     label: "Company",     placeholder: "e.g. Acme Corp",                                   validate: "text"     },
+                    { name: "period",      label: "Period",      placeholder: "e.g. Jan 2022 – Present",                         validate: "text"     },
+                    { name: "description", label: "Description", type: "textarea", placeholder: "Describe your responsibilities...", validate: "textarea" }
+                ]
             },
             {
-              id: "header",
-              title: "Invoice Details",
-              fields: [
-                { name: "invoiceNumber", label: "Invoice Number", placeholder: "e.g. INV-0042", validate: "text" },
-                { name: "date", label: "Issue Date", placeholder: "DD/MM/YYYY", validate: "date" },
-                { name: "dueDate", label: "Due Date", placeholder: "DD/MM/YYYY", validate: "date" },
-              ],
+                id: "education",
+                title: "Education",
+                repeatable: true,
+                fields: [
+                    { name: "degree", label: "Degree / Qualification", placeholder: "e.g. BSc Computer Science", validate: "text" },
+                    { name: "school", label: "Institution",            placeholder: "e.g. University of Lisbon", validate: "text" },
+                    { name: "year",   label: "Year",                   placeholder: "e.g. 2019",                 validate: "year" }
+                ]
+            }
+        ]
+    },
+    {
+        id: "invoice",
+        name: "Invoice",
+        icon: "💰",
+        category: "Business",
+        description: "Professional invoice with totals and tax",
+        sections: [
+            {
+                id: "sender",
+                title: "Your Details",
+                fields: [
+                    { name: "senderName",    label: "Your Name / Business Name", placeholder: "e.g. Studio Nova",                   validate: "text"     },
+                    { name: "senderAddress", label: "Address",                   placeholder: "e.g. 12 Oak Street, Lisbon", type: "textarea", validate: "address"  },
+                    { name: "senderEmail",   label: "Email",                     placeholder: "e.g. billing@studionova.com",         validate: "email"    },
+                    { name: "senderWebsite", label: "Website (optional)",         placeholder: "e.g. www.studionova.com",             validate: "url"      }
+                ]
             },
             {
-              id: "client",
-              title: "Bill To",
-              fields: [
-                { name: "clientName", label: "Client Name", placeholder: "e.g. Bright Ideas Ltd", validate: "text" },
-                {
-                  name: "clientAddress",
-                  label: "Client Address",
-                  placeholder: "e.g. 99 Park Ave, Porto",
-                  type: "textarea",
-                  validate: "textarea",
-                },
-                {
-                  name: "clientEmail",
-                  label: "Client Email",
-                  placeholder: "e.g. accounts@brightideas.com",
-                  validate: "email",
-                },
-              ],
+                id: "header",
+                title: "Invoice Details",
+                fields: [
+                    { name: "invoiceNumber", label: "Invoice Number", placeholder: "e.g. INV-0042", validate: "text" },
+                    { name: "date",          label: "Issue Date",     placeholder: "DD/MM/YYYY",    validate: "date" },
+                    { name: "dueDate",       label: "Due Date",       placeholder: "DD/MM/YYYY",    validate: "date" }
+                ]
             },
             {
-              id: "items",
-              title: "Line Items",
-              repeatable: true,
-              fields: [
-                { name: "item", label: "Description", placeholder: "e.g. Website Design", validate: "text" },
-                { name: "qty", label: "Qty", placeholder: "1", validate: "number" },
-                { name: "price", label: "Unit Price", placeholder: "0.00", validate: "number" },
-              ],
+                id: "client",
+                title: "Bill To",
+                fields: [
+                    { name: "clientName",    label: "Client Name",    placeholder: "e.g. Bright Ideas Ltd",             validate: "text"     },
+                    { name: "clientAddress", label: "Client Address", placeholder: "e.g. 99 Park Ave, Porto", type: "textarea", validate: "address"  },
+                    { name: "clientEmail",   label: "Client Email",   placeholder: "e.g. accounts@brightideas.com",     validate: "email"    }
+                ]
             },
-          ],
-        },
-      ];
+            {
+                id: "items",
+                title: "Line Items",
+                repeatable: true,
+                fields: [
+                    { name: "item",  label: "Description", placeholder: "e.g. Website Design", validate: "text"   },
+                    { name: "qty",   label: "Qty",         placeholder: "1",                   validate: "number" },
+                    { name: "price", label: "Unit Price",  placeholder: "0.00",                validate: "number" }
+                ]
+            }
+        ]
+    }
+];
 
-      /* ============================================================
+/* ============================================================
    FEATURED TEMPLATE IDs
 ============================================================ */
 
-      const FEATURED_IDS = ["resume", "invoice"];
+const FEATURED_IDS = ["resume", "invoice"];
 
-      /* ============================================================
+/* ============================================================
    DOCUMENT INITIALIZATION
 ============================================================ */
 
-      function initSection(section) {
-        const obj = {};
-        section.fields.forEach((field) => {
-          obj[field.name] = "";
-        });
-        return obj;
-      }
+function initSection(section) {
+    const obj = {};
+    section.fields.forEach(field => {
+        obj[field.name] = "";
+    });
+    return obj;
+}
 
-      function initDocument(template) {
-        const data = {};
-        template.sections.forEach((section) => {
-          if (section.repeatable) {
+function initDocument(template) {
+    const data = {};
+    template.sections.forEach(section => {
+        if (section.repeatable) {
             data[section.id] = [initSection(section)];
-          } else {
+        } else {
             data[section.id] = initSection(section);
-          }
-        });
-        return data;
-      }
+        }
+    });
+    return data;
+}
 
-      /* ============================================================
+/* ============================================================
+   VALIDATION HELPERS — used by download guard
+============================================================ */
+
+/* Returns true if every filled field in the document passes validation.
+   Empty optional fields are allowed through — only filled-but-wrong ones block. */
+function getAllFieldErrors(template, documentData) {
+    const errors = [];
+    template.sections.forEach(section => {
+        const blocks = Array.isArray(documentData[section.id])
+            ? documentData[section.id]
+            : [documentData[section.id]];
+        blocks.forEach((block, idx) => {
+            section.fields.forEach(field => {
+                const value = block[field.name] || "";
+                const err   = validateField(field, value);
+                if (err) {
+                    errors.push({ sectionId: section.id, blockIndex: idx, fieldName: field.name, error: err });
+                }
+            });
+        });
+    });
+    return errors;
+}
+
+/* ============================================================
    INVOICE CALCULATION HELPERS
 ============================================================ */
 
-      function parseNumber(val) {
-        const n = parseFloat(String(val).replace(/[^0-9.]/g, ""));
-        return isNaN(n) ? 0 : n;
-      }
+function parseNumber(val) {
+    const n = parseFloat(String(val).replace(/[^0-9.]/g, ""));
+    return isNaN(n) ? 0 : n;
+}
 
-      function calcInvoiceTotals(items, taxRate) {
-        const subtotal = items.reduce((sum, row) => {
-          const qty = parseNumber(row.qty);
-          const price = parseNumber(row.price);
-          return sum + qty * price;
-        }, 0);
-        const taxAmount = subtotal * (parseNumber(taxRate) / 100);
-        const total = subtotal + taxAmount;
-        return { subtotal, taxAmount, total };
-      }
+function calcInvoiceTotals(items, taxRate) {
+    const subtotal = items.reduce((sum, row) => {
+        const qty   = parseNumber(row.qty);
+        const price = parseNumber(row.price);
+        return sum + qty * price;
+    }, 0);
+    const taxAmount = subtotal * (parseNumber(taxRate) / 100);
+    const total     = subtotal + taxAmount;
+    return { subtotal, taxAmount, total };
+}
 
-      function formatMoney(num) {
-        return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      }
+function formatMoney(num) {
+    return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
-      /* ============================================================
+/* ============================================================
+   SAVE / LOAD HELPERS
+============================================================ */
+
+/* Serialises the current session to a .json file and triggers download */
+function saveProgressToFile(template, documentData, taxRate) {
+    const payload = {
+        easydocVersion: "1.0",
+        templateId:     template.id,
+        taxRate:        taxRate,
+        documentData:   documentData
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href     = url;
+    a.download = "easydoc-" + template.id + "-progress.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+/* Opens a file picker, reads the JSON, and returns the parsed payload */
+function loadProgressFromFile() {
+    return new Promise((resolve, reject) => {
+        const input    = document.createElement("input");
+        input.type     = "file";
+        input.accept   = ".json,application/json";
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) { reject(new Error("No file selected")); return; }
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                try {
+                    const payload = JSON.parse(evt.target.result);
+                    resolve(payload);
+                } catch (err) {
+                    reject(new Error("Invalid file — could not read the saved progress."));
+                }
+            };
+            reader.onerror = () => reject(new Error("Could not read file."));
+            reader.readAsText(file);
+        };
+        document.body.appendChild(input);
+        input.click();
+        document.body.removeChild(input);
+    });
+}
+
+/* ============================================================
    PDF ENGINE
 ============================================================ */
 
-      function createPDFEngine() {
-        const pdf = new jsPDF("p", "mm", "a4");
-        const margin = 18;
-        const pageHeight = pdf.internal.pageSize.getHeight();
-        const pageWidth = pdf.internal.pageSize.getWidth();
-        const usableWidth = pageWidth - margin * 2;
-        let cursorY = margin;
+function createPDFEngine() {
+    const pdf         = new jsPDF("p", "mm", "a4");
+    const margin      = 18;
+    const pageHeight  = pdf.internal.pageSize.getHeight();
+    const pageWidth   = pdf.internal.pageSize.getWidth();
+    const usableWidth = pageWidth - margin * 2;
+    let cursorY       = margin;
 
-        function ensureSpace(heightNeeded) {
-          if (cursorY + heightNeeded > pageHeight - margin) {
+    function ensureSpace(heightNeeded) {
+        if (cursorY + heightNeeded > pageHeight - margin) {
             pdf.addPage();
             cursorY = margin;
-          }
         }
+    }
 
-        function addText(text, fontSize, isBold, color, xOverride) {
-          if (!text && text !== 0) return;
-          pdf.setFont("helvetica", isBold ? "bold" : "normal");
-          pdf.setFontSize(fontSize || 10);
-          if (color) {
+    function addText(text, fontSize, isBold, color, xOverride) {
+        if (!text && text !== 0) return;
+        pdf.setFont("helvetica", isBold ? "bold" : "normal");
+        pdf.setFontSize(fontSize || 10);
+        if (color) {
             pdf.setTextColor(color[0], color[1], color[2]);
-          } else {
+        } else {
             pdf.setTextColor(30, 41, 59);
-          }
-          const x = xOverride !== undefined ? xOverride : margin;
-          const lines = pdf.splitTextToSize(String(text), usableWidth);
-          const lh = (fontSize || 10) * 0.38 + 1.8;
-          ensureSpace(lines.length * lh + 2);
-          pdf.text(lines, x, cursorY);
-          cursorY += lines.length * lh;
         }
+        const x     = xOverride !== undefined ? xOverride : margin;
+        const lines = pdf.splitTextToSize(String(text), usableWidth);
+        const lh    = (fontSize || 10) * 0.38 + 1.8;
+        ensureSpace(lines.length * lh + 2);
+        pdf.text(lines, x, cursorY);
+        cursorY += lines.length * lh;
+    }
 
-        function addTextRight(text, fontSize, isBold, color) {
-          if (!text && text !== 0) return;
-          pdf.setFont("helvetica", isBold ? "bold" : "normal");
-          pdf.setFontSize(fontSize || 10);
-          if (color) {
+    function addTextRight(text, fontSize, isBold, color) {
+        if (!text && text !== 0) return;
+        pdf.setFont("helvetica", isBold ? "bold" : "normal");
+        pdf.setFontSize(fontSize || 10);
+        if (color) {
             pdf.setTextColor(color[0], color[1], color[2]);
-          } else {
+        } else {
             pdf.setTextColor(30, 41, 59);
-          }
-          const textWidth = pdf.getTextWidth(String(text));
-          pdf.text(String(text), pageWidth - margin - textWidth, cursorY);
         }
+        const textWidth = pdf.getTextWidth(String(text));
+        pdf.text(String(text), pageWidth - margin - textWidth, cursorY);
+    }
 
-        function addLabelValue(label, value, fontSize) {
-          if (!value) return;
-          pdf.setFont("helvetica", "bold");
-          pdf.setFontSize(fontSize || 9);
-          pdf.setTextColor(100, 116, 139);
-          const lw = pdf.getTextWidth(label + "  ");
-          ensureSpace(6);
-          pdf.text(label, margin, cursorY);
-          pdf.setFont("helvetica", "normal");
-          pdf.setTextColor(30, 41, 59);
-          const lines = pdf.splitTextToSize(String(value), usableWidth - lw);
-          pdf.text(lines, margin + lw, cursorY);
-          cursorY += lines.length * ((fontSize || 9) * 0.38 + 1.8);
-        }
+    function addLabelValue(label, value, fontSize) {
+        if (!value) return;
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(fontSize || 9);
+        pdf.setTextColor(100, 116, 139);
+        const lw = pdf.getTextWidth(label + "  ");
+        ensureSpace(6);
+        pdf.text(label, margin, cursorY);
+        pdf.setFont("helvetica", "normal");
+        pdf.setTextColor(30, 41, 59);
+        const lines = pdf.splitTextToSize(String(value), usableWidth - lw);
+        pdf.text(lines, margin + lw, cursorY);
+        cursorY += lines.length * ((fontSize || 9) * 0.38 + 1.8);
+    }
 
-        function addSpacing(space) {
-          cursorY += space || 5;
-        }
+    function addSpacing(space) {
+        cursorY += (space || 5);
+    }
 
-        function addHRule(color) {
-          const c = color || [226, 232, 240];
-          pdf.setDrawColor(c[0], c[1], c[2]);
-          pdf.setLineWidth(0.4);
-          ensureSpace(3);
-          pdf.line(margin, cursorY, pageWidth - margin, cursorY);
-          cursorY += 3;
-        }
+    function addHRule(color) {
+        const c = color || [226, 232, 240];
+        pdf.setDrawColor(c[0], c[1], c[2]);
+        pdf.setLineWidth(0.4);
+        ensureSpace(3);
+        pdf.line(margin, cursorY, pageWidth - margin, cursorY);
+        cursorY += 3;
+    }
 
-        function addRect(x, y, w, h, fillColor) {
-          pdf.setFillColor(fillColor[0], fillColor[1], fillColor[2]);
-          pdf.rect(x, y, w, h, "F");
-        }
+    function addRect(x, y, w, h, fillColor) {
+        pdf.setFillColor(fillColor[0], fillColor[1], fillColor[2]);
+        pdf.rect(x, y, w, h, "F");
+    }
 
-        function addSectionHeading(title) {
-          addSpacing(6);
-          ensureSpace(10);
-          pdf.setFont("helvetica", "bold");
-          pdf.setFontSize(8);
-          pdf.setTextColor(59, 130, 246);
-          pdf.text(title.toUpperCase(), margin, cursorY);
-          cursorY += 5;
-          addHRule([59, 130, 246]);
-          addSpacing(2);
-        }
+    function addSectionHeading(title) {
+        addSpacing(6);
+        ensureSpace(10);
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(8);
+        pdf.setTextColor(59, 130, 246);
+        pdf.text(title.toUpperCase(), margin, cursorY);
+        cursorY += 5;
+        addHRule([59, 130, 246]);
+        addSpacing(2);
+    }
 
-        return {
-          pdf,
-          cursorY: () => cursorY,
-          setCursorY: (y) => {
-            cursorY = y;
-          },
-          margin,
-          pageWidth,
-          pageHeight,
-          usableWidth,
-          ensureSpace,
-          addText,
-          addTextRight,
-          addLabelValue,
-          addSpacing,
-          addHRule,
-          addRect,
-          addSectionHeading,
-        };
-      }
+    return {
+        pdf,
+        cursorY:    () => cursorY,
+        setCursorY: (y) => { cursorY = y; },
+        margin,
+        pageWidth,
+        pageHeight,
+        usableWidth,
+        ensureSpace,
+        addText,
+        addTextRight,
+        addLabelValue,
+        addSpacing,
+        addHRule,
+        addRect,
+        addSectionHeading
+    };
+}
 
-      /* ============================================================
+/* ============================================================
    RESUME PDF RENDERER
 ============================================================ */
 
-      function exportResumePDF(documentData) {
-        const eng = createPDFEngine();
-        const {
-          pdf,
-          margin,
-          pageWidth,
-          usableWidth,
-          addText,
-          addSpacing,
-          addHRule,
-          addSectionHeading,
-          ensureSpace,
-          setCursorY,
-        } = eng;
+function exportResumePDF(documentData) {
+    const eng = createPDFEngine();
+    const {
+        pdf, margin, pageWidth, usableWidth,
+        addText, addSpacing, addHRule,
+        addSectionHeading, ensureSpace, setCursorY
+    } = eng;
 
-        const hdr = documentData.header || {};
+    const hdr = documentData.header || {};
 
-        if (hdr.name) {
-          addText(hdr.name, 22, true, [15, 23, 42]);
-          addSpacing(1);
-        }
-        if (hdr.title) {
-          addText(hdr.title, 11, false, [59, 130, 246]);
-          addSpacing(2);
-        }
-        const contactParts = [hdr.email, hdr.phone].filter(Boolean);
-        if (contactParts.length > 0) {
-          addText(contactParts.join("   •   "), 9, false, [100, 116, 139]);
-          addSpacing(2);
-        }
+    if (hdr.name) {
+        addText(hdr.name, 22, true, [15, 23, 42]);
+        addSpacing(1);
+    }
+    if (hdr.title) {
+        addText(hdr.title, 11, false, [59, 130, 246]);
+        addSpacing(2);
+    }
 
-        pdf.setDrawColor(15, 23, 42);
-        pdf.setLineWidth(0.8);
-        const cy = eng.cursorY();
-        pdf.line(margin, cy, pageWidth - margin, cy);
-        eng.setCursorY(cy + 4);
+    /* Contact line — email + phone */
+    const contactParts = [hdr.email, hdr.phone].filter(Boolean);
+    if (contactParts.length > 0) {
+        addText(contactParts.join("   •   "), 9, false, [100, 116, 139]);
+        addSpacing(1);
+    }
 
-        const sum = documentData.summary || {};
-        if (sum.summary) {
-          addSectionHeading("Professional Summary");
-          addText(sum.summary, 10, false, [71, 85, 105]);
-          addSpacing(2);
-        }
+    /* Address */
+    if (hdr.address) {
+        addText(hdr.address, 9, false, [100, 116, 139]);
+        addSpacing(1);
+    }
 
-        const expList = documentData.experience || [];
-        const hasExp = expList.some((e) => e.role || e.company);
-        if (hasExp) {
-          addSectionHeading("Experience");
-          expList.forEach((exp) => {
+    /* Links */
+    const linkParts = [hdr.linkedin, hdr.website].filter(Boolean);
+    if (linkParts.length > 0) {
+        addText(linkParts.join("   •   "), 9, false, [59, 130, 246]);
+        addSpacing(2);
+    }
+
+    /* Divider */
+    pdf.setDrawColor(15, 23, 42);
+    pdf.setLineWidth(0.8);
+    const cy = eng.cursorY();
+    pdf.line(margin, cy, pageWidth - margin, cy);
+    eng.setCursorY(cy + 4);
+
+    /* Summary */
+    const sum = documentData.summary || {};
+    if (sum.summary) {
+        addSectionHeading("Professional Summary");
+        addText(sum.summary, 10, false, [71, 85, 105]);
+        addSpacing(2);
+    }
+
+    /* Skills */
+    const skillList = documentData.skills || [];
+    const hasSkills = skillList.some(s => s.skill);
+    if (hasSkills) {
+        addSectionHeading("Skills");
+        const skillNames = skillList.map(s => s.skill).filter(Boolean).join("   ·   ");
+        addText(skillNames, 9.5, false, [71, 85, 105]);
+        addSpacing(2);
+    }
+
+    /* Experience */
+    const expList = documentData.experience || [];
+    const hasExp  = expList.some(e => e.role || e.company);
+    if (hasExp) {
+        addSectionHeading("Experience");
+        expList.forEach(exp => {
             if (!exp.role && !exp.company) return;
             ensureSpace(14);
             if (exp.role) addText(exp.role, 11, true, [15, 23, 42]);
             if (exp.company || exp.period) {
-              const line = [exp.company, exp.period].filter(Boolean).join("  ·  ");
-              addText(line, 9.5, false, [100, 116, 139]);
+                const line = [exp.company, exp.period].filter(Boolean).join("  ·  ");
+                addText(line, 9.5, false, [100, 116, 139]);
             }
             if (exp.description) {
-              addSpacing(1);
-              addText(exp.description, 9.5, false, [71, 85, 105]);
+                addSpacing(1);
+                addText(exp.description, 9.5, false, [71, 85, 105]);
             }
             addSpacing(5);
-          });
-        }
+        });
+    }
 
-        const eduList = documentData.education || [];
-        const hasEdu = eduList.some((e) => e.degree || e.school);
-        if (hasEdu) {
-          addSectionHeading("Education");
-          eduList.forEach((edu) => {
+    /* Education */
+    const eduList = documentData.education || [];
+    const hasEdu  = eduList.some(e => e.degree || e.school);
+    if (hasEdu) {
+        addSectionHeading("Education");
+        eduList.forEach(edu => {
             if (!edu.degree && !edu.school) return;
             ensureSpace(10);
             if (edu.degree) addText(edu.degree, 11, true, [15, 23, 42]);
             if (edu.school || edu.year) {
-              const line = [edu.school, edu.year].filter(Boolean).join("  ·  ");
-              addText(line, 9.5, false, [100, 116, 139]);
+                const line = [edu.school, edu.year].filter(Boolean).join("  ·  ");
+                addText(line, 9.5, false, [100, 116, 139]);
             }
             addSpacing(4);
-          });
-        }
+        });
+    }
 
-        pdf.save("resume.pdf");
-      }
+    pdf.save("resume.pdf");
+}
 
-      /* ============================================================
+/* ============================================================
    INVOICE PDF RENDERER
 ============================================================ */
 
-      function exportInvoicePDF(documentData, taxRate) {
-        const eng = createPDFEngine();
-        const { pdf, margin, pageWidth, usableWidth, addText, addSpacing, addHRule, ensureSpace, addRect, setCursorY } =
-          eng;
+function exportInvoicePDF(documentData, taxRate) {
+    const eng = createPDFEngine();
+    const {
+        pdf, margin, pageWidth, usableWidth,
+        addText, addSpacing, addHRule, ensureSpace,
+        addRect, setCursorY
+    } = eng;
 
-        const sender = documentData.sender || {};
-        const hdr = documentData.header || {};
-        const client = documentData.client || {};
-        const items = documentData.items || [];
+    const sender = documentData.sender || {};
+    const hdr    = documentData.header || {};
+    const client = documentData.client || {};
+    const items  = documentData.items  || [];
 
-        addRect(0, 0, pageWidth, 28, [15, 23, 42]);
+    addRect(0, 0, pageWidth, 28, [15, 23, 42]);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(16);
+    pdf.setTextColor(255, 255, 255);
+    pdf.text(sender.senderName || "INVOICE", margin, 17);
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(9);
+    pdf.setTextColor(148, 163, 184);
+    const invLabel  = "INVOICE";
+    const invLabelW = pdf.getTextWidth(invLabel);
+    pdf.text(invLabel, pageWidth - margin - invLabelW, 17);
+
+    setCursorY(36);
+
+    const metaStartY = eng.cursorY();
+    const metaX      = pageWidth - margin - 60;
+
+    const metaRows = [
+        ["Invoice No.", hdr.invoiceNumber],
+        ["Issue Date",  hdr.date],
+        ["Due Date",    hdr.dueDate]
+    ].filter(row => row[1]);
+
+    metaRows.forEach((row, i) => {
+        const rowY = metaStartY + i * 7;
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(8);
+        pdf.setTextColor(100, 116, 139);
+        pdf.text(row[0], metaX, rowY);
         pdf.setFont("helvetica", "bold");
-        pdf.setFontSize(16);
-        pdf.setTextColor(255, 255, 255);
-        pdf.text(sender.senderName || "INVOICE", margin, 17);
+        pdf.setFontSize(8.5);
+        pdf.setTextColor(15, 23, 42);
+        const valW = pdf.getTextWidth(row[1]);
+        pdf.text(row[1], pageWidth - margin - valW, rowY);
+    });
+
+    const boxY = metaStartY;
+    const boxW = 70;
+
+    addRect(margin, boxY, boxW, 38, [248, 250, 252]);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(7.5);
+    pdf.setTextColor(148, 163, 184);
+    pdf.text("FROM", margin + 5, boxY + 7);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(9.5);
+    pdf.setTextColor(15, 23, 42);
+    pdf.text(sender.senderName || "", margin + 5, boxY + 14, { maxWidth: boxW - 10 });
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8);
+    pdf.setTextColor(100, 116, 139);
+    if (sender.senderAddress) pdf.text(sender.senderAddress, margin + 5, boxY + 20, { maxWidth: boxW - 10 });
+    if (sender.senderEmail)   pdf.text(sender.senderEmail,   margin + 5, boxY + 28, { maxWidth: boxW - 10 });
+    if (sender.senderWebsite) pdf.text(sender.senderWebsite, margin + 5, boxY + 34, { maxWidth: boxW - 10 });
+
+    const toBoxX = margin + boxW + 6;
+    addRect(toBoxX, boxY, boxW, 38, [239, 246, 255]);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(7.5);
+    pdf.setTextColor(59, 130, 246);
+    pdf.text("BILL TO", toBoxX + 5, boxY + 7);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(9.5);
+    pdf.setTextColor(15, 23, 42);
+    pdf.text(client.clientName || "", toBoxX + 5, boxY + 14, { maxWidth: boxW - 10 });
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8);
+    pdf.setTextColor(100, 116, 139);
+    if (client.clientAddress) pdf.text(client.clientAddress, toBoxX + 5, boxY + 20, { maxWidth: boxW - 10 });
+    if (client.clientEmail)   pdf.text(client.clientEmail,   toBoxX + 5, boxY + 28, { maxWidth: boxW - 10 });
+
+    setCursorY(boxY + 46);
+
+    const tableTop   = eng.cursorY();
+    const colDesc    = margin;
+    const colQty     = margin + usableWidth * 0.52;
+    const colPrice   = margin + usableWidth * 0.67;
+    const colTotal   = margin + usableWidth * 0.82;
+
+    addRect(margin, tableTop, usableWidth, 8, [15, 23, 42]);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(7.5);
+    pdf.setTextColor(255, 255, 255);
+    const thY = tableTop + 5.5;
+    pdf.text("DESCRIPTION", colDesc + 3, thY);
+    pdf.text("QTY",         colQty,      thY);
+    pdf.text("UNIT PRICE",  colPrice,    thY);
+    pdf.text("TOTAL",       colTotal,    thY);
+
+    setCursorY(tableTop + 10);
+
+    items.forEach((row, i) => {
+        const qty   = parseNumber(row.qty);
+        const price = parseNumber(row.price);
+        const line  = qty * price;
+        const rowY  = eng.cursorY();
+        const rowH  = 8;
+
+        ensureSpace(rowH + 2);
+
+        if (i % 2 === 1) {
+            addRect(margin, rowY - 1, usableWidth, rowH, [248, 250, 252]);
+        }
 
         pdf.setFont("helvetica", "normal");
         pdf.setFontSize(9);
-        pdf.setTextColor(148, 163, 184);
-        const invLabel = "INVOICE";
-        const invLabelW = pdf.getTextWidth(invLabel);
-        pdf.text(invLabel, pageWidth - margin - invLabelW, 17);
-
-        setCursorY(36);
-
-        const metaStartY = eng.cursorY();
-        const metaX = pageWidth - margin - 60;
-
-        const metaRows = [
-          ["Invoice No.", hdr.invoiceNumber],
-          ["Issue Date", hdr.date],
-          ["Due Date", hdr.dueDate],
-        ].filter((row) => row[1]);
-
-        metaRows.forEach((row, i) => {
-          const rowY = metaStartY + i * 7;
-          pdf.setFont("helvetica", "normal");
-          pdf.setFontSize(8);
-          pdf.setTextColor(100, 116, 139);
-          pdf.text(row[0], metaX, rowY);
-          pdf.setFont("helvetica", "bold");
-          pdf.setFontSize(8.5);
-          pdf.setTextColor(15, 23, 42);
-          const valW = pdf.getTextWidth(row[1]);
-          pdf.text(row[1], pageWidth - margin - valW, rowY);
-        });
-
-        const boxY = metaStartY;
-        const boxW = 70;
-
-        addRect(margin, boxY, boxW, 36, [248, 250, 252]);
-        pdf.setFont("helvetica", "bold");
-        pdf.setFontSize(7.5);
-        pdf.setTextColor(148, 163, 184);
-        pdf.text("FROM", margin + 5, boxY + 7);
-        pdf.setFont("helvetica", "bold");
-        pdf.setFontSize(9.5);
-        pdf.setTextColor(15, 23, 42);
-        pdf.text(sender.senderName || "", margin + 5, boxY + 14, { maxWidth: boxW - 10 });
-        pdf.setFont("helvetica", "normal");
-        pdf.setFontSize(8);
+        pdf.setTextColor(30, 41, 59);
+        pdf.text(row.item || "", colDesc + 3, rowY + 5, { maxWidth: colQty - colDesc - 6 });
         pdf.setTextColor(100, 116, 139);
-        if (sender.senderAddress) pdf.text(sender.senderAddress, margin + 5, boxY + 20, { maxWidth: boxW - 10 });
-        if (sender.senderEmail) pdf.text(sender.senderEmail, margin + 5, boxY + 30, { maxWidth: boxW - 10 });
-
-        const toBoxX = margin + boxW + 6;
-        addRect(toBoxX, boxY, boxW, 36, [239, 246, 255]);
+        pdf.text(String(qty > 0 ? qty : row.qty || ""), colQty, rowY + 5);
+        pdf.text(price > 0 ? formatMoney(price) : (row.price || ""), colPrice, rowY + 5);
         pdf.setFont("helvetica", "bold");
-        pdf.setFontSize(7.5);
-        pdf.setTextColor(59, 130, 246);
-        pdf.text("BILL TO", toBoxX + 5, boxY + 7);
-        pdf.setFont("helvetica", "bold");
-        pdf.setFontSize(9.5);
         pdf.setTextColor(15, 23, 42);
-        pdf.text(client.clientName || "", toBoxX + 5, boxY + 14, { maxWidth: boxW - 10 });
-        pdf.setFont("helvetica", "normal");
-        pdf.setFontSize(8);
-        pdf.setTextColor(100, 116, 139);
-        if (client.clientAddress) pdf.text(client.clientAddress, toBoxX + 5, boxY + 20, { maxWidth: boxW - 10 });
-        if (client.clientEmail) pdf.text(client.clientEmail, toBoxX + 5, boxY + 30, { maxWidth: boxW - 10 });
+        pdf.text(line > 0 ? formatMoney(line) : "", colTotal, rowY + 5);
 
-        setCursorY(boxY + 44);
+        setCursorY(rowY + rowH);
+    });
 
-        const tableTop = eng.cursorY();
-        const colDesc = margin;
-        const colQty = margin + usableWidth * 0.52;
-        const colPrice = margin + usableWidth * 0.67;
-        const colTotal = margin + usableWidth * 0.82;
+    addSpacing(2);
 
-        addRect(margin, tableTop, usableWidth, 8, [15, 23, 42]);
-        pdf.setFont("helvetica", "bold");
-        pdf.setFontSize(7.5);
-        pdf.setTextColor(255, 255, 255);
-        const thY = tableTop + 5.5;
-        pdf.text("DESCRIPTION", colDesc + 3, thY);
-        pdf.text("QTY", colQty, thY);
-        pdf.text("UNIT PRICE", colPrice, thY);
-        pdf.text("TOTAL", colTotal, thY);
+    pdf.setDrawColor(226, 232, 240);
+    pdf.setLineWidth(0.3);
+    const divY = eng.cursorY();
+    pdf.line(margin, divY, pageWidth - margin, divY);
+    setCursorY(divY + 4);
 
-        setCursorY(tableTop + 10);
+    const { subtotal, taxAmount, total } = calcInvoiceTotals(items, taxRate);
+    const totX    = pageWidth - margin - 68;
+    const totValX = pageWidth - margin;
+    let totY      = eng.cursorY();
 
-        items.forEach((row, i) => {
-          const qty = parseNumber(row.qty);
-          const price = parseNumber(row.price);
-          const line = qty * price;
-          const rowY = eng.cursorY();
-          const rowH = 8;
-
-          ensureSpace(rowH + 2);
-
-          if (i % 2 === 1) {
-            addRect(margin, rowY - 1, usableWidth, rowH, [248, 250, 252]);
-          }
-
-          pdf.setFont("helvetica", "normal");
-          pdf.setFontSize(9);
-          pdf.setTextColor(30, 41, 59);
-          pdf.text(row.item || "", colDesc + 3, rowY + 5, { maxWidth: colQty - colDesc - 6 });
-          pdf.setTextColor(100, 116, 139);
-          pdf.text(String(qty > 0 ? qty : row.qty || ""), colQty, rowY + 5);
-          pdf.text(price > 0 ? formatMoney(price) : row.price || "", colPrice, rowY + 5);
-          pdf.setFont("helvetica", "bold");
-          pdf.setTextColor(15, 23, 42);
-          pdf.text(line > 0 ? formatMoney(line) : "", colTotal, rowY + 5);
-
-          setCursorY(rowY + rowH);
-        });
-
-        addSpacing(2);
-
-        pdf.setDrawColor(226, 232, 240);
-        pdf.setLineWidth(0.3);
-        const divY = eng.cursorY();
-        pdf.line(margin, divY, pageWidth - margin, divY);
-        setCursorY(divY + 4);
-
-        const { subtotal, taxAmount, total } = calcInvoiceTotals(items, taxRate);
-        const totX = pageWidth - margin - 68;
-        const totValX = pageWidth - margin;
-        let totY = eng.cursorY();
-
-        function addTotalRow(label, value, bold, big) {
-          ensureSpace(7);
-          pdf.setFont("helvetica", bold ? "bold" : "normal");
-          pdf.setFontSize(big ? 10.5 : 9);
-          pdf.setTextColor(bold && big ? 15 : 100, bold && big ? 23 : 116, bold && big ? 42 : 139);
-          pdf.text(label, totX, totY);
-          const valStr = formatMoney(value);
-          const valW = pdf.getTextWidth(valStr);
-          pdf.setFont("helvetica", bold ? "bold" : "normal");
-          pdf.setFontSize(big ? 10.5 : 9);
-          pdf.setTextColor(big ? 15 : 30, big ? 23 : 41, big ? 42 : 59);
-          pdf.text(valStr, totValX - valW, totY);
-          totY += 6;
-          eng.setCursorY(totY);
-        }
-
-        addTotalRow("Subtotal", subtotal, false, false);
-
-        const taxRateNum = parseNumber(taxRate);
-        if (taxRateNum > 0) {
-          addTotalRow("Tax (" + taxRateNum + "%)", taxAmount, false, false);
-        }
-
-        pdf.setDrawColor(226, 232, 240);
-        pdf.setLineWidth(0.3);
-        pdf.line(totX, totY, totValX, totY);
-        totY += 4;
+    function addTotalRow(label, value, bold, big) {
+        ensureSpace(7);
+        pdf.setFont("helvetica", bold ? "bold" : "normal");
+        pdf.setFontSize(big ? 10.5 : 9);
+        pdf.setTextColor(bold && big ? 15 : 100, bold && big ? 23 : 116, bold && big ? 42 : 139);
+        pdf.text(label, totX, totY);
+        const valStr = formatMoney(value);
+        const valW   = pdf.getTextWidth(valStr);
+        pdf.setFont("helvetica", bold ? "bold" : "normal");
+        pdf.setFontSize(big ? 10.5 : 9);
+        pdf.setTextColor(big ? 15 : 30, big ? 23 : 41, big ? 42 : 59);
+        pdf.text(valStr, totValX - valW, totY);
+        totY += 6;
         eng.setCursorY(totY);
+    }
 
-        addTotalRow("Total Due", total, true, true);
+    addTotalRow("Subtotal", subtotal, false, false);
 
-        addSpacing(16);
-        pdf.setFont("helvetica", "normal");
-        pdf.setFontSize(8);
-        pdf.setTextColor(148, 163, 184);
-        const footerText = "Thank you for your business.";
-        const ftW = pdf.getTextWidth(footerText);
-        pdf.text(footerText, (pageWidth - ftW) / 2, eng.cursorY());
+    const taxRateNum = parseNumber(taxRate);
+    if (taxRateNum > 0) {
+        addTotalRow("Tax (" + taxRateNum + "%)", taxAmount, false, false);
+    }
 
-        pdf.save("invoice.pdf");
-      }
+    pdf.setDrawColor(226, 232, 240);
+    pdf.setLineWidth(0.3);
+    pdf.line(totX, totY, totValX, totY);
+    totY += 4;
+    eng.setCursorY(totY);
 
-      /* ============================================================
+    addTotalRow("Total Due", total, true, true);
+
+    addSpacing(16);
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8);
+    pdf.setTextColor(148, 163, 184);
+    const footerText = "Thank you for your business.";
+    const ftW = pdf.getTextWidth(footerText);
+    pdf.text(footerText, (pageWidth - ftW) / 2, eng.cursorY());
+
+    pdf.save("invoice.pdf");
+}
+
+/* ============================================================
    UNIFIED EXPORT DISPATCHER
 ============================================================ */
 
-      function exportPDF(template, documentData, taxRate) {
-        if (template.id === "resume") exportResumePDF(documentData);
-        if (template.id === "invoice") exportInvoicePDF(documentData, taxRate);
-      }
+function exportPDF(template, documentData, taxRate) {
+    if (template.id === "resume")  exportResumePDF(documentData);
+    if (template.id === "invoice") exportInvoicePDF(documentData, taxRate);
+}
 
-      /* ============================================================
+/* ============================================================
    RESUME PREVIEW COMPONENT
 ============================================================ */
 
-      function ResumePreview({ data }) {
-        const hdr = data.header || {};
-        const sum = data.summary || {};
-        const exp = data.experience || [];
-        const edu = data.education || [];
+function ResumePreview({ data }) {
+    const hdr      = data.header     || {};
+    const sum      = data.summary    || {};
+    const skills   = data.skills     || [];
+    const exp      = data.experience || [];
+    const edu      = data.education  || [];
 
-        const hasAnyContent =
-          hdr.name ||
-          hdr.title ||
-          hdr.email ||
-          hdr.phone ||
-          sum.summary ||
-          exp.some((e) => e.role || e.company) ||
-          edu.some((e) => e.degree || e.school);
+    const hasSkills = skills.some(s => s.skill);
 
-        if (!hasAnyContent) {
-          return (
-            <div className="empty-preview">
-              <div className="empty-icon">📄</div>
-              <p>Fill in the form to see your resume preview</p>
-            </div>
-          );
-        }
+    const hasAnyContent =
+        hdr.name || hdr.title || hdr.email || hdr.phone ||
+        hdr.address || hdr.linkedin || hdr.website ||
+        sum.summary || hasSkills ||
+        exp.some(e => e.role    || e.company) ||
+        edu.some(e => e.degree  || e.school);
 
+    if (!hasAnyContent) {
         return (
-          <div className="preview-doc">
-            {hdr.name && <div className="resume-name">{hdr.name}</div>}
-            {hdr.title && <div className="resume-title">{hdr.title}</div>}
-            {(hdr.email || hdr.phone) && (
-              <div className="resume-contact">
-                {hdr.email && <span>{hdr.email}</span>}
-                {hdr.phone && <span>{hdr.phone}</span>}
-              </div>
-            )}
-            {sum.summary && (
-              <div>
-                <div className="section-heading">Professional Summary</div>
-                <p style={{ margin: 0, fontSize: "11px", color: "#475569", whiteSpace: "pre-wrap" }}>{sum.summary}</p>
-              </div>
-            )}
-            {exp.some((e) => e.role || e.company) && (
-              <div>
-                <div className="section-heading">Experience</div>
-                {exp.map((e, i) =>
-                  e.role || e.company ? (
-                    <div key={i} style={{ marginBottom: "12px" }}>
-                      {e.role && <div className="exp-role">{e.role}</div>}
-                      {(e.company || e.period) && (
-                        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                          {e.company && <span className="exp-company">{e.company}</span>}
-                          {e.company && e.period && <span style={{ color: "#cbd5e1", fontSize: "10px" }}>·</span>}
-                          {e.period && <span className="exp-period">{e.period}</span>}
-                        </div>
-                      )}
-                      {e.description && <div className="exp-description">{e.description}</div>}
-                    </div>
-                  ) : null,
-                )}
-              </div>
-            )}
-            {edu.some((e) => e.degree || e.school) && (
-              <div>
-                <div className="section-heading">Education</div>
-                {edu.map((e, i) =>
-                  e.degree || e.school ? (
-                    <div key={i} style={{ marginBottom: "10px" }}>
-                      {e.degree && <div className="edu-degree">{e.degree}</div>}
-                      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                        {e.school && <span className="edu-school">{e.school}</span>}
-                        {e.school && e.year && <span style={{ color: "#cbd5e1", fontSize: "10px" }}>·</span>}
-                        {e.year && <span className="edu-year">{e.year}</span>}
-                      </div>
-                    </div>
-                  ) : null,
-                )}
-              </div>
-            )}
-          </div>
+            <div className="empty-preview">
+                <div className="empty-icon">📄</div>
+                <p>Fill in the form to see your resume preview</p>
+            </div>
         );
-      }
+    }
 
-      /* ============================================================
+    return (
+        <div className="preview-doc">
+            {hdr.name  && <div className="resume-name">{hdr.name}</div>}
+            {hdr.title && <div className="resume-title">{hdr.title}</div>}
+
+            {(hdr.email || hdr.phone || hdr.address || hdr.linkedin || hdr.website) && (
+                <div className="resume-contact">
+                    {hdr.email    && <span>{hdr.email}</span>}
+                    {hdr.phone    && <span>{hdr.phone}</span>}
+                    {hdr.address  && <span>{hdr.address}</span>}
+                    {hdr.linkedin && <span style={{ color: "#3b82f6" }}>{hdr.linkedin}</span>}
+                    {hdr.website  && <span style={{ color: "#3b82f6" }}>{hdr.website}</span>}
+                </div>
+            )}
+
+            {sum.summary && (
+                <div>
+                    <div className="section-heading">Professional Summary</div>
+                    <p style={{ margin: 0, fontSize: "11px", color: "#475569", whiteSpace: "pre-wrap" }}>
+                        {sum.summary}
+                    </p>
+                </div>
+            )}
+
+            {hasSkills && (
+                <div>
+                    <div className="section-heading">Skills</div>
+                    <div className="skills-list">
+                        {skills.filter(s => s.skill).map((s, i) => (
+                            <span key={i} className="skill-tag">{s.skill}</span>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {exp.some(e => e.role || e.company) && (
+                <div>
+                    <div className="section-heading">Experience</div>
+                    {exp.map((e, i) => (
+                        (e.role || e.company) ? (
+                            <div key={i} style={{ marginBottom: "12px" }}>
+                                {e.role && <div className="exp-role">{e.role}</div>}
+                                {(e.company || e.period) && (
+                                    <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                                        {e.company && <span className="exp-company">{e.company}</span>}
+                                        {e.company && e.period && <span style={{ color: "#cbd5e1", fontSize: "10px" }}>·</span>}
+                                        {e.period  && <span className="exp-period">{e.period}</span>}
+                                    </div>
+                                )}
+                                {e.description && <div className="exp-description">{e.description}</div>}
+                            </div>
+                        ) : null
+                    ))}
+                </div>
+            )}
+
+            {edu.some(e => e.degree || e.school) && (
+                <div>
+                    <div className="section-heading">Education</div>
+                    {edu.map((e, i) => (
+                        (e.degree || e.school) ? (
+                            <div key={i} style={{ marginBottom: "10px" }}>
+                                {e.degree && <div className="edu-degree">{e.degree}</div>}
+                                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                                    {e.school && <span className="edu-school">{e.school}</span>}
+                                    {e.school && e.year && <span style={{ color: "#cbd5e1", fontSize: "10px" }}>·</span>}
+                                    {e.year   && <span className="edu-year">{e.year}</span>}
+                                </div>
+                            </div>
+                        ) : null
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
+
+/* ============================================================
    INVOICE PREVIEW COMPONENT
 ============================================================ */
 
-      function InvoicePreview({ data, taxRate }) {
-        const sender = data.sender || {};
-        const hdr = data.header || {};
-        const client = data.client || {};
-        const items = data.items || [];
+function InvoicePreview({ data, taxRate }) {
+    const sender = data.sender || {};
+    const hdr    = data.header || {};
+    const client = data.client || {};
+    const items  = data.items  || [];
 
-        const { subtotal, taxAmount, total } = calcInvoiceTotals(items, taxRate);
-        const taxRateNum = parseNumber(taxRate);
+    const { subtotal, taxAmount, total } = calcInvoiceTotals(items, taxRate);
+    const taxRateNum = parseNumber(taxRate);
 
-        const hasAnyContent = sender.senderName || hdr.invoiceNumber || client.clientName || items.some((i) => i.item);
+    const hasAnyContent =
+        sender.senderName || hdr.invoiceNumber ||
+        client.clientName ||
+        items.some(i => i.item);
 
-        if (!hasAnyContent) {
-          return (
-            <div className="empty-preview">
-              <div className="empty-icon">💰</div>
-              <p>Fill in the form to see your invoice preview</p>
-            </div>
-          );
-        }
-
+    if (!hasAnyContent) {
         return (
-          <div className="preview-doc">
+            <div className="empty-preview">
+                <div className="empty-icon">💰</div>
+                <p>Fill in the form to see your invoice preview</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="preview-doc">
             <div className="invoice-header">
-              <div>
-                <div className="invoice-brand">{sender.senderName || "Your Business"}</div>
-                <div className="invoice-tag">{sender.senderEmail || ""}</div>
-                {sender.senderAddress && (
-                  <div style={{ fontSize: "10px", color: "#64748b", marginTop: "2px", whiteSpace: "pre-wrap" }}>
-                    {sender.senderAddress}
-                  </div>
-                )}
-              </div>
-              <div className="invoice-meta">
-                <div style={{ fontSize: "14px", fontWeight: "700", color: "#0f172a", marginBottom: "6px" }}>
-                  INVOICE
+                <div>
+                    <div className="invoice-brand">{sender.senderName || "Your Business"}</div>
+                    <div className="invoice-tag">{sender.senderEmail || ""}</div>
+                    {sender.senderAddress && (
+                        <div style={{ fontSize: "10px", color: "#64748b", marginTop: "2px", whiteSpace: "pre-wrap" }}>
+                            {sender.senderAddress}
+                        </div>
+                    )}
+                    {sender.senderWebsite && (
+                        <div style={{ fontSize: "10px", color: "#3b82f6", marginTop: "1px" }}>
+                            {sender.senderWebsite}
+                        </div>
+                    )}
                 </div>
-                {hdr.invoiceNumber && (
-                  <div>
-                    No. <strong>{hdr.invoiceNumber}</strong>
-                  </div>
-                )}
-                {hdr.date && (
-                  <div>
-                    Issued: <strong>{hdr.date}</strong>
-                  </div>
-                )}
-                {hdr.dueDate && (
-                  <div>
-                    Due: <strong>{hdr.dueDate}</strong>
-                  </div>
-                )}
-              </div>
+                <div className="invoice-meta">
+                    <div style={{ fontSize: "14px", fontWeight: "700", color: "#0f172a", marginBottom: "6px" }}>INVOICE</div>
+                    {hdr.invoiceNumber && <div>No. <strong>{hdr.invoiceNumber}</strong></div>}
+                    {hdr.date    && <div>Issued: <strong>{hdr.date}</strong></div>}
+                    {hdr.dueDate && <div>Due: <strong>{hdr.dueDate}</strong></div>}
+                </div>
             </div>
 
             {(sender.senderName || client.clientName) && (
-              <div className="invoice-parties">
-                <div className="party-box">
-                  <div className="party-label">From</div>
-                  {sender.senderName && <div className="party-name">{sender.senderName}</div>}
-                  {sender.senderAddress && <div className="party-detail">{sender.senderAddress}</div>}
-                  {sender.senderEmail && (
-                    <div className="party-detail" style={{ color: "#3b82f6" }}>
-                      {sender.senderEmail}
+                <div className="invoice-parties">
+                    <div className="party-box">
+                        <div className="party-label">From</div>
+                        {sender.senderName    && <div className="party-name">{sender.senderName}</div>}
+                        {sender.senderAddress && <div className="party-detail">{sender.senderAddress}</div>}
+                        {sender.senderEmail   && <div className="party-detail" style={{ color: "#3b82f6" }}>{sender.senderEmail}</div>}
+                        {sender.senderWebsite && <div className="party-detail" style={{ color: "#3b82f6" }}>{sender.senderWebsite}</div>}
                     </div>
-                  )}
-                </div>
-                <div className="party-box">
-                  <div className="party-label">Bill To</div>
-                  {client.clientName && <div className="party-name">{client.clientName}</div>}
-                  {client.clientAddress && <div className="party-detail">{client.clientAddress}</div>}
-                  {client.clientEmail && (
-                    <div className="party-detail" style={{ color: "#3b82f6" }}>
-                      {client.clientEmail}
+                    <div className="party-box">
+                        <div className="party-label">Bill To</div>
+                        {client.clientName    && <div className="party-name">{client.clientName}</div>}
+                        {client.clientAddress && <div className="party-detail">{client.clientAddress}</div>}
+                        {client.clientEmail   && <div className="party-detail" style={{ color: "#3b82f6" }}>{client.clientEmail}</div>}
                     </div>
-                  )}
                 </div>
-              </div>
             )}
 
-            {items.some((i) => i.item) && (
-              <table className="items-table">
-                <thead>
-                  <tr>
-                    <th style={{ width: "50%" }}>Description</th>
-                    <th style={{ width: "12%", textAlign: "center" }}>Qty</th>
-                    <th style={{ width: "18%", textAlign: "right" }}>Unit Price</th>
-                    <th style={{ width: "20%", textAlign: "right" }}>Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {items.map((row, i) => {
-                    const qty = parseNumber(row.qty);
-                    const price = parseNumber(row.price);
-                    const line = qty * price;
-                    return (
-                      <tr key={i}>
-                        <td>{row.item || ""}</td>
-                        <td className="qty-cell">{row.qty || ""}</td>
-                        <td className="price-cell">{row.price ? formatMoney(parseNumber(row.price)) : ""}</td>
-                        <td style={{ textAlign: "right", fontFamily: "'DM Mono', monospace" }}>
-                          {line > 0 ? formatMoney(line) : ""}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+            {items.some(i => i.item) && (
+                <table className="items-table">
+                    <thead>
+                        <tr>
+                            <th style={{ width: "50%" }}>Description</th>
+                            <th style={{ width: "12%", textAlign: "center" }}>Qty</th>
+                            <th style={{ width: "18%", textAlign: "right" }}>Unit Price</th>
+                            <th style={{ width: "20%", textAlign: "right" }}>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {items.map((row, i) => {
+                            const qty   = parseNumber(row.qty);
+                            const price = parseNumber(row.price);
+                            const line  = qty * price;
+                            return (
+                                <tr key={i}>
+                                    <td>{row.item || ""}</td>
+                                    <td className="qty-cell">{row.qty || ""}</td>
+                                    <td className="price-cell">{row.price ? formatMoney(parseNumber(row.price)) : ""}</td>
+                                    <td style={{ textAlign: "right", fontFamily: "'DM Mono', monospace" }}>
+                                        {line > 0 ? formatMoney(line) : ""}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
             )}
 
             {subtotal > 0 && (
-              <div className="invoice-totals">
-                <div className="total-row">
-                  <span>Subtotal</span>
-                  <span className="total-value">{formatMoney(subtotal)}</span>
+                <div className="invoice-totals">
+                    <div className="total-row">
+                        <span>Subtotal</span>
+                        <span className="total-value">{formatMoney(subtotal)}</span>
+                    </div>
+                    {taxRateNum > 0 && (
+                        <div className="total-row">
+                            <span>Tax ({taxRateNum}%)</span>
+                            <span className="total-value">{formatMoney(taxAmount)}</span>
+                        </div>
+                    )}
+                    <div className="total-row">
+                        <span>Total Due</span>
+                        <span className="total-value">{formatMoney(total)}</span>
+                    </div>
                 </div>
-                {taxRateNum > 0 && (
-                  <div className="total-row">
-                    <span>Tax ({taxRateNum}%)</span>
-                    <span className="total-value">{formatMoney(taxAmount)}</span>
-                  </div>
-                )}
-                <div className="total-row">
-                  <span>Total Due</span>
-                  <span className="total-value">{formatMoney(total)}</span>
-                </div>
-              </div>
             )}
 
             <div className="invoice-notes">Thank you for your business.</div>
-          </div>
-        );
-      }
+        </div>
+    );
+}
 
-      /* ============================================================
+/* ============================================================
    UNIFIED PREVIEW DISPATCHER
 ============================================================ */
 
-      function Preview({ template, data, taxRate }) {
-        if (!template) return null;
-        if (template.id === "resume") return <ResumePreview data={data} />;
-        if (template.id === "invoice") return <InvoicePreview data={data} taxRate={taxRate} />;
-        return null;
-      }
+function Preview({ template, data, taxRate }) {
+    if (!template) return null;
+    if (template.id === "resume")  return <ResumePreview data={data} />;
+    if (template.id === "invoice") return <InvoicePreview data={data} taxRate={taxRate} />;
+    return null;
+}
 
-      /* ============================================================
+/* ============================================================
    SMART FIELD COMPONENT
-   Handles all validation states, date picker, char counter
 ============================================================ */
 
-      function SmartField({ field, value, onChange }) {
-        const [touched, setTouched] = useState(false);
-        const datePickerRef = useRef(null);
+function SmartField({ field, value, onChange, forceShowError }) {
+    const [touched,     setTouched]  = useState(false);
+    const datePickerRef              = useRef(null);
 
-        const isDateField = field.validate === "date";
-        const isNumberField = field.validate === "number";
-        const isTextarea = field.type === "textarea";
-        const showCounter = isTextarea || field.validate === "textarea" || field.validate === "text";
+    /* forceShowError is set to true when user clicks Download with invalid fields */
+    const shouldShowError = touched || forceShowError;
 
-        /* Run validation only after the field has been touched */
-        const errorMsg = touched ? validateField(field, value) : null;
-        const isValid = touched && !errorMsg && value.length > 0;
+    const isDateField   = field.validate === "date";
+    const isNumberField = field.validate === "number";
+    const isTextarea    = field.type === "textarea";
+    const showCounter   = isTextarea || field.validate === "textarea" || field.validate === "text";
 
-        /* Character counter colour */
-        const charCount = value.length;
-        const counterClass =
-          charCount > MAX_TEXT
-            ? "field-counter counter-over"
-            : charCount > MAX_TEXT * 0.85
-              ? "field-counter counter-warn"
-              : "field-counter";
+    const errorMsg = shouldShowError ? validateField(field, value) : null;
+    const isValid  = shouldShowError && !errorMsg && value.length > 0;
 
-        /* Shared props for the input / textarea */
-        const inputClass = ["field-input", isValid ? "is-valid" : "", errorMsg ? "is-invalid" : ""]
-          .filter(Boolean)
-          .join(" ");
+    const charCount    = value.length;
+    const counterClass = charCount > MAX_TEXT
+        ? "field-counter counter-over"
+        : charCount > MAX_TEXT * 0.85
+        ? "field-counter counter-warn"
+        : "field-counter";
 
-        function handleChange(e) {
-          let val = e.target.value;
-          /* For number fields, block any character that isn't a digit or dot */
-          if (isNumberField) {
+    const inputClass = [
+        "field-input",
+        isValid  ? "is-valid"   : "",
+        errorMsg ? "is-invalid" : ""
+    ].filter(Boolean).join(" ");
+
+    function handleChange(e) {
+        let val = e.target.value;
+        if (isNumberField) {
             val = val.replace(/[^0-9.]/g, "");
-            /* Allow only one decimal point */
             const parts = val.split(".");
             if (parts.length > 2) val = parts[0] + "." + parts.slice(1).join("");
-          }
-          onChange(val);
         }
+        onChange(val);
+    }
 
-        function handleBlur() {
-          setTouched(true);
+    function handleBlur() {
+        setTouched(true);
+    }
+
+    function openCalendar() {
+        if (datePickerRef.current) {
+            datePickerRef.current.showPicker
+                ? datePickerRef.current.showPicker()
+                : datePickerRef.current.click();
         }
+    }
 
-        /* Opens the hidden native date picker */
-        function openCalendar() {
-          if (datePickerRef.current) {
-            datePickerRef.current.showPicker ? datePickerRef.current.showPicker() : datePickerRef.current.click();
-          }
-        }
+    function handleNativeDateChange(e) {
+        const formatted = nativeDateToDisplay(e.target.value);
+        onChange(formatted);
+        setTouched(true);
+    }
 
-        /* When user picks a date from the calendar, convert to DD/MM/YYYY */
-        function handleNativeDateChange(e) {
-          const formatted = nativeDateToDisplay(e.target.value);
-          onChange(formatted);
-          setTouched(true);
-        }
+    const dateWrapClass = isDateField
+        ? ["date-field-wrapper", isValid ? "date-valid" : "", errorMsg ? "date-invalid" : ""]
+            .filter(Boolean).join(" ")
+        : null;
 
-        /* Date wrapper class for border mirroring */
-        const dateWrapClass = isDateField
-          ? ["date-field-wrapper", isValid ? "date-valid" : "", errorMsg ? "date-invalid" : ""]
-              .filter(Boolean)
-              .join(" ")
-          : null;
-
-        /* ---- TEXTAREA ---- */
-        if (isTextarea) {
-          return (
+    /* ---- TEXTAREA ---- */
+    if (isTextarea) {
+        return (
             <div>
-              <textarea
+                <textarea
+                    className={inputClass}
+                    rows="3"
+                    placeholder={field.placeholder || ""}
+                    value={value}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    maxLength={MAX_TEXT + 1}
+                    data-field-name={field.name}
+                />
+                {showCounter && (
+                    <div className={counterClass}>
+                        {charCount.toLocaleString()} / {MAX_TEXT.toLocaleString()}
+                    </div>
+                )}
+                {errorMsg && (
+                    <div className="field-error">
+                        <span className="error-icon">⚠</span>
+                        {errorMsg}
+                    </div>
+                )}
+            </div>
+        );
+    }
+
+    /* ---- DATE FIELD ---- */
+    if (isDateField) {
+        return (
+            <div>
+                <div className={dateWrapClass}>
+                    <input
+                        className={inputClass}
+                        type="text"
+                        placeholder={field.placeholder || "DD/MM/YYYY"}
+                        value={value}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        data-field-name={field.name}
+                    />
+                    <button
+                        type="button"
+                        className="date-calendar-btn"
+                        onClick={openCalendar}
+                        title="Open calendar"
+                    >
+                        📅
+                    </button>
+                    <input
+                        ref={datePickerRef}
+                        type="date"
+                        className="date-native-picker"
+                        onChange={handleNativeDateChange}
+                        tabIndex="-1"
+                    />
+                </div>
+                {errorMsg && (
+                    <div className="field-error">
+                        <span className="error-icon">⚠</span>
+                        {errorMsg}
+                    </div>
+                )}
+            </div>
+        );
+    }
+
+    /* ---- ALL OTHER FIELDS ---- */
+    return (
+        <div>
+            <input
                 className={inputClass}
-                rows="3"
+                type="text"
                 placeholder={field.placeholder || ""}
                 value={value}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                maxLength={MAX_TEXT + 1}
-              />
-              {showCounter && (
-                <div className={counterClass}>
-                  {charCount.toLocaleString()} / {MAX_TEXT.toLocaleString()}
-                </div>
-              )}
-              {errorMsg && (
-                <div className="field-error">
-                  <span className="error-icon">⚠</span>
-                  {errorMsg}
-                </div>
-              )}
-            </div>
-          );
-        }
-
-        /* ---- DATE FIELD ---- */
-        if (isDateField) {
-          return (
-            <div>
-              <div className={dateWrapClass}>
-                <input
-                  className={inputClass}
-                  type="text"
-                  placeholder={field.placeholder || "DD/MM/YYYY"}
-                  value={value}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-                <button type="button" className="date-calendar-btn" onClick={openCalendar} title="Open calendar">
-                  📅
-                </button>
-                <input
-                  ref={datePickerRef}
-                  type="date"
-                  className="date-native-picker"
-                  onChange={handleNativeDateChange}
-                  tabIndex="-1"
-                />
-              </div>
-              {errorMsg && (
-                <div className="field-error">
-                  <span className="error-icon">⚠</span>
-                  {errorMsg}
-                </div>
-              )}
-            </div>
-          );
-        }
-
-        /* ---- ALL OTHER FIELDS (text, email, phone, number, year) ---- */
-        return (
-          <div>
-            <input
-              className={inputClass}
-              type="text"
-              placeholder={field.placeholder || ""}
-              value={value}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              inputMode={isNumberField ? "decimal" : "text"}
+                inputMode={isNumberField ? "decimal" : "text"}
+                data-field-name={field.name}
             />
             {showCounter && (
-              <div className={counterClass}>
-                {charCount.toLocaleString()} / {MAX_TEXT.toLocaleString()}
-              </div>
+                <div className={counterClass}>
+                    {charCount.toLocaleString()} / {MAX_TEXT.toLocaleString()}
+                </div>
             )}
             {errorMsg && (
-              <div className="field-error">
-                <span className="error-icon">⚠</span>
-                {errorMsg}
-              </div>
+                <div className="field-error">
+                    <span className="error-icon">⚠</span>
+                    {errorMsg}
+                </div>
             )}
-          </div>
-        );
-      }
-      /* ============================================================
+        </div>
+    );
+}
+/* ============================================================
    MAIN APP COMPONENT
 ============================================================ */
 
-      function App() {
-        const [stage, setStage] = useState("home");
-        const [template, setTemplate] = useState(null);
-        const [documentData, setDocumentData] = useState({});
-        const [taxRate, setTaxRate] = useState("0");
-        const [search, setSearch] = useState("");
+function App() {
+    const [stage,          setStage]          = useState("home");
+    const [template,       setTemplate]       = useState(null);
+    const [documentData,   setDocumentData]   = useState({});
+    const [taxRate,        setTaxRate]        = useState("0");
+    const [search,         setSearch]         = useState("");
+    const [forceShowErrors, setForceShowErrors] = useState(false);
+    const [loadError,      setLoadError]      = useState("");
 
-        function selectTemplate(tpl) {
-          setTemplate(tpl);
-          setDocumentData(initDocument(tpl));
-          setTaxRate("0");
-          setStage("edit");
-        }
+    const formPanelBodyRef = useRef(null);
+    const loadInputRef     = useRef(null);
 
-        function updateField(sectionId, index, fieldName, value) {
-          setDocumentData((prev) => {
+    function selectTemplate(tpl) {
+        setTemplate(tpl);
+        setDocumentData(initDocument(tpl));
+        setTaxRate("0");
+        setForceShowErrors(false);
+        setLoadError("");
+        setStage("edit");
+    }
+
+    function updateField(sectionId, index, fieldName, value) {
+        setDocumentData(prev => {
             const copy = structuredClone(prev);
             if (Array.isArray(copy[sectionId])) {
-              copy[sectionId][index][fieldName] = value;
+                copy[sectionId][index][fieldName] = value;
             } else {
-              copy[sectionId][fieldName] = value;
+                copy[sectionId][fieldName] = value;
             }
             return copy;
-          });
-        }
+        });
+    }
 
-        function addBlock(section) {
-          setDocumentData((prev) => {
+    function addBlock(section) {
+        setDocumentData(prev => {
             const copy = structuredClone(prev);
             copy[section.id].push(initSection(section));
             return copy;
-          });
-        }
+        });
+    }
 
-        function removeBlock(section, index) {
-          setDocumentData((prev) => {
+    function removeBlock(section, index) {
+        setDocumentData(prev => {
             const copy = structuredClone(prev);
             if (copy[section.id].length > 1) {
-              copy[section.id].splice(index, 1);
+                copy[section.id].splice(index, 1);
             }
             return copy;
-          });
+        });
+    }
+
+    /* ── DOWNLOAD GUARD ──
+       1. Check all fields for errors.
+       2. If any errors exist, force-show them all and scroll to the first one.
+       3. Only proceed to PDF export when everything is clean. */
+    function handleExportPDF() {
+        const errors = getAllFieldErrors(template, documentData);
+
+        if (errors.length > 0) {
+            /* Reveal all error messages at once */
+            setForceShowErrors(true);
+
+            /* Scroll to the first invalid input inside the form panel body */
+            requestAnimationFrame(() => {
+                const panel = formPanelBodyRef.current;
+                if (!panel) return;
+
+                /* Look for the first element carrying is-invalid inside the panel */
+                const firstInvalid = panel.querySelector(".is-invalid");
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
+                    firstInvalid.focus({ preventScroll: true });
+                }
+            });
+            return;
         }
 
-        function handleExportPDF() {
-          exportPDF(template, documentData, taxRate);
+        /* All fields clean — proceed */
+        exportPDF(template, documentData, taxRate);
+    }
+
+    /* ── SAVE PROGRESS ── */
+    function handleSave() {
+        saveProgressToFile(template, documentData, taxRate);
+    }
+
+    /* ── LOAD PROGRESS ── */
+    async function handleLoad() {
+        setLoadError("");
+        try {
+            const payload = await loadProgressFromFile();
+
+            /* Validate the file shape */
+            if (!payload.templateId || !payload.documentData) {
+                setLoadError("This file doesn't look like an EasyDoc save file.");
+                return;
+            }
+
+            /* Find the matching template */
+            const tpl = TEMPLATES.find(t => t.id === payload.templateId);
+            if (!tpl) {
+                setLoadError("The template in this save file is not available.");
+                return;
+            }
+
+            /* Restore state */
+            setTemplate(tpl);
+            setDocumentData(payload.documentData);
+            setTaxRate(payload.taxRate || "0");
+            setForceShowErrors(false);
+            setLoadError("");
+            setStage("edit");
+
+        } catch (err) {
+            setLoadError(err.message || "Could not load the file.");
         }
+    }
 
-        /* Featured — hardcoded, never affected by search */
-        const featuredTemplates = TEMPLATES.filter((tpl) => FEATURED_IDS.includes(tpl.id));
+    /* Featured — hardcoded, never affected by search */
+    const featuredTemplates = TEMPLATES.filter(tpl => FEATURED_IDS.includes(tpl.id));
 
-        /* All templates — filtered only by search */
-        const filteredTemplates = TEMPLATES.filter(
-          (tpl) =>
-            tpl.name.toLowerCase().includes(search.toLowerCase()) ||
-            tpl.description.toLowerCase().includes(search.toLowerCase()) ||
-            tpl.category.toLowerCase().includes(search.toLowerCase()),
-        );
+    /* All templates — filtered only by search */
+    const filteredTemplates = TEMPLATES.filter(tpl =>
+        tpl.name.toLowerCase().includes(search.toLowerCase()) ||
+        tpl.description.toLowerCase().includes(search.toLowerCase()) ||
+        tpl.category.toLowerCase().includes(search.toLowerCase())
+    );
 
-        return (
-          <div style={{ minHeight: "100vh" }}>
+    return (
+        <div style={{ minHeight: "100vh" }}>
+
             {/* ================================================
                 HEADER
             ================================================ */}
             <header className="app-header">
-              <div className="header-inner">
-                <div className="app-logo">
-                  <div className="logo-mark">E</div>
-                  <span className="logo-text">EasyDoc</span>
+                <div className="header-inner">
+                    <div className="app-logo">
+                        <div className="logo-mark">E</div>
+                        <span className="logo-text">EasyDoc</span>
+                    </div>
+                    {stage === "edit" && (
+                        <button
+                            className="btn-back"
+                            onClick={() => setStage("home")}
+                        >
+                            ← Back
+                        </button>
+                    )}
                 </div>
-                {stage === "edit" && (
-                  <button className="btn-back" onClick={() => setStage("home")}>
-                    ← Back
-                  </button>
-                )}
-              </div>
             </header>
 
             {/* ================================================
                 HOME SCREEN
             ================================================ */}
             {stage === "home" && (
-              <div className="home-wrapper">
-                <div className="home-heading">
-                  <h2>What would you like to create?</h2>
-                  <p>Choose a template and build a professional document in minutes</p>
+                <div className="home-wrapper">
+
+                    <div className="home-heading">
+                        <h2>What would you like to create?</h2>
+                        <p>Choose a template and build a professional document in minutes</p>
+                    </div>
+
+                    {/* ── FEATURED — never touched by search ── */}
+                    <div className="home-section-heading">
+                        <h3>⭐ Featured</h3>
+                        <div className="section-rule"></div>
+                    </div>
+
+                    <div className="template-grid" style={{ marginBottom: "0" }}>
+                        {featuredTemplates.map((tpl, i) => (
+                            <button
+                                key={tpl.id}
+                                className="template-card animate-in"
+                                style={{ animationDelay: (i * 70) + "ms" }}
+                                onClick={() => selectTemplate(tpl)}
+                            >
+                                <span className="card-icon">{tpl.icon}</span>
+                                <div className="card-category">{tpl.category}</div>
+                                <div className="card-name">{tpl.name}</div>
+                                <div className="card-desc">{tpl.description}</div>
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* ── DIVIDER ── */}
+                    <hr className="home-divider" />
+
+                    {/* ── ALL DOCUMENTS — search only affects this ── */}
+                    <div className="search-bar-wrapper">
+                        <span className="search-icon">🔍</span>
+                        <input
+                            className="search-bar-input"
+                            type="text"
+                            placeholder="Search all templates..."
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="all-docs-header">
+                        <div className="home-section-heading" style={{ marginBottom: "0" }}>
+                            <h3>All Documents</h3>
+                            <div className="section-rule"></div>
+                        </div>
+                        <span className="all-docs-count">
+                            {filteredTemplates.length} template{filteredTemplates.length !== 1 ? "s" : ""}
+                        </span>
+                    </div>
+
+                    {filteredTemplates.length > 0 ? (
+                        <div className="template-grid">
+                            {filteredTemplates.map((tpl, i) => (
+                                <button
+                                    key={tpl.id}
+                                    className="template-card animate-in"
+                                    style={{ animationDelay: (i * 70) + "ms" }}
+                                    onClick={() => selectTemplate(tpl)}
+                                >
+                                    <span className="card-icon">{tpl.icon}</span>
+                                    <div className="card-category">{tpl.category}</div>
+                                    <div className="card-name">{tpl.name}</div>
+                                    <div className="card-desc">{tpl.description}</div>
+                                </button>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="no-results">
+                            <span className="no-results-icon">🔍</span>
+                            <p>No templates found for "<strong>{search}</strong>"</p>
+                        </div>
+                    )}
+
                 </div>
-
-                {/* ── FEATURED — never touched by search ── */}
-                <div className="home-section-heading">
-                  <h3>⭐ Featured</h3>
-                  <div className="section-rule"></div>
-                </div>
-
-                <div className="template-grid" style={{ marginBottom: "0" }}>
-                  {featuredTemplates.map((tpl, i) => (
-                    <button
-                      key={tpl.id}
-                      className="template-card animate-in"
-                      style={{ animationDelay: i * 70 + "ms" }}
-                      onClick={() => selectTemplate(tpl)}
-                    >
-                      <span className="card-icon">{tpl.icon}</span>
-                      <div className="card-category">{tpl.category}</div>
-                      <div className="card-name">{tpl.name}</div>
-                      <div className="card-desc">{tpl.description}</div>
-                    </button>
-                  ))}
-                </div>
-
-                {/* ── DIVIDER ── */}
-                <hr className="home-divider" />
-
-                {/* ── ALL DOCUMENTS — search only affects this ── */}
-                <div className="search-bar-wrapper">
-                  <span className="search-icon">🔍</span>
-                  <input
-                    className="search-bar-input"
-                    type="text"
-                    placeholder="Search all templates..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                </div>
-
-                <div className="all-docs-header">
-                  <div className="home-section-heading" style={{ marginBottom: "0" }}>
-                    <h3>All Documents</h3>
-                    <div className="section-rule"></div>
-                  </div>
-                  <span className="all-docs-count">
-                    {filteredTemplates.length} template{filteredTemplates.length !== 1 ? "s" : ""}
-                  </span>
-                </div>
-
-                {filteredTemplates.length > 0 ? (
-                  <div className="template-grid">
-                    {filteredTemplates.map((tpl, i) => (
-                      <button
-                        key={tpl.id}
-                        className="template-card animate-in"
-                        style={{ animationDelay: i * 70 + "ms" }}
-                        onClick={() => selectTemplate(tpl)}
-                      >
-                        <span className="card-icon">{tpl.icon}</span>
-                        <div className="card-category">{tpl.category}</div>
-                        <div className="card-name">{tpl.name}</div>
-                        <div className="card-desc">{tpl.description}</div>
-                      </button>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="no-results">
-                    <span className="no-results-icon">🔍</span>
-                    <p>
-                      No templates found for "<strong>{search}</strong>"
-                    </p>
-                  </div>
-                )}
-              </div>
             )}
 
             {/* ================================================
                 EDITOR SCREEN
             ================================================ */}
             {stage === "edit" && template && (
-              <div className="editor-wrapper">
-                <div className="editor-grid">
-                  {/* ---- FORM PANEL ---- */}
-                  <div className="form-panel animate-in">
-                    <div className="form-panel-header">
-                      <span className="panel-icon">{template.icon}</span>
-                      <h2 className="panel-title">{template.name}</h2>
-                    </div>
+                <div className="editor-wrapper">
+                    <div className="editor-grid">
 
-                    <div className="form-panel-body">
-                      {template.sections.map((section) => (
-                        <div key={section.id} className="section-block">
-                          <div className="section-label">{section.title}</div>
+                        {/* ---- FORM PANEL ---- */}
+                        <div className="form-panel animate-in">
 
-                          {(Array.isArray(documentData[section.id])
-                            ? documentData[section.id]
-                            : [documentData[section.id]]
-                          ).map((block, idx) => (
-                            <div key={idx} className={section.repeatable ? "repeatable-block" : ""}>
-                              {section.repeatable && (
-                                <div className="repeatable-block-header">
-                                  <span className="repeatable-block-index">#{String(idx + 1).padStart(2, "0")}</span>
-                                  {documentData[section.id].length > 1 && (
-                                    <button className="btn-remove" onClick={() => removeBlock(section, idx)}>
-                                      ✕ Remove
-                                    </button>
-                                  )}
-                                </div>
-                              )}
-
-                              {section.fields.map((field) => (
-                                <div key={field.name} className="field-group">
-                                  <label className="field-label">{field.label}</label>
-                                  <SmartField
-                                    field={field}
-                                    value={block[field.name]}
-                                    onChange={(val) => updateField(section.id, idx, field.name, val)}
-                                  />
-                                </div>
-                              ))}
+                            <div className="form-panel-header">
+                                <span className="panel-icon">{template.icon}</span>
+                                <h2 className="panel-title">{template.name}</h2>
                             </div>
-                          ))}
 
-                          {section.repeatable && (
-                            <button className="btn-add" onClick={() => addBlock(section)}>
-                              + Add {section.title}
-                            </button>
-                          )}
+                            <div className="form-panel-body" ref={formPanelBodyRef}>
+
+                                {template.sections.map(section => (
+                                    <div key={section.id} className="section-block">
+
+                                        <div className="section-label">
+                                            {section.title}
+                                        </div>
+
+                                        {(Array.isArray(documentData[section.id])
+                                            ? documentData[section.id]
+                                            : [documentData[section.id]]
+                                        ).map((block, idx) => (
+                                            <div
+                                                key={idx}
+                                                className={section.repeatable ? "repeatable-block" : ""}
+                                            >
+                                                {section.repeatable && (
+                                                    <div className="repeatable-block-header">
+                                                        <span className="repeatable-block-index">
+                                                            #{String(idx + 1).padStart(2, "0")}
+                                                        </span>
+                                                        {documentData[section.id].length > 1 && (
+                                                            <button
+                                                                className="btn-remove"
+                                                                onClick={() => removeBlock(section, idx)}
+                                                            >
+                                                                ✕ Remove
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                )}
+
+                                                {section.fields.map(field => (
+                                                    <div key={field.name} className="field-group">
+                                                        <label className="field-label">
+                                                            {field.label}
+                                                        </label>
+                                                        <SmartField
+                                                            field={field}
+                                                            value={block[field.name]}
+                                                            forceShowError={forceShowErrors}
+                                                            onChange={val =>
+                                                                updateField(
+                                                                    section.id,
+                                                                    idx,
+                                                                    field.name,
+                                                                    val
+                                                                )
+                                                            }
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ))}
+
+                                        {section.repeatable && (
+                                            <button
+                                                className="btn-add"
+                                                onClick={() => addBlock(section)}
+                                            >
+                                                + Add {section.title}
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+
+                                {/* Tax rate — invoice only */}
+                                {template.id === "invoice" && (
+                                    <div className="tax-row">
+                                        <label>Tax Rate</label>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            max="100"
+                                            step="0.5"
+                                            value={taxRate}
+                                            onChange={e => setTaxRate(e.target.value)}
+                                            placeholder="0"
+                                        />
+                                        <span className="tax-hint">% (leave 0 for no tax)</span>
+                                    </div>
+                                )}
+
+                            </div>
+
+                            {/* ---- FOOTER: Save / Load / Download ---- */}
+                            <div className="form-panel-footer">
+
+                                {/* Save + Load row */}
+                                <div className="footer-saveload-row">
+                                    <button
+                                        className="btn-save"
+                                        onClick={handleSave}
+                                        title="Save your progress as a file"
+                                    >
+                                        💾 Save Progress
+                                    </button>
+                                    <button
+                                        className="btn-load"
+                                        onClick={handleLoad}
+                                        title="Load a previously saved progress file"
+                                    >
+                                        📂 Load Progress
+                                    </button>
+                                </div>
+
+                                {/* Load error message */}
+                                {loadError && (
+                                    <div className="field-error" style={{ marginTop: "2px" }}>
+                                        <span className="error-icon">⚠</span>
+                                        {loadError}
+                                    </div>
+                                )}
+
+                                {/* Download PDF button */}
+                                <button
+                                    className="btn-download"
+                                    onClick={handleExportPDF}
+                                >
+                                    ↓ Download PDF
+                                </button>
+
+                            </div>
+
                         </div>
-                      ))}
 
-                      {/* Tax rate — invoice only */}
-                      {template.id === "invoice" && (
-                        <div className="tax-row">
-                          <label>Tax Rate</label>
-                          <input
-                            type="number"
-                            min="0"
-                            max="100"
-                            step="0.5"
-                            value={taxRate}
-                            onChange={(e) => setTaxRate(e.target.value)}
-                            placeholder="0"
-                          />
-                          <span className="tax-hint">% (leave 0 for no tax)</span>
+                        {/* ---- PREVIEW PANEL ---- */}
+                        <div className="preview-panel animate-in" style={{ animationDelay: "80ms" }}>
+
+                            <div className="preview-panel-header">
+                                <span className="preview-label">Live Preview</span>
+                                <span className="preview-live-dot">Live</span>
+                            </div>
+
+                            <div className="preview-scroll-area">
+                                <Preview
+                                    template={template}
+                                    data={documentData}
+                                    taxRate={taxRate}
+                                />
+                            </div>
+
                         </div>
-                      )}
-                    </div>
 
-                    <div className="form-panel-footer">
-                      <button className="btn-download" onClick={handleExportPDF}>
-                        ↓ Download PDF
-                      </button>
                     </div>
-                  </div>
-
-                  {/* ---- PREVIEW PANEL ---- */}
-                  <div className="preview-panel animate-in" style={{ animationDelay: "80ms" }}>
-                    <div className="preview-panel-header">
-                      <span className="preview-label">Live Preview</span>
-                      <span className="preview-live-dot">Live</span>
-                    </div>
-
-                    <div className="preview-scroll-area">
-                      <Preview template={template} data={documentData} taxRate={taxRate} />
-                    </div>
-                  </div>
                 </div>
-              </div>
             )}
-          </div>
-        );
-      }
 
-      /* ============================================================
+        </div>
+    );
+}
+
+/* ============================================================
    MOUNT
 ============================================================ */
 
-      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-    </script>
-  </body>
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+</script>
+</body>
 </html>
