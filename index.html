@@ -5,56 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EasyDoc — Document Generator</title>
 
-    <!-- Google Fonts: DM Sans + DM Mono -->
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- React -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-
-    <!-- Babel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-
-    <!-- jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
-        /* =====================================================
-           CSS VARIABLES & RESET
-        ===================================================== */
         :root {
-            --navy:        #0f172a;
-            --navy-mid:    #1e293b;
-            --navy-light:  #334155;
-            --accent:      #3b82f6;
-            --accent-dark: #2563eb;
-            --accent-soft: #eff6ff;
-            --success:     #10b981;
-            --danger:      #ef4444;
-            --warning:     #f59e0b;
+            --navy:           #0f172a;
+            --navy-mid:       #1e293b;
+            --navy-light:     #334155;
+            --accent:         #3b82f6;
+            --accent-dark:    #2563eb;
+            --accent-soft:    #eff6ff;
+            --success:        #10b981;
+            --danger:         #ef4444;
+            --warning:        #f59e0b;
             --text-primary:   #0f172a;
             --text-secondary: #64748b;
             --text-muted:     #94a3b8;
-            --border:      #e2e8f0;
-            --border-focus:#3b82f6;
-            --bg-page:     #f8fafc;
-            --bg-card:     #ffffff;
-            --bg-input:    #f8fafc;
-            --shadow-sm:   0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-            --shadow-md:   0 4px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-            --shadow-lg:   0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
-            --radius-sm:   6px;
-            --radius-md:   10px;
-            --radius-lg:   16px;
-            --transition:  all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --border:         #e2e8f0;
+            --border-focus:   #3b82f6;
+            --bg-page:        #f8fafc;
+            --bg-card:        #ffffff;
+            --bg-input:       #f8fafc;
+            --shadow-sm:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md:  0 4px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+            --shadow-lg:  0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+            --radius-sm:  6px;
+            --radius-md:  10px;
+            --radius-lg:  16px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -90,7 +78,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            text-decoration: none;
         }
 
         .app-logo .logo-mark {
@@ -129,7 +116,6 @@
             border-radius: var(--radius-sm);
             cursor: pointer;
             transition: var(--transition);
-            text-decoration: none;
         }
 
         .btn-back:hover {
@@ -229,9 +215,7 @@
             box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
         }
 
-        .search-bar-input::placeholder {
-            color: var(--text-muted);
-        }
+        .search-bar-input::placeholder { color: var(--text-muted); }
 
         .all-docs-header {
             display: flex;
@@ -260,10 +244,7 @@
             display: block;
         }
 
-        .no-results p {
-            font-size: 14px;
-            margin: 0;
-        }
+        .no-results p { font-size: 14px; margin: 0; }
 
         .template-grid {
             display: grid;
@@ -289,9 +270,7 @@
         .template-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 3px;
             background: linear-gradient(90deg, var(--accent), #818cf8);
             transform: scaleX(0);
@@ -305,9 +284,7 @@
             transform: translateY(-3px);
         }
 
-        .template-card:hover::before {
-            transform: scaleX(1);
-        }
+        .template-card:hover::before { transform: scaleX(1); }
 
         .template-card .card-icon {
             font-size: 30px;
@@ -355,9 +332,7 @@
         }
 
         @media (max-width: 900px) {
-            .editor-grid {
-                grid-template-columns: 1fr;
-            }
+            .editor-grid { grid-template-columns: 1fr; }
         }
 
         /* =====================================================
@@ -379,9 +354,7 @@
             gap: 10px;
         }
 
-        .form-panel-header .panel-icon {
-            font-size: 22px;
-        }
+        .form-panel-header .panel-icon { font-size: 22px; }
 
         .form-panel-header .panel-title {
             font-size: 16px;
@@ -397,22 +370,11 @@
             overflow-y: auto;
         }
 
-        .form-panel-body::-webkit-scrollbar {
-            width: 4px;
-        }
+        .form-panel-body::-webkit-scrollbar { width: 4px; }
+        .form-panel-body::-webkit-scrollbar-track { background: transparent; }
+        .form-panel-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-        .form-panel-body::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .form-panel-body::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 2px;
-        }
-
-        .section-block {
-            margin-bottom: 28px;
-        }
+        .section-block { margin-bottom: 28px; }
 
         .section-label {
             font-size: 11px;
@@ -439,7 +401,6 @@
             padding: 16px;
             margin-bottom: 10px;
             background: var(--bg-input);
-            position: relative;
         }
 
         .repeatable-block-header {
@@ -456,13 +417,8 @@
             font-family: 'DM Mono', monospace;
         }
 
-        .field-group {
-            margin-bottom: 14px;
-        }
-
-        .field-group:last-child {
-            margin-bottom: 0;
-        }
+        .field-group { margin-bottom: 14px; }
+        .field-group:last-child { margin-bottom: 0; }
 
         .field-label {
             display: block;
@@ -471,6 +427,14 @@
             color: var(--text-secondary);
             margin-bottom: 5px;
             letter-spacing: 0.1px;
+        }
+
+        .field-label .optional-badge {
+            font-size: 10px;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-left: 5px;
+            font-style: italic;
         }
 
         .field-input {
@@ -493,9 +457,7 @@
             box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
         }
 
-        .field-input::placeholder {
-            color: var(--text-muted);
-        }
+        .field-input::placeholder { color: var(--text-muted); }
 
         textarea.field-input {
             resize: vertical;
@@ -537,10 +499,7 @@
             line-height: 1.4;
         }
 
-        .field-error .error-icon {
-            font-size: 12px;
-            flex-shrink: 0;
-        }
+        .field-error .error-icon { font-size: 12px; flex-shrink: 0; }
 
         .field-counter {
             display: flex;
@@ -552,14 +511,8 @@
             transition: color 0.15s;
         }
 
-        .field-counter.counter-warn {
-            color: var(--warning);
-        }
-
-        .field-counter.counter-over {
-            color: var(--danger);
-            font-weight: 600;
-        }
+        .field-counter.counter-warn { color: var(--warning); }
+        .field-counter.counter-over { color: var(--danger); font-weight: 600; }
 
         /* =====================================================
            DATE FIELD
@@ -568,7 +521,6 @@
             position: relative;
             display: flex;
             align-items: center;
-            gap: 0;
         }
 
         .date-field-wrapper .field-input {
@@ -577,17 +529,13 @@
             border-right: none;
         }
 
-        .date-field-wrapper .field-input:focus {
-            z-index: 1;
-            border-right: none;
-        }
+        .date-field-wrapper .field-input:focus { z-index: 1; }
 
         .date-calendar-btn {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 38px;
-            height: 100%;
             min-height: 38px;
             background: var(--bg-input);
             border: 1px solid var(--border);
@@ -595,14 +543,12 @@
             border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
             cursor: pointer;
             font-size: 15px;
-            color: var(--text-secondary);
             transition: var(--transition);
             flex-shrink: 0;
         }
 
         .date-calendar-btn:hover {
             background: var(--accent-soft);
-            color: var(--accent);
             border-color: var(--accent);
         }
 
@@ -611,18 +557,14 @@
             box-shadow: 0 0 0 3px rgba(16,185,129,0.10);
         }
 
-        .date-field-wrapper.date-valid .date-calendar-btn {
-            border-color: var(--success);
-        }
+        .date-field-wrapper.date-valid .date-calendar-btn { border-color: var(--success); }
 
         .date-field-wrapper.date-invalid .field-input {
             border-color: var(--danger);
             box-shadow: 0 0 0 3px rgba(239,68,68,0.10);
         }
 
-        .date-field-wrapper.date-invalid .date-calendar-btn {
-            border-color: var(--danger);
-        }
+        .date-field-wrapper.date-invalid .date-calendar-btn { border-color: var(--danger); }
 
         .date-native-picker {
             position: absolute;
@@ -635,6 +577,146 @@
             border: none;
             padding: 0;
         }
+
+        /* =====================================================
+           IMAGE UPLOAD ZONE
+        ===================================================== */
+        .image-upload-section {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .image-upload-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.9px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .image-upload-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .image-upload-zone {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .image-upload-trigger {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px dashed var(--border);
+            background: var(--bg-input);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-upload-trigger.square { border-radius: var(--radius-md); }
+
+        .image-upload-trigger:hover {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+        }
+
+        .image-upload-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            pointer-events: none;
+        }
+
+        .image-upload-placeholder .upload-icon { font-size: 22px; opacity: 0.4; }
+
+        .image-upload-placeholder .upload-hint {
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        .image-upload-trigger img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-upload-trigger .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .image-upload-trigger:hover .image-overlay { opacity: 1; }
+
+        .image-overlay .overlay-icon { font-size: 18px; }
+
+        .image-overlay .overlay-text {
+            font-size: 9px;
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .image-upload-info { flex: 1; }
+
+        .image-upload-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 0 0 8px 0;
+            line-height: 1.5;
+        }
+
+        .btn-remove-image {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--danger);
+            background: rgba(239,68,68,0.06);
+            border: 1px solid rgba(239,68,68,0.15);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-remove-image:hover {
+            background: rgba(239,68,68,0.12);
+            border-color: rgba(239,68,68,0.3);
+        }
+
+        .image-file-input { display: none; }
 
         /* =====================================================
            BUTTONS
@@ -679,14 +761,8 @@
             margin-top: 4px;
         }
 
-        .btn-add:hover {
-            background: #dbeafe;
-            border-color: var(--accent);
-        }
+        .btn-add:hover { background: #dbeafe; border-color: var(--accent); }
 
-        /* =====================================================
-           FORM PANEL FOOTER — save / load / download row
-        ===================================================== */
         .form-panel-footer {
             padding: 16px 24px;
             border-top: 1px solid var(--border);
@@ -696,19 +772,14 @@
             gap: 10px;
         }
 
-        /* Save + Load row sits above the Download button */
-        .footer-saveload-row {
-            display: flex;
-            gap: 8px;
-        }
+        .footer-saveload-row { display: flex; gap: 8px; }
 
-        /* Save button — outlined style */
-        .btn-save {
+        .btn-secondary {
+            flex: 1;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            flex: 1;
             padding: 9px 14px;
             font-family: 'DM Sans', sans-serif;
             font-size: 13px;
@@ -721,38 +792,12 @@
             transition: var(--transition);
         }
 
-        .btn-save:hover {
+        .btn-secondary:hover {
             color: var(--text-primary);
             border-color: var(--navy-light);
             box-shadow: var(--shadow-sm);
         }
 
-        /* Load button — outlined style */
-        .btn-load {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            flex: 1;
-            padding: 9px 14px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .btn-load:hover {
-            color: var(--text-primary);
-            border-color: var(--navy-light);
-            box-shadow: var(--shadow-sm);
-        }
-
-        /* Download PDF — full width primary */
         .btn-download {
             display: flex;
             align-items: center;
@@ -778,11 +823,8 @@
             transform: translateY(-1px);
         }
 
-        .btn-download:active {
-            transform: translateY(0);
-        }
+        .btn-download:active { transform: translateY(0); }
 
-        /* Disabled state for download when there are errors */
         .btn-download:disabled {
             background: var(--text-muted);
             cursor: not-allowed;
@@ -849,17 +891,11 @@
             background: #f1f5f9;
         }
 
-        .preview-scroll-area::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .preview-scroll-area::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 2px;
-        }
+        .preview-scroll-area::-webkit-scrollbar { width: 4px; }
+        .preview-scroll-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
         /* =====================================================
-           PREVIEW DOCUMENT STYLES
+           PREVIEW DOCUMENT — this is what gets screenshot for PDF
         ===================================================== */
         .preview-doc {
             background: white;
@@ -873,6 +909,19 @@
             color: #1e293b;
             font-family: 'DM Sans', sans-serif;
         }
+
+        /* Resume */
+        .preview-doc .resume-header-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid var(--navy);
+            margin-bottom: 18px;
+        }
+
+        .preview-doc .resume-header-text { flex: 1; min-width: 0; }
 
         .preview-doc .resume-name {
             font-size: 24px;
@@ -893,11 +942,41 @@
             font-size: 11px;
             color: var(--text-secondary);
             display: flex;
-            gap: 14px;
+            gap: 12px;
             flex-wrap: wrap;
-            padding-bottom: 14px;
-            border-bottom: 2px solid var(--navy);
-            margin-bottom: 18px;
+        }
+
+        .preview-doc .resume-photo {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 2px solid var(--border);
+        }
+
+        .preview-doc .resume-photo-placeholder {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: var(--bg-input);
+            border: 2px dashed var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .preview-doc .resume-photo-placeholder .ph-icon { font-size: 20px; opacity: 0.3; }
+
+        .preview-doc .resume-photo-placeholder .ph-text {
+            font-size: 8px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
         }
 
         .preview-doc .section-heading {
@@ -912,54 +991,15 @@
             border-bottom: 1px solid var(--border);
         }
 
-        .preview-doc .exp-role {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
+        .preview-doc .exp-role { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+        .preview-doc .exp-company { font-size: 12px; color: var(--text-secondary); }
+        .preview-doc .exp-period { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+        .preview-doc .exp-description { font-size: 11.5px; color: var(--text-secondary); margin-top: 4px; white-space: pre-wrap; }
+        .preview-doc .edu-degree { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+        .preview-doc .edu-school { font-size: 12px; color: var(--text-secondary); }
+        .preview-doc .edu-year { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono', monospace; }
 
-        .preview-doc .exp-company {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .preview-doc .exp-period {
-            font-size: 11px;
-            color: var(--text-muted);
-            font-family: 'DM Mono', monospace;
-        }
-
-        .preview-doc .exp-description {
-            font-size: 11.5px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-            white-space: pre-wrap;
-        }
-
-        .preview-doc .edu-degree {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .preview-doc .edu-school {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .preview-doc .edu-year {
-            font-size: 11px;
-            color: var(--text-muted);
-            font-family: 'DM Mono', monospace;
-        }
-
-        /* Skills tags in preview */
-        .preview-doc .skills-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 4px;
-        }
+        .preview-doc .skills-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 
         .preview-doc .skill-tag {
             display: inline-block;
@@ -972,7 +1012,7 @@
             border-radius: 20px;
         }
 
-        /* Invoice Preview */
+        /* Invoice */
         .preview-doc .invoice-header {
             display: flex;
             justify-content: space-between;
@@ -980,20 +1020,21 @@
             margin-bottom: 28px;
             padding-bottom: 20px;
             border-bottom: 2px solid var(--navy);
+            gap: 16px;
         }
 
-        .preview-doc .invoice-brand {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--navy);
-            letter-spacing: -0.5px;
+        .preview-doc .invoice-header-left { flex: 1; min-width: 0; }
+
+        .preview-doc .invoice-header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+            flex-shrink: 0;
         }
 
-        .preview-doc .invoice-tag {
-            font-size: 12px;
-            font-weight: 400;
-            color: var(--text-muted);
-        }
+        .preview-doc .invoice-brand { font-size: 22px; font-weight: 700; color: var(--navy); letter-spacing: -0.5px; }
+        .preview-doc .invoice-tag { font-size: 12px; color: var(--text-muted); }
 
         .preview-doc .invoice-meta {
             text-align: right;
@@ -1002,9 +1043,37 @@
             line-height: 1.8;
         }
 
-        .preview-doc .invoice-meta strong {
-            color: var(--text-primary);
-            font-family: 'DM Mono', monospace;
+        .preview-doc .invoice-meta strong { color: var(--text-primary); font-family: 'DM Mono', monospace; }
+
+        .preview-doc .invoice-logo {
+            width: 68px;
+            height: 68px;
+            border-radius: var(--radius-md);
+            object-fit: cover;
+            border: 1px solid var(--border);
+        }
+
+        .preview-doc .invoice-logo-placeholder {
+            width: 68px;
+            height: 68px;
+            border-radius: var(--radius-md);
+            background: var(--bg-input);
+            border: 2px dashed var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .preview-doc .invoice-logo-placeholder .ph-icon { font-size: 18px; opacity: 0.3; }
+
+        .preview-doc .invoice-logo-placeholder .ph-text {
+            font-size: 8px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
         }
 
         .preview-doc .invoice-parties {
@@ -1030,18 +1099,8 @@
             margin-bottom: 4px;
         }
 
-        .preview-doc .party-name {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 2px;
-        }
-
-        .preview-doc .party-detail {
-            font-size: 11px;
-            color: var(--text-secondary);
-            white-space: pre-wrap;
-        }
+        .preview-doc .party-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+        .preview-doc .party-detail { font-size: 11px; color: var(--text-secondary); white-space: pre-wrap; }
 
         .preview-doc .items-table {
             width: 100%;
@@ -1061,44 +1120,15 @@
             background: var(--navy);
         }
 
-        .preview-doc .items-table thead th:last-child {
-            text-align: right;
-        }
+        .preview-doc .items-table thead th:last-child { text-align: right; }
+        .preview-doc .items-table tbody tr { border-bottom: 1px solid var(--border); }
+        .preview-doc .items-table tbody tr:last-child { border-bottom: none; }
+        .preview-doc .items-table tbody td { padding: 8px 10px; color: var(--text-primary); vertical-align: top; }
+        .preview-doc .items-table tbody td:last-child { text-align: right; font-family: 'DM Mono', monospace; }
+        .preview-doc .items-table tbody td.qty-cell { color: var(--text-secondary); text-align: center; }
+        .preview-doc .items-table tbody td.price-cell { color: var(--text-secondary); font-family: 'DM Mono', monospace; text-align: right; }
 
-        .preview-doc .items-table tbody tr {
-            border-bottom: 1px solid var(--border);
-        }
-
-        .preview-doc .items-table tbody tr:last-child {
-            border-bottom: none;
-        }
-
-        .preview-doc .items-table tbody td {
-            padding: 8px 10px;
-            color: var(--text-primary);
-            vertical-align: top;
-        }
-
-        .preview-doc .items-table tbody td:last-child {
-            text-align: right;
-            font-family: 'DM Mono', monospace;
-        }
-
-        .preview-doc .items-table tbody td.qty-cell {
-            color: var(--text-secondary);
-            text-align: center;
-        }
-
-        .preview-doc .items-table tbody td.price-cell {
-            color: var(--text-secondary);
-            font-family: 'DM Mono', monospace;
-            text-align: right;
-        }
-
-        .preview-doc .invoice-totals {
-            margin-left: auto;
-            width: 220px;
-        }
+        .preview-doc .invoice-totals { margin-left: auto; width: 220px; }
 
         .preview-doc .total-row {
             display: flex;
@@ -1119,9 +1149,7 @@
             padding-top: 8px;
         }
 
-        .preview-doc .total-row .total-value {
-            font-family: 'DM Mono', monospace;
-        }
+        .preview-doc .total-row .total-value { font-family: 'DM Mono', monospace; }
 
         .preview-doc .invoice-notes {
             margin-top: 24px;
@@ -1135,22 +1163,9 @@
         /* =====================================================
            EMPTY STATE
         ===================================================== */
-        .empty-preview {
-            padding: 60px 20px;
-            text-align: center;
-            color: var(--text-muted);
-        }
-
-        .empty-preview .empty-icon {
-            font-size: 36px;
-            margin-bottom: 12px;
-            opacity: 0.4;
-        }
-
-        .empty-preview p {
-            font-size: 13px;
-            margin: 0;
-        }
+        .empty-preview { padding: 60px 20px; text-align: center; color: var(--text-muted); }
+        .empty-preview .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.4; }
+        .empty-preview p { font-size: 13px; margin: 0; }
 
         /* =====================================================
            INVOICE TAX FIELD
@@ -1164,13 +1179,7 @@
             border-top: 1px solid var(--border);
         }
 
-        .tax-row label {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
+        .tax-row label { font-size: 12px; font-weight: 500; color: var(--text-secondary); white-space: nowrap; flex-shrink: 0; }
 
         .tax-row input {
             width: 80px;
@@ -1190,10 +1199,50 @@
             box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
         }
 
-        .tax-row .tax-hint {
-            font-size: 11px;
-            color: var(--text-muted);
+        .tax-row .tax-hint { font-size: 11px; color: var(--text-muted); }
+
+        /* =====================================================
+           PDF EXPORT OVERLAY
+        ===================================================== */
+        .pdf-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(15,23,42,0.72);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
+        .pdf-overlay-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 36px 44px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            min-width: 260px;
+        }
+
+        .pdf-overlay-spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .pdf-overlay-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .pdf-overlay-sub { font-size: 12px; color: var(--text-muted); }
 
         /* =====================================================
            ANIMATIONS
@@ -1203,11 +1252,8 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        .animate-in {
-            animation: fadeInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
-        }
-
-        .animate-in:nth-child(1) { animation-delay: 0ms;  }
+        .animate-in { animation: fadeInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) both; }
+        .animate-in:nth-child(1) { animation-delay: 0ms; }
         .animate-in:nth-child(2) { animation-delay: 60ms; }
         .animate-in:nth-child(3) { animation-delay: 120ms; }
         .animate-in:nth-child(4) { animation-delay: 180ms; }
@@ -1230,24 +1276,24 @@ const MAX_NUMBER = 1000000000;
 const VALIDATORS = {
 
     email: {
-        validate: (v) => {
-            if (!v) return null;
+        validate: (v, required) => {
+            if (!v || !v.trim()) return required ? "This field is required" : null;
             const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
             return ok ? null : "Please enter a valid email address (e.g. name@domain.com)";
         }
     },
 
     phone: {
-        validate: (v) => {
-            if (!v) return null;
+        validate: (v, required) => {
+            if (!v || !v.trim()) return required ? "This field is required" : null;
             const ok = /^[+\d][\d\s\-().]{3,24}$/.test(v.trim());
             return ok ? null : "Phone can only contain digits, spaces, +, -, ( )";
         }
     },
 
     number: {
-        validate: (v) => {
-            if (!v) return null;
+        validate: (v, required) => {
+            if (!v || !v.trim()) return required ? "This field is required" : null;
             const n = parseFloat(String(v).replace(/,/g, ""));
             if (isNaN(n))       return "Please enter a valid number (e.g. 150.00)";
             if (n < 0)          return "Number cannot be negative";
@@ -1257,8 +1303,8 @@ const VALIDATORS = {
     },
 
     year: {
-        validate: (v) => {
-            if (!v) return null;
+        validate: (v, required) => {
+            if (!v || !v.trim()) return required ? "This field is required" : null;
             const trimmed = v.trim();
             if (!/^\d{4}$/.test(trimmed)) return "Please enter a 4-digit year (e.g. 2019)";
             const n = parseInt(trimmed, 10);
@@ -1268,77 +1314,71 @@ const VALIDATORS = {
     },
 
     date: {
-        validate: (v) => {
-            if (!v) return null;
-            const trimmed = v.trim();
+        validate: (v, required) => {
+            if (!v || !v.trim()) return required ? "This field is required" : null;
+            const trimmed  = v.trim();
             const patterns = [
                 /^\d{2}\/\d{2}\/\d{4}$/,
                 /^\d{2}-\d{2}-\d{4}$/,
                 /^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/
             ];
-            const matches = patterns.some(p => p.test(trimmed));
-            if (!matches) return "Use DD/MM/YYYY, DD-MM-YYYY or e.g. 23 Feb 2026";
+            if (!patterns.some(p => p.test(trimmed))) return "Use DD/MM/YYYY, DD-MM-YYYY or e.g. 23 Feb 2026";
             return null;
         }
     },
 
     url: {
-        validate: (v) => {
-            if (!v) return null;
-            const trimmed = v.trim();
-            const ok = /^(https?:\/\/)?(www\.)?[\w\-]+(\.[\w\-]+)+(\/[\w\-._~:/?#[\]@!$&'()*+,;=%]*)?$/.test(trimmed);
+        validate: (v, required) => {
+            if (!v || !v.trim()) return required ? "This field is required" : null;
+            const ok = /^(https?:\/\/)?(www\.)?[\w\-]+(\.[\w\-]+)+(\/[\w\-._~:/?#[\]@!$&'()*+,;=%]*)?$/.test(v.trim());
             return ok ? null : "Please enter a valid URL (e.g. www.behance.net/yourname)";
         }
     },
 
     address: {
-        validate: (v) => {
-            if (!v) return null;
+        validate: (v, required) => {
+            if (!v || !v.trim()) return required ? "This field is required" : null;
             const trimmed = v.trim();
             if (trimmed.length < 5)   return "Address is too short — include street name and number";
             if (trimmed.length > 200) return "Address cannot exceed 200 characters";
-            const hasLetters = /[a-zA-Z]/.test(trimmed);
-            const hasNumber  = /\d/.test(trimmed);
-            if (!hasLetters || !hasNumber) return "Address must include a street name and number (e.g. 12 Oak Street)";
+            if (!/[a-zA-Z]/.test(trimmed) || !/\d/.test(trimmed))
+                return "Address must include a street name and number (e.g. 12 Oak Street)";
             return null;
         }
     },
 
     skill: {
-        validate: (v) => {
-            if (!v) return null;
-            if (v.trim().length < 1)  return null;
-            if (v.length > 60)        return "Skill name cannot exceed 60 characters";
+        validate: (v, required) => {
+            if (!v || !v.trim()) return required ? "This field is required" : null;
+            if (v.length > 60) return "Skill name cannot exceed 60 characters";
             return null;
         }
     },
 
     text: {
-        validate: (v) => {
-            if (!v) return null;
+        validate: (v, required) => {
+            if (!v || !v.trim()) return required ? "This field is required" : null;
             if (v.length > MAX_TEXT) return `Maximum ${MAX_TEXT.toLocaleString()} characters allowed`;
             return null;
         }
     },
 
     textarea: {
-        validate: (v) => {
-            if (!v) return null;
+        validate: (v, required) => {
+            if (!v || !v.trim()) return required ? "This field is required" : null;
             if (v.length > MAX_TEXT) return `Maximum ${MAX_TEXT.toLocaleString()} characters allowed`;
             return null;
         }
     }
 };
 
-/* Runs the right validator for a field definition */
 function validateField(field, value) {
-    const key = field.validate || field.type || "text";
+    const key       = field.validate || field.type || "text";
     const validator = VALIDATORS[key];
     if (!validator) return null;
-    return validator.validate(value);
+    return validator.validate(value, !field.optional);
 }
 
-/* Converts a native date input value (YYYY-MM-DD) to DD/MM/YYYY */
 function nativeDateToDisplay(nativeVal) {
     if (!nativeVal) return "";
     const [y, m, d] = nativeVal.split("-");
@@ -1347,6 +1387,18 @@ function nativeDateToDisplay(nativeVal) {
 
 /* ============================================================
    TEMPLATE CONFIGURATION
+
+   RESUME — required: name, title, email, phone, summary,
+   experience (role + company), education (degree + school).
+   Optional: address, linkedin, website, period, description,
+   year, skills.
+
+   INVOICE — required (legally/bureaucratically necessary):
+   sender name, sender address, sender email,
+   invoice number, issue date, due date,
+   client name, client address, client email,
+   each line item: description + qty + price.
+   Optional: sender website, logo image.
 ============================================================ */
 
 const TEMPLATES = [
@@ -1361,13 +1413,13 @@ const TEMPLATES = [
                 id: "header",
                 title: "Personal Info",
                 fields: [
-                    { name: "name",    label: "Full Name",           placeholder: "e.g. Alexandra Reyes",         validate: "text"    },
-                    { name: "title",   label: "Professional Title",  placeholder: "e.g. Senior Product Designer", validate: "text"    },
-                    { name: "email",   label: "Email Address",       placeholder: "e.g. alex@email.com",          validate: "email"   },
-                    { name: "phone",   label: "Phone Number",        placeholder: "e.g. +1 555 000 1234",         validate: "phone"   },
-                    { name: "address", label: "Address",             placeholder: "e.g. 12 Oak Street, Lisbon",   validate: "address" },
-                    { name: "linkedin",label: "LinkedIn / Portfolio", placeholder: "e.g. www.linkedin.com/in/yourname", validate: "url" },
-                    { name: "website", label: "Personal Website / Behance", placeholder: "e.g. www.behance.net/yourname", validate: "url" }
+                    { name: "name",     label: "Full Name",            placeholder: "e.g. Alexandra Reyes",         validate: "text"                   },
+                    { name: "title",    label: "Professional Title",   placeholder: "e.g. Senior Product Designer", validate: "text"                   },
+                    { name: "email",    label: "Email Address",        placeholder: "e.g. alex@email.com",          validate: "email"                  },
+                    { name: "phone",    label: "Phone Number",         placeholder: "e.g. +1 555 000 1234",         validate: "phone"                  },
+                    { name: "address",  label: "Address",              placeholder: "e.g. 12 Oak Street, Lisbon",   validate: "address", optional: true },
+                    { name: "linkedin", label: "LinkedIn / Portfolio", placeholder: "e.g. www.linkedin.com/in/you", validate: "url",     optional: true },
+                    { name: "website",  label: "Website / Behance",   placeholder: "e.g. www.behance.net/you",     validate: "url",     optional: true }
                 ]
             },
             {
@@ -1382,7 +1434,7 @@ const TEMPLATES = [
                 title: "Skills",
                 repeatable: true,
                 fields: [
-                    { name: "skill", label: "Skill", placeholder: "e.g. Figma, React, Project Management", validate: "skill" }
+                    { name: "skill", label: "Skill", placeholder: "e.g. Figma, React, Project Management", validate: "skill", optional: true }
                 ]
             },
             {
@@ -1390,10 +1442,10 @@ const TEMPLATES = [
                 title: "Experience",
                 repeatable: true,
                 fields: [
-                    { name: "role",        label: "Job Title",   placeholder: "e.g. Product Designer",                            validate: "text"     },
-                    { name: "company",     label: "Company",     placeholder: "e.g. Acme Corp",                                   validate: "text"     },
-                    { name: "period",      label: "Period",      placeholder: "e.g. Jan 2022 – Present",                         validate: "text"     },
-                    { name: "description", label: "Description", type: "textarea", placeholder: "Describe your responsibilities...", validate: "textarea" }
+                    { name: "role",        label: "Job Title",   placeholder: "e.g. Product Designer",               validate: "text"                    },
+                    { name: "company",     label: "Company",     placeholder: "e.g. Acme Corp",                      validate: "text"                    },
+                    { name: "period",      label: "Period",      placeholder: "e.g. Jan 2022 – Present",             validate: "text",  optional: true   },
+                    { name: "description", label: "Description", type: "textarea", placeholder: "Describe your responsibilities...", validate: "textarea", optional: true }
                 ]
             },
             {
@@ -1401,9 +1453,9 @@ const TEMPLATES = [
                 title: "Education",
                 repeatable: true,
                 fields: [
-                    { name: "degree", label: "Degree / Qualification", placeholder: "e.g. BSc Computer Science", validate: "text" },
-                    { name: "school", label: "Institution",            placeholder: "e.g. University of Lisbon", validate: "text" },
-                    { name: "year",   label: "Year",                   placeholder: "e.g. 2019",                 validate: "year" }
+                    { name: "degree", label: "Degree / Qualification", placeholder: "e.g. BSc Computer Science", validate: "text"                  },
+                    { name: "school", label: "Institution",            placeholder: "e.g. University of Lisbon", validate: "text"                  },
+                    { name: "year",   label: "Year",                   placeholder: "e.g. 2019",                 validate: "year", optional: true  }
                 ]
             }
         ]
@@ -1419,10 +1471,10 @@ const TEMPLATES = [
                 id: "sender",
                 title: "Your Details",
                 fields: [
-                    { name: "senderName",    label: "Your Name / Business Name", placeholder: "e.g. Studio Nova",                   validate: "text"     },
-                    { name: "senderAddress", label: "Address",                   placeholder: "e.g. 12 Oak Street, Lisbon", type: "textarea", validate: "address"  },
-                    { name: "senderEmail",   label: "Email",                     placeholder: "e.g. billing@studionova.com",         validate: "email"    },
-                    { name: "senderWebsite", label: "Website (optional)",         placeholder: "e.g. www.studionova.com",             validate: "url"      }
+                    { name: "senderName",    label: "Your Name / Business Name", placeholder: "e.g. Studio Nova",            validate: "text"                    },
+                    { name: "senderAddress", label: "Address",                   placeholder: "e.g. 12 Oak Street, Lisbon",  validate: "address", type: "textarea" },
+                    { name: "senderEmail",   label: "Email",                     placeholder: "e.g. billing@studionova.com", validate: "email"                   },
+                    { name: "senderWebsite", label: "Website",                   placeholder: "e.g. www.studionova.com",     validate: "url",     optional: true  }
                 ]
             },
             {
@@ -1438,9 +1490,9 @@ const TEMPLATES = [
                 id: "client",
                 title: "Bill To",
                 fields: [
-                    { name: "clientName",    label: "Client Name",    placeholder: "e.g. Bright Ideas Ltd",             validate: "text"     },
-                    { name: "clientAddress", label: "Client Address", placeholder: "e.g. 99 Park Ave, Porto", type: "textarea", validate: "address"  },
-                    { name: "clientEmail",   label: "Client Email",   placeholder: "e.g. accounts@brightideas.com",     validate: "email"    }
+                    { name: "clientName",    label: "Client Name",    placeholder: "e.g. Bright Ideas Ltd",          validate: "text"                     },
+                    { name: "clientAddress", label: "Client Address", placeholder: "e.g. 99 Park Ave, Porto",        validate: "address", type: "textarea" },
+                    { name: "clientEmail",   label: "Client Email",   placeholder: "e.g. accounts@brightideas.com", validate: "email"                    }
                 ]
             },
             {
@@ -1457,10 +1509,6 @@ const TEMPLATES = [
     }
 ];
 
-/* ============================================================
-   FEATURED TEMPLATE IDs
-============================================================ */
-
 const FEATURED_IDS = ["resume", "invoice"];
 
 /* ============================================================
@@ -1469,30 +1517,22 @@ const FEATURED_IDS = ["resume", "invoice"];
 
 function initSection(section) {
     const obj = {};
-    section.fields.forEach(field => {
-        obj[field.name] = "";
-    });
+    section.fields.forEach(f => { obj[f.name] = ""; });
     return obj;
 }
 
 function initDocument(template) {
     const data = {};
     template.sections.forEach(section => {
-        if (section.repeatable) {
-            data[section.id] = [initSection(section)];
-        } else {
-            data[section.id] = initSection(section);
-        }
+        data[section.id] = section.repeatable ? [initSection(section)] : initSection(section);
     });
     return data;
 }
 
 /* ============================================================
-   VALIDATION HELPERS — used by download guard
+   VALIDATION HELPER — download guard
 ============================================================ */
 
-/* Returns true if every filled field in the document passes validation.
-   Empty optional fields are allowed through — only filled-but-wrong ones block. */
 function getAllFieldErrors(template, documentData) {
     const errors = [];
     template.sections.forEach(section => {
@@ -1501,11 +1541,8 @@ function getAllFieldErrors(template, documentData) {
             : [documentData[section.id]];
         blocks.forEach((block, idx) => {
             section.fields.forEach(field => {
-                const value = block[field.name] || "";
-                const err   = validateField(field, value);
-                if (err) {
-                    errors.push({ sectionId: section.id, blockIndex: idx, fieldName: field.name, error: err });
-                }
+                const err = validateField(field, block[field.name] || "");
+                if (err) errors.push({ sectionId: section.id, blockIndex: idx, fieldName: field.name });
             });
         });
     });
@@ -1522,14 +1559,9 @@ function parseNumber(val) {
 }
 
 function calcInvoiceTotals(items, taxRate) {
-    const subtotal = items.reduce((sum, row) => {
-        const qty   = parseNumber(row.qty);
-        const price = parseNumber(row.price);
-        return sum + qty * price;
-    }, 0);
+    const subtotal  = items.reduce((s, r) => s + parseNumber(r.qty) * parseNumber(r.price), 0);
     const taxAmount = subtotal * (parseNumber(taxRate) / 100);
-    const total     = subtotal + taxAmount;
-    return { subtotal, taxAmount, total };
+    return { subtotal, taxAmount, total: subtotal + taxAmount };
 }
 
 function formatMoney(num) {
@@ -1537,16 +1569,98 @@ function formatMoney(num) {
 }
 
 /* ============================================================
+   IMAGE HELPERS
+============================================================ */
+
+function readImageAsBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader   = new FileReader();
+        reader.onload  = e  => resolve(e.target.result);
+        reader.onerror = () => reject(new Error("Could not read image"));
+        reader.readAsDataURL(file);
+    });
+}
+
+/* ============================================================
+   PDF EXPORT — html2canvas screenshot approach
+   Screenshots the live .preview-doc element, slices it into
+   A4 pages, embeds as JPEG in jsPDF.
+   Result: PDF is pixel-perfect match of the live preview.
+============================================================ */
+
+async function exportPreviewToPDF(previewDocRef, filename) {
+    const node = previewDocRef.current;
+    if (!node) return;
+
+    /* Temporarily strip box-shadow, margin and border-radius
+       so the screenshot has clean edges with no drop shadow */
+    const prevShadow = node.style.boxShadow;
+    const prevMargin = node.style.margin;
+    const prevRadius = node.style.borderRadius;
+
+    node.style.boxShadow    = "none";
+    node.style.margin       = "0";
+    node.style.borderRadius = "0";
+
+    /* Render at 2× pixel density for sharp text */
+    const canvas = await window.html2canvas(node, {
+        scale:           2,
+        useCORS:         true,
+        allowTaint:      true,
+        backgroundColor: "#ffffff",
+        logging:         false,
+        removeContainer: true
+    });
+
+    /* Restore styles */
+    node.style.boxShadow    = prevShadow;
+    node.style.margin       = prevMargin;
+    node.style.borderRadius = prevRadius;
+
+    /* A4 page size in mm */
+    const A4_W = 210;
+    const A4_H = 297;
+
+    const canvasW  = canvas.width;
+    const canvasH  = canvas.height;
+    const pxPerMm  = canvasW / A4_W;
+    const pageH_px = A4_H * pxPerMm;
+    const pages    = Math.ceil(canvasH / pageH_px);
+
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    for (let p = 0; p < pages; p++) {
+        if (p > 0) pdf.addPage();
+
+        const sliceY  = p * pageH_px;
+        const sliceH  = Math.min(pageH_px, canvasH - sliceY);
+
+        const pageCanvas    = document.createElement("canvas");
+        pageCanvas.width    = canvasW;
+        pageCanvas.height   = sliceH;
+        const ctx           = pageCanvas.getContext("2d");
+        ctx.drawImage(canvas, 0, sliceY, canvasW, sliceH, 0, 0, canvasW, sliceH);
+
+        const imgData       = pageCanvas.toDataURL("image/jpeg", 0.95);
+        const sliceH_mm     = sliceH / pxPerMm;
+
+        pdf.addImage(imgData, "JPEG", 0, 0, A4_W, sliceH_mm);
+    }
+
+    pdf.save(filename);
+}
+
+/* ============================================================
    SAVE / LOAD HELPERS
 ============================================================ */
 
-/* Serialises the current session to a .json file and triggers download */
-function saveProgressToFile(template, documentData, taxRate) {
+function saveProgressToFile(template, documentData, taxRate, uploadedImage) {
     const payload = {
-        easydocVersion: "1.0",
+        easydocVersion: "1.2",
         templateId:     template.id,
-        taxRate:        taxRate,
-        documentData:   documentData
+        taxRate,
+        documentData,
+        uploadedImage:  uploadedImage || null
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     const url  = URL.createObjectURL(blob);
@@ -1559,23 +1673,18 @@ function saveProgressToFile(template, documentData, taxRate) {
     URL.revokeObjectURL(url);
 }
 
-/* Opens a file picker, reads the JSON, and returns the parsed payload */
 function loadProgressFromFile() {
     return new Promise((resolve, reject) => {
         const input    = document.createElement("input");
         input.type     = "file";
         input.accept   = ".json,application/json";
-        input.onchange = (e) => {
+        input.onchange = e => {
             const file = e.target.files[0];
             if (!file) { reject(new Error("No file selected")); return; }
-            const reader = new FileReader();
-            reader.onload = (evt) => {
-                try {
-                    const payload = JSON.parse(evt.target.result);
-                    resolve(payload);
-                } catch (err) {
-                    reject(new Error("Invalid file — could not read the saved progress."));
-                }
+            const reader   = new FileReader();
+            reader.onload  = evt => {
+                try { resolve(JSON.parse(evt.target.result)); }
+                catch { reject(new Error("Invalid file — could not read the saved progress.")); }
             };
             reader.onerror = () => reject(new Error("Could not read file."));
             reader.readAsText(file);
@@ -1587,450 +1696,27 @@ function loadProgressFromFile() {
 }
 
 /* ============================================================
-   PDF ENGINE
-============================================================ */
-
-function createPDFEngine() {
-    const pdf         = new jsPDF("p", "mm", "a4");
-    const margin      = 18;
-    const pageHeight  = pdf.internal.pageSize.getHeight();
-    const pageWidth   = pdf.internal.pageSize.getWidth();
-    const usableWidth = pageWidth - margin * 2;
-    let cursorY       = margin;
-
-    function ensureSpace(heightNeeded) {
-        if (cursorY + heightNeeded > pageHeight - margin) {
-            pdf.addPage();
-            cursorY = margin;
-        }
-    }
-
-    function addText(text, fontSize, isBold, color, xOverride) {
-        if (!text && text !== 0) return;
-        pdf.setFont("helvetica", isBold ? "bold" : "normal");
-        pdf.setFontSize(fontSize || 10);
-        if (color) {
-            pdf.setTextColor(color[0], color[1], color[2]);
-        } else {
-            pdf.setTextColor(30, 41, 59);
-        }
-        const x     = xOverride !== undefined ? xOverride : margin;
-        const lines = pdf.splitTextToSize(String(text), usableWidth);
-        const lh    = (fontSize || 10) * 0.38 + 1.8;
-        ensureSpace(lines.length * lh + 2);
-        pdf.text(lines, x, cursorY);
-        cursorY += lines.length * lh;
-    }
-
-    function addTextRight(text, fontSize, isBold, color) {
-        if (!text && text !== 0) return;
-        pdf.setFont("helvetica", isBold ? "bold" : "normal");
-        pdf.setFontSize(fontSize || 10);
-        if (color) {
-            pdf.setTextColor(color[0], color[1], color[2]);
-        } else {
-            pdf.setTextColor(30, 41, 59);
-        }
-        const textWidth = pdf.getTextWidth(String(text));
-        pdf.text(String(text), pageWidth - margin - textWidth, cursorY);
-    }
-
-    function addLabelValue(label, value, fontSize) {
-        if (!value) return;
-        pdf.setFont("helvetica", "bold");
-        pdf.setFontSize(fontSize || 9);
-        pdf.setTextColor(100, 116, 139);
-        const lw = pdf.getTextWidth(label + "  ");
-        ensureSpace(6);
-        pdf.text(label, margin, cursorY);
-        pdf.setFont("helvetica", "normal");
-        pdf.setTextColor(30, 41, 59);
-        const lines = pdf.splitTextToSize(String(value), usableWidth - lw);
-        pdf.text(lines, margin + lw, cursorY);
-        cursorY += lines.length * ((fontSize || 9) * 0.38 + 1.8);
-    }
-
-    function addSpacing(space) {
-        cursorY += (space || 5);
-    }
-
-    function addHRule(color) {
-        const c = color || [226, 232, 240];
-        pdf.setDrawColor(c[0], c[1], c[2]);
-        pdf.setLineWidth(0.4);
-        ensureSpace(3);
-        pdf.line(margin, cursorY, pageWidth - margin, cursorY);
-        cursorY += 3;
-    }
-
-    function addRect(x, y, w, h, fillColor) {
-        pdf.setFillColor(fillColor[0], fillColor[1], fillColor[2]);
-        pdf.rect(x, y, w, h, "F");
-    }
-
-    function addSectionHeading(title) {
-        addSpacing(6);
-        ensureSpace(10);
-        pdf.setFont("helvetica", "bold");
-        pdf.setFontSize(8);
-        pdf.setTextColor(59, 130, 246);
-        pdf.text(title.toUpperCase(), margin, cursorY);
-        cursorY += 5;
-        addHRule([59, 130, 246]);
-        addSpacing(2);
-    }
-
-    return {
-        pdf,
-        cursorY:    () => cursorY,
-        setCursorY: (y) => { cursorY = y; },
-        margin,
-        pageWidth,
-        pageHeight,
-        usableWidth,
-        ensureSpace,
-        addText,
-        addTextRight,
-        addLabelValue,
-        addSpacing,
-        addHRule,
-        addRect,
-        addSectionHeading
-    };
-}
-
-/* ============================================================
-   RESUME PDF RENDERER
-============================================================ */
-
-function exportResumePDF(documentData) {
-    const eng = createPDFEngine();
-    const {
-        pdf, margin, pageWidth, usableWidth,
-        addText, addSpacing, addHRule,
-        addSectionHeading, ensureSpace, setCursorY
-    } = eng;
-
-    const hdr = documentData.header || {};
-
-    if (hdr.name) {
-        addText(hdr.name, 22, true, [15, 23, 42]);
-        addSpacing(1);
-    }
-    if (hdr.title) {
-        addText(hdr.title, 11, false, [59, 130, 246]);
-        addSpacing(2);
-    }
-
-    /* Contact line — email + phone */
-    const contactParts = [hdr.email, hdr.phone].filter(Boolean);
-    if (contactParts.length > 0) {
-        addText(contactParts.join("   •   "), 9, false, [100, 116, 139]);
-        addSpacing(1);
-    }
-
-    /* Address */
-    if (hdr.address) {
-        addText(hdr.address, 9, false, [100, 116, 139]);
-        addSpacing(1);
-    }
-
-    /* Links */
-    const linkParts = [hdr.linkedin, hdr.website].filter(Boolean);
-    if (linkParts.length > 0) {
-        addText(linkParts.join("   •   "), 9, false, [59, 130, 246]);
-        addSpacing(2);
-    }
-
-    /* Divider */
-    pdf.setDrawColor(15, 23, 42);
-    pdf.setLineWidth(0.8);
-    const cy = eng.cursorY();
-    pdf.line(margin, cy, pageWidth - margin, cy);
-    eng.setCursorY(cy + 4);
-
-    /* Summary */
-    const sum = documentData.summary || {};
-    if (sum.summary) {
-        addSectionHeading("Professional Summary");
-        addText(sum.summary, 10, false, [71, 85, 105]);
-        addSpacing(2);
-    }
-
-    /* Skills */
-    const skillList = documentData.skills || [];
-    const hasSkills = skillList.some(s => s.skill);
-    if (hasSkills) {
-        addSectionHeading("Skills");
-        const skillNames = skillList.map(s => s.skill).filter(Boolean).join("   ·   ");
-        addText(skillNames, 9.5, false, [71, 85, 105]);
-        addSpacing(2);
-    }
-
-    /* Experience */
-    const expList = documentData.experience || [];
-    const hasExp  = expList.some(e => e.role || e.company);
-    if (hasExp) {
-        addSectionHeading("Experience");
-        expList.forEach(exp => {
-            if (!exp.role && !exp.company) return;
-            ensureSpace(14);
-            if (exp.role) addText(exp.role, 11, true, [15, 23, 42]);
-            if (exp.company || exp.period) {
-                const line = [exp.company, exp.period].filter(Boolean).join("  ·  ");
-                addText(line, 9.5, false, [100, 116, 139]);
-            }
-            if (exp.description) {
-                addSpacing(1);
-                addText(exp.description, 9.5, false, [71, 85, 105]);
-            }
-            addSpacing(5);
-        });
-    }
-
-    /* Education */
-    const eduList = documentData.education || [];
-    const hasEdu  = eduList.some(e => e.degree || e.school);
-    if (hasEdu) {
-        addSectionHeading("Education");
-        eduList.forEach(edu => {
-            if (!edu.degree && !edu.school) return;
-            ensureSpace(10);
-            if (edu.degree) addText(edu.degree, 11, true, [15, 23, 42]);
-            if (edu.school || edu.year) {
-                const line = [edu.school, edu.year].filter(Boolean).join("  ·  ");
-                addText(line, 9.5, false, [100, 116, 139]);
-            }
-            addSpacing(4);
-        });
-    }
-
-    pdf.save("resume.pdf");
-}
-
-/* ============================================================
-   INVOICE PDF RENDERER
-============================================================ */
-
-function exportInvoicePDF(documentData, taxRate) {
-    const eng = createPDFEngine();
-    const {
-        pdf, margin, pageWidth, usableWidth,
-        addText, addSpacing, addHRule, ensureSpace,
-        addRect, setCursorY
-    } = eng;
-
-    const sender = documentData.sender || {};
-    const hdr    = documentData.header || {};
-    const client = documentData.client || {};
-    const items  = documentData.items  || [];
-
-    addRect(0, 0, pageWidth, 28, [15, 23, 42]);
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(16);
-    pdf.setTextColor(255, 255, 255);
-    pdf.text(sender.senderName || "INVOICE", margin, 17);
-
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(9);
-    pdf.setTextColor(148, 163, 184);
-    const invLabel  = "INVOICE";
-    const invLabelW = pdf.getTextWidth(invLabel);
-    pdf.text(invLabel, pageWidth - margin - invLabelW, 17);
-
-    setCursorY(36);
-
-    const metaStartY = eng.cursorY();
-    const metaX      = pageWidth - margin - 60;
-
-    const metaRows = [
-        ["Invoice No.", hdr.invoiceNumber],
-        ["Issue Date",  hdr.date],
-        ["Due Date",    hdr.dueDate]
-    ].filter(row => row[1]);
-
-    metaRows.forEach((row, i) => {
-        const rowY = metaStartY + i * 7;
-        pdf.setFont("helvetica", "normal");
-        pdf.setFontSize(8);
-        pdf.setTextColor(100, 116, 139);
-        pdf.text(row[0], metaX, rowY);
-        pdf.setFont("helvetica", "bold");
-        pdf.setFontSize(8.5);
-        pdf.setTextColor(15, 23, 42);
-        const valW = pdf.getTextWidth(row[1]);
-        pdf.text(row[1], pageWidth - margin - valW, rowY);
-    });
-
-    const boxY = metaStartY;
-    const boxW = 70;
-
-    addRect(margin, boxY, boxW, 38, [248, 250, 252]);
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(7.5);
-    pdf.setTextColor(148, 163, 184);
-    pdf.text("FROM", margin + 5, boxY + 7);
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(9.5);
-    pdf.setTextColor(15, 23, 42);
-    pdf.text(sender.senderName || "", margin + 5, boxY + 14, { maxWidth: boxW - 10 });
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(8);
-    pdf.setTextColor(100, 116, 139);
-    if (sender.senderAddress) pdf.text(sender.senderAddress, margin + 5, boxY + 20, { maxWidth: boxW - 10 });
-    if (sender.senderEmail)   pdf.text(sender.senderEmail,   margin + 5, boxY + 28, { maxWidth: boxW - 10 });
-    if (sender.senderWebsite) pdf.text(sender.senderWebsite, margin + 5, boxY + 34, { maxWidth: boxW - 10 });
-
-    const toBoxX = margin + boxW + 6;
-    addRect(toBoxX, boxY, boxW, 38, [239, 246, 255]);
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(7.5);
-    pdf.setTextColor(59, 130, 246);
-    pdf.text("BILL TO", toBoxX + 5, boxY + 7);
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(9.5);
-    pdf.setTextColor(15, 23, 42);
-    pdf.text(client.clientName || "", toBoxX + 5, boxY + 14, { maxWidth: boxW - 10 });
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(8);
-    pdf.setTextColor(100, 116, 139);
-    if (client.clientAddress) pdf.text(client.clientAddress, toBoxX + 5, boxY + 20, { maxWidth: boxW - 10 });
-    if (client.clientEmail)   pdf.text(client.clientEmail,   toBoxX + 5, boxY + 28, { maxWidth: boxW - 10 });
-
-    setCursorY(boxY + 46);
-
-    const tableTop   = eng.cursorY();
-    const colDesc    = margin;
-    const colQty     = margin + usableWidth * 0.52;
-    const colPrice   = margin + usableWidth * 0.67;
-    const colTotal   = margin + usableWidth * 0.82;
-
-    addRect(margin, tableTop, usableWidth, 8, [15, 23, 42]);
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(7.5);
-    pdf.setTextColor(255, 255, 255);
-    const thY = tableTop + 5.5;
-    pdf.text("DESCRIPTION", colDesc + 3, thY);
-    pdf.text("QTY",         colQty,      thY);
-    pdf.text("UNIT PRICE",  colPrice,    thY);
-    pdf.text("TOTAL",       colTotal,    thY);
-
-    setCursorY(tableTop + 10);
-
-    items.forEach((row, i) => {
-        const qty   = parseNumber(row.qty);
-        const price = parseNumber(row.price);
-        const line  = qty * price;
-        const rowY  = eng.cursorY();
-        const rowH  = 8;
-
-        ensureSpace(rowH + 2);
-
-        if (i % 2 === 1) {
-            addRect(margin, rowY - 1, usableWidth, rowH, [248, 250, 252]);
-        }
-
-        pdf.setFont("helvetica", "normal");
-        pdf.setFontSize(9);
-        pdf.setTextColor(30, 41, 59);
-        pdf.text(row.item || "", colDesc + 3, rowY + 5, { maxWidth: colQty - colDesc - 6 });
-        pdf.setTextColor(100, 116, 139);
-        pdf.text(String(qty > 0 ? qty : row.qty || ""), colQty, rowY + 5);
-        pdf.text(price > 0 ? formatMoney(price) : (row.price || ""), colPrice, rowY + 5);
-        pdf.setFont("helvetica", "bold");
-        pdf.setTextColor(15, 23, 42);
-        pdf.text(line > 0 ? formatMoney(line) : "", colTotal, rowY + 5);
-
-        setCursorY(rowY + rowH);
-    });
-
-    addSpacing(2);
-
-    pdf.setDrawColor(226, 232, 240);
-    pdf.setLineWidth(0.3);
-    const divY = eng.cursorY();
-    pdf.line(margin, divY, pageWidth - margin, divY);
-    setCursorY(divY + 4);
-
-    const { subtotal, taxAmount, total } = calcInvoiceTotals(items, taxRate);
-    const totX    = pageWidth - margin - 68;
-    const totValX = pageWidth - margin;
-    let totY      = eng.cursorY();
-
-    function addTotalRow(label, value, bold, big) {
-        ensureSpace(7);
-        pdf.setFont("helvetica", bold ? "bold" : "normal");
-        pdf.setFontSize(big ? 10.5 : 9);
-        pdf.setTextColor(bold && big ? 15 : 100, bold && big ? 23 : 116, bold && big ? 42 : 139);
-        pdf.text(label, totX, totY);
-        const valStr = formatMoney(value);
-        const valW   = pdf.getTextWidth(valStr);
-        pdf.setFont("helvetica", bold ? "bold" : "normal");
-        pdf.setFontSize(big ? 10.5 : 9);
-        pdf.setTextColor(big ? 15 : 30, big ? 23 : 41, big ? 42 : 59);
-        pdf.text(valStr, totValX - valW, totY);
-        totY += 6;
-        eng.setCursorY(totY);
-    }
-
-    addTotalRow("Subtotal", subtotal, false, false);
-
-    const taxRateNum = parseNumber(taxRate);
-    if (taxRateNum > 0) {
-        addTotalRow("Tax (" + taxRateNum + "%)", taxAmount, false, false);
-    }
-
-    pdf.setDrawColor(226, 232, 240);
-    pdf.setLineWidth(0.3);
-    pdf.line(totX, totY, totValX, totY);
-    totY += 4;
-    eng.setCursorY(totY);
-
-    addTotalRow("Total Due", total, true, true);
-
-    addSpacing(16);
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(8);
-    pdf.setTextColor(148, 163, 184);
-    const footerText = "Thank you for your business.";
-    const ftW = pdf.getTextWidth(footerText);
-    pdf.text(footerText, (pageWidth - ftW) / 2, eng.cursorY());
-
-    pdf.save("invoice.pdf");
-}
-
-/* ============================================================
-   UNIFIED EXPORT DISPATCHER
-============================================================ */
-
-function exportPDF(template, documentData, taxRate) {
-    if (template.id === "resume")  exportResumePDF(documentData);
-    if (template.id === "invoice") exportInvoicePDF(documentData, taxRate);
-}
-
-/* ============================================================
    RESUME PREVIEW COMPONENT
 ============================================================ */
 
-function ResumePreview({ data }) {
-    const hdr      = data.header     || {};
-    const sum      = data.summary    || {};
-    const skills   = data.skills     || [];
-    const exp      = data.experience || [];
-    const edu      = data.education  || [];
+function ResumePreview({ data, uploadedImage, previewDocRef }) {
+    const hdr    = data.header     || {};
+    const sum    = data.summary    || {};
+    const skills = data.skills     || [];
+    const exp    = data.experience || [];
+    const edu    = data.education  || [];
 
-    const hasSkills = skills.some(s => s.skill);
-
+    const hasSkills     = skills.some(s => s.skill);
     const hasAnyContent =
         hdr.name || hdr.title || hdr.email || hdr.phone ||
         hdr.address || hdr.linkedin || hdr.website ||
         sum.summary || hasSkills ||
-        exp.some(e => e.role    || e.company) ||
-        edu.some(e => e.degree  || e.school);
+        exp.some(e => e.role   || e.company) ||
+        edu.some(e => e.degree || e.school);
 
     if (!hasAnyContent) {
         return (
-            <div className="empty-preview">
+            <div className="empty-preview" ref={previewDocRef}>
                 <div className="empty-icon">📄</div>
                 <p>Fill in the form to see your resume preview</p>
             </div>
@@ -2038,19 +1724,31 @@ function ResumePreview({ data }) {
     }
 
     return (
-        <div className="preview-doc">
-            {hdr.name  && <div className="resume-name">{hdr.name}</div>}
-            {hdr.title && <div className="resume-title">{hdr.title}</div>}
+        <div className="preview-doc" ref={previewDocRef}>
 
-            {(hdr.email || hdr.phone || hdr.address || hdr.linkedin || hdr.website) && (
-                <div className="resume-contact">
-                    {hdr.email    && <span>{hdr.email}</span>}
-                    {hdr.phone    && <span>{hdr.phone}</span>}
-                    {hdr.address  && <span>{hdr.address}</span>}
-                    {hdr.linkedin && <span style={{ color: "#3b82f6" }}>{hdr.linkedin}</span>}
-                    {hdr.website  && <span style={{ color: "#3b82f6" }}>{hdr.website}</span>}
+            <div className="resume-header-row">
+                <div className="resume-header-text">
+                    {hdr.name  && <div className="resume-name">{hdr.name}</div>}
+                    {hdr.title && <div className="resume-title">{hdr.title}</div>}
+                    {(hdr.email || hdr.phone || hdr.address || hdr.linkedin || hdr.website) && (
+                        <div className="resume-contact">
+                            {hdr.email    && <span>{hdr.email}</span>}
+                            {hdr.phone    && <span>{hdr.phone}</span>}
+                            {hdr.address  && <span>{hdr.address}</span>}
+                            {hdr.linkedin && <span style={{ color: "#3b82f6" }}>{hdr.linkedin}</span>}
+                            {hdr.website  && <span style={{ color: "#3b82f6" }}>{hdr.website}</span>}
+                        </div>
+                    )}
                 </div>
-            )}
+                {uploadedImage ? (
+                    <img src={uploadedImage} className="resume-photo" alt="Profile" />
+                ) : (
+                    <div className="resume-photo-placeholder">
+                        <span className="ph-icon">👤</span>
+                        <span className="ph-text">Photo</span>
+                    </div>
+                )}
+            </div>
 
             {sum.summary && (
                 <div>
@@ -2110,6 +1808,7 @@ function ResumePreview({ data }) {
                     ))}
                 </div>
             )}
+
         </div>
     );
 }
@@ -2118,7 +1817,7 @@ function ResumePreview({ data }) {
    INVOICE PREVIEW COMPONENT
 ============================================================ */
 
-function InvoicePreview({ data, taxRate }) {
+function InvoicePreview({ data, taxRate, uploadedImage, previewDocRef }) {
     const sender = data.sender || {};
     const hdr    = data.header || {};
     const client = data.client || {};
@@ -2129,12 +1828,11 @@ function InvoicePreview({ data, taxRate }) {
 
     const hasAnyContent =
         sender.senderName || hdr.invoiceNumber ||
-        client.clientName ||
-        items.some(i => i.item);
+        client.clientName || items.some(i => i.item);
 
     if (!hasAnyContent) {
         return (
-            <div className="empty-preview">
+            <div className="empty-preview" ref={previewDocRef}>
                 <div className="empty-icon">💰</div>
                 <p>Fill in the form to see your invoice preview</p>
             </div>
@@ -2142,9 +1840,10 @@ function InvoicePreview({ data, taxRate }) {
     }
 
     return (
-        <div className="preview-doc">
+        <div className="preview-doc" ref={previewDocRef}>
+
             <div className="invoice-header">
-                <div>
+                <div className="invoice-header-left">
                     <div className="invoice-brand">{sender.senderName || "Your Business"}</div>
                     <div className="invoice-tag">{sender.senderEmail || ""}</div>
                     {sender.senderAddress && (
@@ -2158,11 +1857,23 @@ function InvoicePreview({ data, taxRate }) {
                         </div>
                     )}
                 </div>
-                <div className="invoice-meta">
-                    <div style={{ fontSize: "14px", fontWeight: "700", color: "#0f172a", marginBottom: "6px" }}>INVOICE</div>
-                    {hdr.invoiceNumber && <div>No. <strong>{hdr.invoiceNumber}</strong></div>}
-                    {hdr.date    && <div>Issued: <strong>{hdr.date}</strong></div>}
-                    {hdr.dueDate && <div>Due: <strong>{hdr.dueDate}</strong></div>}
+                <div className="invoice-header-right">
+                    {uploadedImage ? (
+                        <img src={uploadedImage} className="invoice-logo" alt="Logo" />
+                    ) : (
+                        <div className="invoice-logo-placeholder">
+                            <span className="ph-icon">🏢</span>
+                            <span className="ph-text">Logo</span>
+                        </div>
+                    )}
+                    <div className="invoice-meta">
+                        <div style={{ fontSize: "14px", fontWeight: "700", color: "#0f172a", marginBottom: "6px" }}>
+                            INVOICE
+                        </div>
+                        {hdr.invoiceNumber && <div>No. <strong>{hdr.invoiceNumber}</strong></div>}
+                        {hdr.date    && <div>Issued: <strong>{hdr.date}</strong></div>}
+                        {hdr.dueDate && <div>Due: <strong>{hdr.dueDate}</strong></div>}
+                    </div>
                 </div>
             </div>
 
@@ -2234,6 +1945,7 @@ function InvoicePreview({ data, taxRate }) {
             )}
 
             <div className="invoice-notes">Thank you for your business.</div>
+
         </div>
     );
 }
@@ -2242,11 +1954,99 @@ function InvoicePreview({ data, taxRate }) {
    UNIFIED PREVIEW DISPATCHER
 ============================================================ */
 
-function Preview({ template, data, taxRate }) {
+function Preview({ template, data, taxRate, uploadedImage, previewDocRef }) {
     if (!template) return null;
-    if (template.id === "resume")  return <ResumePreview data={data} />;
-    if (template.id === "invoice") return <InvoicePreview data={data} taxRate={taxRate} />;
+    if (template.id === "resume") {
+        return (
+            <ResumePreview
+                data={data}
+                uploadedImage={uploadedImage}
+                previewDocRef={previewDocRef}
+            />
+        );
+    }
+    if (template.id === "invoice") {
+        return (
+            <InvoicePreview
+                data={data}
+                taxRate={taxRate}
+                uploadedImage={uploadedImage}
+                previewDocRef={previewDocRef}
+            />
+        );
+    }
     return null;
+}
+
+/* ============================================================
+   IMAGE UPLOAD ZONE COMPONENT
+============================================================ */
+
+function ImageUploadZone({ templateId, uploadedImage, onImageChange }) {
+    const fileInputRef = useRef(null);
+    const isResume     = templateId === "resume";
+    const label        = isResume ? "Profile Photo" : "Company Logo";
+    const hint         = isResume
+        ? "Optional. Click to upload a profile photo."
+        : "Optional. Click to upload a company logo.";
+
+    async function handleFileChange(e) {
+        const file = e.target.files[0];
+        if (!file || !file.type.startsWith("image/")) return;
+        try {
+            const base64 = await readImageAsBase64(file);
+            onImageChange(base64);
+        } catch { /* silently ignore */ }
+        e.target.value = "";
+    }
+
+    function handleRemove(e) {
+        e.stopPropagation();
+        onImageChange(null);
+    }
+
+    return (
+        <div className="image-upload-section">
+            <div className="image-upload-label">{label}</div>
+            <div className="image-upload-zone">
+                <div
+                    className={isResume ? "image-upload-trigger" : "image-upload-trigger square"}
+                    onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                    title={uploadedImage ? "Click to change image" : "Click to upload image"}
+                >
+                    {uploadedImage ? (
+                        <>
+                            <img src={uploadedImage} alt="Uploaded" />
+                            <div className="image-overlay">
+                                <span className="overlay-icon">✏️</span>
+                                <span className="overlay-text">Change</span>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="image-upload-placeholder">
+                            <span className="upload-icon">{isResume ? "👤" : "🏢"}</span>
+                            <span className="upload-hint">Upload</span>
+                        </div>
+                    )}
+                </div>
+                <div className="image-upload-info">
+                    <p>{hint}<br />JPG, PNG or WebP. Max 5 MB.</p>
+                    {uploadedImage && (
+                        <button className="btn-remove-image" onClick={handleRemove}>
+                            ✕ Remove
+                        </button>
+                    )}
+                </div>
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="image-file-input"
+                    onChange={handleFileChange}
+                />
+            </div>
+        </div>
+    );
 }
 
 /* ============================================================
@@ -2254,16 +2054,14 @@ function Preview({ template, data, taxRate }) {
 ============================================================ */
 
 function SmartField({ field, value, onChange, forceShowError }) {
-    const [touched,     setTouched]  = useState(false);
-    const datePickerRef              = useRef(null);
+    const [touched,     setTouched] = useState(false);
+    const datePickerRef             = useRef(null);
 
-    /* forceShowError is set to true when user clicks Download with invalid fields */
     const shouldShowError = touched || forceShowError;
-
-    const isDateField   = field.validate === "date";
-    const isNumberField = field.validate === "number";
-    const isTextarea    = field.type === "textarea";
-    const showCounter   = isTextarea || field.validate === "textarea" || field.validate === "text";
+    const isDateField     = field.validate === "date";
+    const isNumberField   = field.validate === "number";
+    const isTextarea      = field.type === "textarea";
+    const showCounter     = isTextarea || field.validate === "textarea" || field.validate === "text";
 
     const errorMsg = shouldShowError ? validateField(field, value) : null;
     const isValid  = shouldShowError && !errorMsg && value.length > 0;
@@ -2291,9 +2089,7 @@ function SmartField({ field, value, onChange, forceShowError }) {
         onChange(val);
     }
 
-    function handleBlur() {
-        setTouched(true);
-    }
+    function handleBlur() { setTouched(true); }
 
     function openCalendar() {
         if (datePickerRef.current) {
@@ -2304,8 +2100,7 @@ function SmartField({ field, value, onChange, forceShowError }) {
     }
 
     function handleNativeDateChange(e) {
-        const formatted = nativeDateToDisplay(e.target.value);
-        onChange(formatted);
+        onChange(nativeDateToDisplay(e.target.value));
         setTouched(true);
     }
 
@@ -2314,7 +2109,6 @@ function SmartField({ field, value, onChange, forceShowError }) {
             .filter(Boolean).join(" ")
         : null;
 
-    /* ---- TEXTAREA ---- */
     if (isTextarea) {
         return (
             <div>
@@ -2335,15 +2129,13 @@ function SmartField({ field, value, onChange, forceShowError }) {
                 )}
                 {errorMsg && (
                     <div className="field-error">
-                        <span className="error-icon">⚠</span>
-                        {errorMsg}
+                        <span className="error-icon">⚠</span>{errorMsg}
                     </div>
                 )}
             </div>
         );
     }
 
-    /* ---- DATE FIELD ---- */
     if (isDateField) {
         return (
             <div>
@@ -2375,15 +2167,13 @@ function SmartField({ field, value, onChange, forceShowError }) {
                 </div>
                 {errorMsg && (
                     <div className="field-error">
-                        <span className="error-icon">⚠</span>
-                        {errorMsg}
+                        <span className="error-icon">⚠</span>{errorMsg}
                     </div>
                 )}
             </div>
         );
     }
 
-    /* ---- ALL OTHER FIELDS ---- */
     return (
         <div>
             <input
@@ -2403,28 +2193,30 @@ function SmartField({ field, value, onChange, forceShowError }) {
             )}
             {errorMsg && (
                 <div className="field-error">
-                    <span className="error-icon">⚠</span>
-                    {errorMsg}
+                    <span className="error-icon">⚠</span>{errorMsg}
                 </div>
             )}
         </div>
     );
 }
+
 /* ============================================================
    MAIN APP COMPONENT
 ============================================================ */
 
 function App() {
-    const [stage,          setStage]          = useState("home");
-    const [template,       setTemplate]       = useState(null);
-    const [documentData,   setDocumentData]   = useState({});
-    const [taxRate,        setTaxRate]        = useState("0");
-    const [search,         setSearch]         = useState("");
+    const [stage,           setStage]           = useState("home");
+    const [template,        setTemplate]        = useState(null);
+    const [documentData,    setDocumentData]    = useState({});
+    const [taxRate,         setTaxRate]         = useState("0");
+    const [search,          setSearch]          = useState("");
     const [forceShowErrors, setForceShowErrors] = useState(false);
-    const [loadError,      setLoadError]      = useState("");
+    const [loadError,       setLoadError]       = useState("");
+    const [uploadedImage,   setUploadedImage]   = useState(null);
+    const [exporting,       setExporting]       = useState(false);
 
     const formPanelBodyRef = useRef(null);
-    const loadInputRef     = useRef(null);
+    const previewDocRef    = useRef(null);
 
     function selectTemplate(tpl) {
         setTemplate(tpl);
@@ -2432,6 +2224,7 @@ function App() {
         setTaxRate("0");
         setForceShowErrors(false);
         setLoadError("");
+        setUploadedImage(null);
         setStage("edit");
     }
 
@@ -2458,30 +2251,19 @@ function App() {
     function removeBlock(section, index) {
         setDocumentData(prev => {
             const copy = structuredClone(prev);
-            if (copy[section.id].length > 1) {
-                copy[section.id].splice(index, 1);
-            }
+            if (copy[section.id].length > 1) copy[section.id].splice(index, 1);
             return copy;
         });
     }
 
-    /* ── DOWNLOAD GUARD ──
-       1. Check all fields for errors.
-       2. If any errors exist, force-show them all and scroll to the first one.
-       3. Only proceed to PDF export when everything is clean. */
-    function handleExportPDF() {
+    async function handleExportPDF() {
         const errors = getAllFieldErrors(template, documentData);
 
         if (errors.length > 0) {
-            /* Reveal all error messages at once */
             setForceShowErrors(true);
-
-            /* Scroll to the first invalid input inside the form panel body */
             requestAnimationFrame(() => {
                 const panel = formPanelBodyRef.current;
                 if (!panel) return;
-
-                /* Look for the first element carrying is-invalid inside the panel */
                 const firstInvalid = panel.querySelector(".is-invalid");
                 if (firstInvalid) {
                     firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -2491,51 +2273,45 @@ function App() {
             return;
         }
 
-        /* All fields clean — proceed */
-        exportPDF(template, documentData, taxRate);
+        setExporting(true);
+        try {
+            await exportPreviewToPDF(previewDocRef, template.id + ".pdf");
+        } finally {
+            setExporting(false);
+        }
     }
 
-    /* ── SAVE PROGRESS ── */
     function handleSave() {
-        saveProgressToFile(template, documentData, taxRate);
+        saveProgressToFile(template, documentData, taxRate, uploadedImage);
     }
 
-    /* ── LOAD PROGRESS ── */
     async function handleLoad() {
         setLoadError("");
         try {
             const payload = await loadProgressFromFile();
-
-            /* Validate the file shape */
             if (!payload.templateId || !payload.documentData) {
                 setLoadError("This file doesn't look like an EasyDoc save file.");
                 return;
             }
-
-            /* Find the matching template */
             const tpl = TEMPLATES.find(t => t.id === payload.templateId);
             if (!tpl) {
                 setLoadError("The template in this save file is not available.");
                 return;
             }
-
-            /* Restore state */
             setTemplate(tpl);
             setDocumentData(payload.documentData);
             setTaxRate(payload.taxRate || "0");
+            setUploadedImage(payload.uploadedImage || null);
             setForceShowErrors(false);
             setLoadError("");
             setStage("edit");
-
         } catch (err) {
             setLoadError(err.message || "Could not load the file.");
         }
     }
 
-    /* Featured — hardcoded, never affected by search */
     const featuredTemplates = TEMPLATES.filter(tpl => FEATURED_IDS.includes(tpl.id));
 
-    /* All templates — filtered only by search */
     const filteredTemplates = TEMPLATES.filter(tpl =>
         tpl.name.toLowerCase().includes(search.toLowerCase()) ||
         tpl.description.toLowerCase().includes(search.toLowerCase()) ||
@@ -2544,6 +2320,17 @@ function App() {
 
     return (
         <div style={{ minHeight: "100vh" }}>
+
+            {/* PDF export overlay */}
+            {exporting && (
+                <div className="pdf-overlay">
+                    <div className="pdf-overlay-card">
+                        <div className="pdf-overlay-spinner"></div>
+                        <div className="pdf-overlay-title">Generating PDF…</div>
+                        <div className="pdf-overlay-sub">This takes just a moment</div>
+                    </div>
+                </div>
+            )}
 
             {/* ================================================
                 HEADER
@@ -2555,10 +2342,7 @@ function App() {
                         <span className="logo-text">EasyDoc</span>
                     </div>
                     {stage === "edit" && (
-                        <button
-                            className="btn-back"
-                            onClick={() => setStage("home")}
-                        >
+                        <button className="btn-back" onClick={() => setStage("home")}>
                             ← Back
                         </button>
                     )}
@@ -2576,7 +2360,6 @@ function App() {
                         <p>Choose a template and build a professional document in minutes</p>
                     </div>
 
-                    {/* ── FEATURED — never touched by search ── */}
                     <div className="home-section-heading">
                         <h3>⭐ Featured</h3>
                         <div className="section-rule"></div>
@@ -2598,10 +2381,8 @@ function App() {
                         ))}
                     </div>
 
-                    {/* ── DIVIDER ── */}
                     <hr className="home-divider" />
 
-                    {/* ── ALL DOCUMENTS — search only affects this ── */}
                     <div className="search-bar-wrapper">
                         <span className="search-icon">🔍</span>
                         <input
@@ -2666,12 +2447,16 @@ function App() {
 
                             <div className="form-panel-body" ref={formPanelBodyRef}>
 
+                                <ImageUploadZone
+                                    templateId={template.id}
+                                    uploadedImage={uploadedImage}
+                                    onImageChange={setUploadedImage}
+                                />
+
                                 {template.sections.map(section => (
                                     <div key={section.id} className="section-block">
 
-                                        <div className="section-label">
-                                            {section.title}
-                                        </div>
+                                        <div className="section-label">{section.title}</div>
 
                                         {(Array.isArray(documentData[section.id])
                                             ? documentData[section.id]
@@ -2701,18 +2486,16 @@ function App() {
                                                     <div key={field.name} className="field-group">
                                                         <label className="field-label">
                                                             {field.label}
+                                                            {field.optional && (
+                                                                <span className="optional-badge">optional</span>
+                                                            )}
                                                         </label>
                                                         <SmartField
                                                             field={field}
                                                             value={block[field.name]}
                                                             forceShowError={forceShowErrors}
                                                             onChange={val =>
-                                                                updateField(
-                                                                    section.id,
-                                                                    idx,
-                                                                    field.name,
-                                                                    val
-                                                                )
+                                                                updateField(section.id, idx, field.name, val)
                                                             }
                                                         />
                                                     </div>
@@ -2731,7 +2514,6 @@ function App() {
                                     </div>
                                 ))}
 
-                                {/* Tax rate — invoice only */}
                                 {template.id === "invoice" && (
                                     <div className="tax-row">
                                         <label>Tax Rate</label>
@@ -2750,20 +2532,18 @@ function App() {
 
                             </div>
 
-                            {/* ---- FOOTER: Save / Load / Download ---- */}
                             <div className="form-panel-footer">
 
-                                {/* Save + Load row */}
                                 <div className="footer-saveload-row">
                                     <button
-                                        className="btn-save"
+                                        className="btn-secondary"
                                         onClick={handleSave}
-                                        title="Save your progress as a file"
+                                        title="Download a save file of your current progress"
                                     >
                                         💾 Save Progress
                                     </button>
                                     <button
-                                        className="btn-load"
+                                        className="btn-secondary"
                                         onClick={handleLoad}
                                         title="Load a previously saved progress file"
                                     >
@@ -2771,20 +2551,19 @@ function App() {
                                     </button>
                                 </div>
 
-                                {/* Load error message */}
                                 {loadError && (
-                                    <div className="field-error" style={{ marginTop: "2px" }}>
+                                    <div className="field-error">
                                         <span className="error-icon">⚠</span>
                                         {loadError}
                                     </div>
                                 )}
 
-                                {/* Download PDF button */}
                                 <button
                                     className="btn-download"
                                     onClick={handleExportPDF}
+                                    disabled={exporting}
                                 >
-                                    ↓ Download PDF
+                                    {exporting ? "Generating…" : "↓ Download PDF"}
                                 </button>
 
                             </div>
@@ -2804,6 +2583,8 @@ function App() {
                                     template={template}
                                     data={documentData}
                                     taxRate={taxRate}
+                                    uploadedImage={uploadedImage}
+                                    previewDocRef={previewDocRef}
                                 />
                             </div>
 
