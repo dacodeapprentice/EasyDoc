@@ -7,7 +7,6 @@
 
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
@@ -74,176 +73,93 @@
             justify-content: space-between;
         }
 
-        .app-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .app-logo { display: flex; align-items: center; gap: 10px; }
 
         .app-logo .logo-mark {
-            width: 30px;
-            height: 30px;
+            width: 30px; height: 30px;
             background: var(--accent);
             border-radius: 7px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
-            color: white;
-            letter-spacing: -0.5px;
-            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 700; color: white;
+            letter-spacing: -0.5px; flex-shrink: 0;
         }
 
         .app-logo .logo-text {
-            font-size: 17px;
-            font-weight: 700;
-            color: white;
-            letter-spacing: -0.3px;
+            font-size: 17px; font-weight: 700;
+            color: white; letter-spacing: -0.3px;
         }
 
         .btn-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            display: inline-flex; align-items: center; gap: 6px;
             padding: 7px 14px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
+            font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
             color: rgba(255,255,255,0.75);
             background: rgba(255,255,255,0.08);
             border: 1px solid rgba(255,255,255,0.12);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: var(--transition);
+            border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition);
         }
 
         .btn-back:hover {
-            color: white;
-            background: rgba(255,255,255,0.14);
+            color: white; background: rgba(255,255,255,0.14);
             border-color: rgba(255,255,255,0.22);
         }
 
         /* =====================================================
            HOME SCREEN
         ===================================================== */
-        .home-wrapper {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 60px 24px 80px;
-        }
-
-        .home-heading {
-            text-align: center;
-            margin-bottom: 48px;
-        }
+        .home-wrapper { max-width: 1100px; margin: 0 auto; padding: 60px 24px 80px; }
+        .home-heading { text-align: center; margin-bottom: 48px; }
 
         .home-heading h2 {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: -0.6px;
-            color: var(--text-primary);
-            margin-bottom: 10px;
+            font-size: 32px; font-weight: 700; letter-spacing: -0.6px;
+            color: var(--text-primary); margin-bottom: 10px;
         }
 
-        .home-heading p {
-            font-size: 16px;
-            color: var(--text-secondary);
-            margin: 0;
-        }
+        .home-heading p { font-size: 16px; color: var(--text-secondary); margin: 0; }
 
-        .home-section-heading {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
+        .home-section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
 
         .home-section-heading h3 {
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            margin: 0;
-            white-space: nowrap;
+            font-size: 13px; font-weight: 700; letter-spacing: 0.8px;
+            text-transform: uppercase; color: var(--text-muted); margin: 0; white-space: nowrap;
         }
 
-        .home-section-heading .section-rule {
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
+        .home-section-heading .section-rule { flex: 1; height: 1px; background: var(--border); }
+        .home-divider { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
 
-        .home-divider {
-            border: none;
-            border-top: 1px solid var(--border);
-            margin: 48px 0;
-        }
-
-        .search-bar-wrapper {
-            position: relative;
-            margin-bottom: 28px;
-        }
+        .search-bar-wrapper { position: relative; margin-bottom: 28px; }
 
         .search-bar-wrapper .search-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 14px;
-            pointer-events: none;
+            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); font-size: 14px; pointer-events: none;
         }
 
         .search-bar-input {
-            width: 100%;
-            padding: 10px 14px 10px 40px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            color: var(--text-primary);
-            background: var(--bg-card);
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-md);
-            outline: none;
-            transition: border-color 0.15s, box-shadow 0.15s;
-            box-shadow: var(--shadow-sm);
+            width: 100%; padding: 10px 14px 10px 40px;
+            font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-primary);
+            background: var(--bg-card); border: 1.5px solid var(--border);
+            border-radius: var(--radius-md); outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow-sm);
         }
 
         .search-bar-input:focus {
-            border-color: var(--border-focus);
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+            border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
         }
 
         .search-bar-input::placeholder { color: var(--text-muted); }
 
         .all-docs-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
+            display: flex; align-items: center;
+            justify-content: space-between; margin-bottom: 20px;
         }
 
         .all-docs-count {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-muted);
-            font-family: 'DM Mono', monospace;
+            font-size: 12px; font-weight: 500;
+            color: var(--text-muted); font-family: 'DM Mono', monospace;
         }
 
-        .no-results {
-            text-align: center;
-            padding: 52px 20px;
-            color: var(--text-muted);
-        }
-
-        .no-results .no-results-icon {
-            font-size: 32px;
-            margin-bottom: 12px;
-            opacity: 0.4;
-            display: block;
-        }
-
+        .no-results { text-align: center; padding: 52px 20px; color: var(--text-muted); }
+        .no-results .no-results-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.4; display: block; }
         .no-results p { font-size: 14px; margin: 0; }
 
         .template-grid {
@@ -253,123 +169,72 @@
         }
 
         .template-card {
-            background: var(--bg-card);
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 28px 24px;
-            cursor: pointer;
-            text-align: left;
-            width: 100%;
-            font-family: 'DM Sans', sans-serif;
-            transition: var(--transition);
-            box-shadow: var(--shadow-sm);
-            position: relative;
-            overflow: hidden;
+            background: var(--bg-card); border: 1.5px solid var(--border);
+            border-radius: var(--radius-lg); padding: 28px 24px;
+            cursor: pointer; text-align: left; width: 100%;
+            font-family: 'DM Sans', sans-serif; transition: var(--transition);
+            box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
         }
 
         .template-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
             background: linear-gradient(90deg, var(--accent), #818cf8);
-            transform: scaleX(0);
-            transform-origin: left;
+            transform: scaleX(0); transform-origin: left;
             transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .template-card:hover {
-            border-color: var(--accent);
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-3px);
+            border-color: var(--accent); box-shadow: var(--shadow-lg); transform: translateY(-3px);
         }
 
         .template-card:hover::before { transform: scaleX(1); }
-
-        .template-card .card-icon {
-            font-size: 30px;
-            margin-bottom: 16px;
-            display: block;
-        }
+        .template-card .card-icon { font-size: 30px; margin-bottom: 16px; display: block; }
 
         .template-card .card-category {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 6px;
+            font-size: 11px; font-weight: 600; letter-spacing: 0.8px;
+            text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
         }
 
         .template-card .card-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 6px;
-            letter-spacing: -0.2px;
+            font-size: 18px; font-weight: 600; color: var(--text-primary);
+            margin-bottom: 6px; letter-spacing: -0.2px;
         }
 
-        .template-card .card-desc {
-            font-size: 13px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
+        .template-card .card-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
 
         /* =====================================================
            EDITOR LAYOUT
         ===================================================== */
-        .editor-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 32px 24px 60px;
-        }
+        .editor-wrapper { max-width: 1200px; margin: 0 auto; padding: 32px 24px 60px; }
 
         .editor-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 28px;
-            align-items: start;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 28px; align-items: start;
         }
 
-        @media (max-width: 900px) {
-            .editor-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 900px) { .editor-grid { grid-template-columns: 1fr; } }
 
         /* =====================================================
            FORM PANEL
         ===================================================== */
         .form-panel {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            overflow: hidden;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); box-shadow: var(--shadow-md); overflow: hidden;
         }
 
         .form-panel-header {
-            padding: 20px 24px 16px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 10px;
         }
 
         .form-panel-header .panel-icon { font-size: 22px; }
 
         .form-panel-header .panel-title {
-            font-size: 16px;
-            font-weight: 600;
-            letter-spacing: -0.2px;
-            color: var(--text-primary);
-            margin: 0;
+            font-size: 16px; font-weight: 600; letter-spacing: -0.2px;
+            color: var(--text-primary); margin: 0;
         }
 
-        .form-panel-body {
-            padding: 24px;
-            max-height: calc(100vh - 200px);
-            overflow-y: auto;
-        }
-
+        .form-panel-body { padding: 24px; max-height: calc(100vh - 200px); overflow-y: auto; }
         .form-panel-body::-webkit-scrollbar { width: 4px; }
         .form-panel-body::-webkit-scrollbar-track { background: transparent; }
         .form-panel-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
@@ -377,79 +242,48 @@
         .section-block { margin-bottom: 28px; }
 
         .section-label {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.9px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 11px; font-weight: 700; letter-spacing: 0.9px;
+            text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px;
         }
 
-        .section-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
+        .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
         .repeatable-block {
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            margin-bottom: 10px;
-            background: var(--bg-input);
+            border: 1px solid var(--border); border-radius: var(--radius-md);
+            padding: 16px; margin-bottom: 10px; background: var(--bg-input);
         }
 
         .repeatable-block-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
+            display: flex; align-items: center;
+            justify-content: space-between; margin-bottom: 12px;
         }
 
         .repeatable-block-index {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-muted);
-            font-family: 'DM Mono', monospace;
+            font-size: 11px; font-weight: 600;
+            color: var(--text-muted); font-family: 'DM Mono', monospace;
         }
 
         .field-group { margin-bottom: 14px; }
         .field-group:last-child { margin-bottom: 0; }
 
         .field-label {
-            display: block;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 5px;
-            letter-spacing: 0.1px;
+            display: block; font-size: 12px; font-weight: 500;
+            color: var(--text-secondary); margin-bottom: 5px; letter-spacing: 0.1px;
         }
 
         .field-label .optional-badge {
-            font-size: 10px;
-            font-weight: 400;
-            color: var(--text-muted);
-            margin-left: 5px;
-            font-style: italic;
+            font-size: 10px; font-weight: 400;
+            color: var(--text-muted); margin-left: 5px; font-style: italic;
         }
 
         .field-input {
-            width: 100%;
-            padding: 9px 12px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13.5px;
-            color: var(--text-primary);
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            outline: none;
-            transition: border-color 0.15s, box-shadow 0.15s;
-            appearance: none;
-            -webkit-appearance: none;
+            width: 100%; padding: 9px 12px;
+            font-family: 'DM Sans', sans-serif; font-size: 13.5px;
+            color: var(--text-primary); background: white;
+            border: 1px solid var(--border); border-radius: var(--radius-sm);
+            outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+            appearance: none; -webkit-appearance: none;
         }
 
         .field-input:focus {
@@ -458,12 +292,7 @@
         }
 
         .field-input::placeholder { color: var(--text-muted); }
-
-        textarea.field-input {
-            resize: vertical;
-            min-height: 80px;
-            line-height: 1.5;
-        }
+        textarea.field-input { resize: vertical; min-height: 80px; line-height: 1.5; }
 
         /* =====================================================
            VALIDATION STATES
@@ -489,39 +318,25 @@
         }
 
         .field-error {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin-top: 5px;
-            font-size: 11.5px;
-            font-weight: 500;
-            color: var(--danger);
-            line-height: 1.4;
+            display: flex; align-items: center; gap: 5px; margin-top: 5px;
+            font-size: 11.5px; font-weight: 500; color: var(--danger); line-height: 1.4;
         }
 
         .field-error .error-icon { font-size: 12px; flex-shrink: 0; }
 
         .field-counter {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 4px;
-            font-size: 11px;
-            font-family: 'DM Mono', monospace;
-            color: var(--text-muted);
-            transition: color 0.15s;
+            display: flex; justify-content: flex-end; margin-top: 4px;
+            font-size: 11px; font-family: 'DM Mono', monospace;
+            color: var(--text-muted); transition: color 0.15s;
         }
 
         .field-counter.counter-warn { color: var(--warning); }
         .field-counter.counter-over { color: var(--danger); font-weight: 600; }
 
         /* =====================================================
-           DATE FIELD
+           DATE FIELD — universal calendar picker
         ===================================================== */
-        .date-field-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+        .date-field-wrapper { position: relative; display: flex; align-items: center; }
 
         .date-field-wrapper .field-input {
             flex: 1;
@@ -532,351 +347,260 @@
         .date-field-wrapper .field-input:focus { z-index: 1; }
 
         .date-calendar-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 38px;
-            min-height: 38px;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-left: none;
+            display: flex; align-items: center; justify-content: center;
+            width: 38px; min-height: 38px; background: var(--bg-input);
+            border: 1px solid var(--border); border-left: none;
             border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-            cursor: pointer;
-            font-size: 15px;
-            transition: var(--transition);
-            flex-shrink: 0;
+            cursor: pointer; font-size: 15px; transition: var(--transition); flex-shrink: 0;
         }
 
-        .date-calendar-btn:hover {
-            background: var(--accent-soft);
-            border-color: var(--accent);
-        }
+        .date-calendar-btn:hover { background: var(--accent-soft); border-color: var(--accent); }
 
         .date-field-wrapper.date-valid .field-input {
-            border-color: var(--success);
-            box-shadow: 0 0 0 3px rgba(16,185,129,0.10);
+            border-color: var(--success); box-shadow: 0 0 0 3px rgba(16,185,129,0.10);
         }
 
         .date-field-wrapper.date-valid .date-calendar-btn { border-color: var(--success); }
 
         .date-field-wrapper.date-invalid .field-input {
-            border-color: var(--danger);
-            box-shadow: 0 0 0 3px rgba(239,68,68,0.10);
+            border-color: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,0.10);
         }
 
         .date-field-wrapper.date-invalid .date-calendar-btn { border-color: var(--danger); }
 
         .date-native-picker {
-            position: absolute;
-            right: 0;
-            top: 100%;
-            width: 0;
-            height: 0;
-            opacity: 0;
-            pointer-events: none;
-            border: none;
-            padding: 0;
+            position: absolute; right: 0; top: 100%;
+            width: 0; height: 0; opacity: 0; pointer-events: none; border: none; padding: 0;
         }
 
         /* =====================================================
-           IMAGE UPLOAD ZONE
+           DATE RANGE FIELD — start + end with Present toggle
+           Used by the experience period in resume.
+           validate: "daterange" triggers this layout in SmartField.
         ===================================================== */
-        .image-upload-section {
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border);
+        .daterange-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .image-upload-label {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.9px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            margin-bottom: 12px;
+        .daterange-row {
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .image-upload-label::after {
-            content: '';
+        .daterange-row .date-field-wrapper {
             flex: 1;
-            height: 1px;
-            background: var(--border);
+            min-width: 0;
         }
 
-        .image-upload-zone {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .image-upload-trigger {
-            position: relative;
-            width: 80px;
-            height: 80px;
+        .daterange-separator {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
             flex-shrink: 0;
-            border-radius: 50%;
-            overflow: hidden;
-            cursor: pointer;
-            border: 2px dashed var(--border);
-            background: var(--bg-input);
-            transition: var(--transition);
-            display: flex;
+            padding: 0 2px;
+        }
+
+        .btn-present {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
+            padding: 7px 11px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            color: var(--text-secondary);
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
-        .image-upload-trigger.square { border-radius: var(--radius-md); }
-
-        .image-upload-trigger:hover {
+        .btn-present:hover {
+            color: var(--accent);
             border-color: var(--accent);
             background: var(--accent-soft);
         }
 
+        .btn-present.is-active {
+            color: white;
+            background: var(--accent);
+            border-color: var(--accent-dark);
+        }
+
+        .btn-present.is-active:hover {
+            background: var(--accent-dark);
+        }
+
+        /* =====================================================
+           IMAGE UPLOAD ZONE — universal
+        ===================================================== */
+        .image-upload-section {
+            margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border);
+        }
+
+        .image-upload-label {
+            font-size: 11px; font-weight: 700; letter-spacing: 0.9px;
+            text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .image-upload-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        .image-upload-zone { display: flex; align-items: center; gap: 16px; }
+
+        .image-upload-trigger {
+            position: relative; width: 80px; height: 80px; flex-shrink: 0;
+            border-radius: 50%; overflow: hidden; cursor: pointer;
+            border: 2px dashed var(--border); background: var(--bg-input);
+            transition: var(--transition); display: flex; align-items: center; justify-content: center;
+        }
+
+        .image-upload-trigger.square { border-radius: var(--radius-md); }
+        .image-upload-trigger:hover { border-color: var(--accent); background: var(--accent-soft); }
+
         .image-upload-placeholder {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            pointer-events: none;
+            display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;
         }
 
         .image-upload-placeholder .upload-icon { font-size: 22px; opacity: 0.4; }
 
         .image-upload-placeholder .upload-hint {
-            font-size: 9px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
+            font-size: 9px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.5px; color: var(--text-muted);
         }
 
         .image-upload-trigger img {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
         }
 
         .image-upload-trigger .image-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.45);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2px;
-            opacity: 0;
-            transition: opacity 0.2s;
+            position: absolute; inset: 0; background: rgba(0,0,0,0.45);
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 2px; opacity: 0; transition: opacity 0.2s;
         }
 
         .image-upload-trigger:hover .image-overlay { opacity: 1; }
-
         .image-overlay .overlay-icon { font-size: 18px; }
 
         .image-overlay .overlay-text {
-            font-size: 9px;
-            font-weight: 600;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 9px; font-weight: 600; color: white;
+            text-transform: uppercase; letter-spacing: 0.5px;
         }
 
         .image-upload-info { flex: 1; }
 
         .image-upload-info p {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin: 0 0 8px 0;
-            line-height: 1.5;
+            font-size: 12px; color: var(--text-secondary); margin: 0 0 8px 0; line-height: 1.5;
         }
 
         .btn-remove-image {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 10px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--danger);
-            background: rgba(239,68,68,0.06);
-            border: 1px solid rgba(239,68,68,0.15);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: var(--transition);
+            display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;
+            font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+            color: var(--danger); background: rgba(239,68,68,0.06);
+            border: 1px solid rgba(239,68,68,0.15); border-radius: var(--radius-sm);
+            cursor: pointer; transition: var(--transition);
         }
 
-        .btn-remove-image:hover {
-            background: rgba(239,68,68,0.12);
-            border-color: rgba(239,68,68,0.3);
-        }
-
+        .btn-remove-image:hover { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.3); }
         .image-file-input { display: none; }
 
         /* =====================================================
            BUTTONS
         ===================================================== */
         .btn-remove {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 10px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--danger);
-            background: rgba(239,68,68,0.06);
-            border: 1px solid rgba(239,68,68,0.15);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: var(--transition);
+            display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;
+            font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+            color: var(--danger); background: rgba(239,68,68,0.06);
+            border: 1px solid rgba(239,68,68,0.15); border-radius: var(--radius-sm);
+            cursor: pointer; transition: var(--transition);
         }
 
-        .btn-remove:hover {
-            background: rgba(239,68,68,0.12);
-            border-color: rgba(239,68,68,0.3);
-        }
+        .btn-remove:hover { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.3); }
 
         .btn-add {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--accent);
-            background: var(--accent-soft);
-            border: 1.5px dashed rgba(59,130,246,0.35);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: var(--transition);
-            width: 100%;
-            justify-content: center;
-            margin-top: 4px;
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;
+            font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+            color: var(--accent); background: var(--accent-soft);
+            border: 1.5px dashed rgba(59,130,246,0.35); border-radius: var(--radius-sm);
+            cursor: pointer; transition: var(--transition);
+            width: 100%; justify-content: center; margin-top: 4px;
         }
 
         .btn-add:hover { background: #dbeafe; border-color: var(--accent); }
 
         .form-panel-footer {
-            padding: 16px 24px;
-            border-top: 1px solid var(--border);
-            background: var(--bg-input);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            padding: 16px 24px; border-top: 1px solid var(--border);
+            background: var(--bg-input); display: flex; flex-direction: column; gap: 10px;
         }
 
         .footer-saveload-row { display: flex; gap: 8px; }
 
         .btn-secondary {
-            flex: 1;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 9px 14px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: var(--transition);
+            flex: 1; display: inline-flex; align-items: center; justify-content: center;
+            gap: 6px; padding: 9px 14px; font-family: 'DM Sans', sans-serif;
+            font-size: 13px; font-weight: 500; color: var(--text-secondary);
+            background: white; border: 1px solid var(--border);
+            border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition);
         }
 
         .btn-secondary:hover {
-            color: var(--text-primary);
-            border-color: var(--navy-light);
-            box-shadow: var(--shadow-sm);
+            color: var(--text-primary); border-color: var(--navy-light); box-shadow: var(--shadow-sm);
         }
 
         .btn-download {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 12px 20px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            color: white;
-            background: var(--accent);
-            border: none;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: var(--transition);
-            letter-spacing: 0.1px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; padding: 12px 20px;
+            font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+            color: white; background: var(--accent); border: none;
+            border-radius: var(--radius-md); cursor: pointer;
+            transition: var(--transition); letter-spacing: 0.1px;
         }
 
         .btn-download:hover {
             background: var(--accent-dark);
-            box-shadow: 0 4px 14px rgba(59,130,246,0.4);
-            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(59,130,246,0.4); transform: translateY(-1px);
         }
 
         .btn-download:active { transform: translateY(0); }
 
         .btn-download:disabled {
-            background: var(--text-muted);
-            cursor: not-allowed;
-            box-shadow: none;
-            transform: none;
+            background: var(--text-muted); cursor: not-allowed; box-shadow: none; transform: none;
         }
 
         /* =====================================================
            PREVIEW PANEL
         ===================================================== */
         .preview-panel {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            overflow: hidden;
-            position: sticky;
-            top: 78px;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); box-shadow: var(--shadow-md);
+            overflow: hidden; position: sticky; top: 78px;
         }
 
         .preview-panel-header {
-            padding: 14px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            padding: 14px 20px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
         }
 
         .preview-panel-header .preview-label {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            color: var(--text-muted);
+            font-size: 11px; font-weight: 700; letter-spacing: 0.8px;
+            text-transform: uppercase; color: var(--text-muted);
         }
 
         .preview-live-dot {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--success);
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 11px; font-weight: 500; color: var(--success);
         }
 
         .preview-live-dot::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background: var(--success);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
+            content: ''; width: 6px; height: 6px; background: var(--success);
+            border-radius: 50%; animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
@@ -885,110 +609,68 @@
         }
 
         .preview-scroll-area {
-            max-height: calc(100vh - 250px);
-            overflow-y: auto;
-            overflow-x: hidden;
-            background: #f1f5f9;
+            max-height: calc(100vh - 250px); overflow-y: auto;
+            overflow-x: hidden; background: #f1f5f9;
         }
 
         .preview-scroll-area::-webkit-scrollbar { width: 4px; }
         .preview-scroll-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
         /* =====================================================
-           PREVIEW DOCUMENT — this is what gets screenshot for PDF
+           PREVIEW DOCUMENT — source of truth for PDF export
         ===================================================== */
         .preview-doc {
-            background: white;
-            margin: 20px;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-lg);
-            padding: 36px 36px 44px;
-            min-height: 400px;
-            font-size: 11.5px;
-            line-height: 1.65;
-            color: #1e293b;
-            font-family: 'DM Sans', sans-serif;
+            background: white; margin: 20px; border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg); padding: 36px 36px 44px;
+            min-height: 400px; font-size: 11.5px; line-height: 1.65;
+            color: #1e293b; font-family: 'DM Sans', sans-serif;
         }
 
         /* Resume */
         .preview-doc .resume-header-row {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 20px;
-            padding-bottom: 14px;
-            border-bottom: 2px solid var(--navy);
+            display: flex; align-items: flex-start; justify-content: space-between;
+            gap: 20px; padding-bottom: 14px; border-bottom: 2px solid var(--navy);
             margin-bottom: 18px;
         }
 
         .preview-doc .resume-header-text { flex: 1; min-width: 0; }
 
         .preview-doc .resume-name {
-            font-size: 24px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: var(--navy);
-            margin-bottom: 2px;
+            font-size: 24px; font-weight: 700; letter-spacing: -0.5px;
+            color: var(--navy); margin-bottom: 2px;
         }
 
         .preview-doc .resume-title {
-            font-size: 13px;
-            color: var(--accent);
-            font-weight: 500;
-            margin-bottom: 8px;
+            font-size: 13px; color: var(--accent); font-weight: 500; margin-bottom: 8px;
         }
 
         .preview-doc .resume-contact {
-            font-size: 11px;
-            color: var(--text-secondary);
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
+            font-size: 11px; color: var(--text-secondary); display: flex; gap: 12px; flex-wrap: wrap;
         }
 
         .preview-doc .resume-photo {
-            width: 76px;
-            height: 76px;
-            border-radius: 50%;
-            object-fit: cover;
-            flex-shrink: 0;
-            border: 2px solid var(--border);
+            width: 76px; height: 76px; border-radius: 50%;
+            object-fit: cover; flex-shrink: 0; border: 2px solid var(--border);
         }
 
         .preview-doc .resume-photo-placeholder {
-            width: 76px;
-            height: 76px;
-            border-radius: 50%;
-            flex-shrink: 0;
-            background: var(--bg-input);
-            border: 2px dashed var(--border);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
+            width: 76px; height: 76px; border-radius: 50%; flex-shrink: 0;
+            background: var(--bg-input); border: 2px dashed var(--border);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
         }
 
         .preview-doc .resume-photo-placeholder .ph-icon { font-size: 20px; opacity: 0.3; }
 
         .preview-doc .resume-photo-placeholder .ph-text {
-            font-size: 8px;
-            color: var(--text-muted);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
+            font-size: 8px; color: var(--text-muted); font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.4px;
         }
 
         .preview-doc .section-heading {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-top: 20px;
-            margin-bottom: 10px;
-            padding-bottom: 4px;
-            border-bottom: 1px solid var(--border);
+            font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+            text-transform: uppercase; color: var(--accent);
+            margin-top: 20px; margin-bottom: 10px;
+            padding-bottom: 4px; border-bottom: 1px solid var(--border);
         }
 
         .preview-doc .exp-role { font-size: 13px; font-weight: 600; color: var(--text-primary); }
@@ -998,126 +680,78 @@
         .preview-doc .edu-degree { font-size: 13px; font-weight: 600; color: var(--text-primary); }
         .preview-doc .edu-school { font-size: 12px; color: var(--text-secondary); }
         .preview-doc .edu-year { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono', monospace; }
-
         .preview-doc .skills-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 
         .preview-doc .skill-tag {
-            display: inline-block;
-            padding: 3px 9px;
-            font-size: 10.5px;
-            font-weight: 500;
-            color: var(--accent-dark);
-            background: var(--accent-soft);
-            border: 1px solid rgba(59,130,246,0.2);
-            border-radius: 20px;
+            display: inline-block; padding: 3px 9px; font-size: 10.5px; font-weight: 500;
+            color: var(--accent-dark); background: var(--accent-soft);
+            border: 1px solid rgba(59,130,246,0.2); border-radius: 20px;
         }
 
         /* Invoice */
         .preview-doc .invoice-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 28px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--navy);
-            gap: 16px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 28px; padding-bottom: 20px;
+            border-bottom: 2px solid var(--navy); gap: 16px;
         }
 
         .preview-doc .invoice-header-left { flex: 1; min-width: 0; }
 
         .preview-doc .invoice-header-right {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 10px;
-            flex-shrink: 0;
+            display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0;
         }
 
         .preview-doc .invoice-brand { font-size: 22px; font-weight: 700; color: var(--navy); letter-spacing: -0.5px; }
         .preview-doc .invoice-tag { font-size: 12px; color: var(--text-muted); }
 
         .preview-doc .invoice-meta {
-            text-align: right;
-            font-size: 11px;
-            color: var(--text-secondary);
-            line-height: 1.8;
+            text-align: right; font-size: 11px; color: var(--text-secondary); line-height: 1.8;
         }
 
         .preview-doc .invoice-meta strong { color: var(--text-primary); font-family: 'DM Mono', monospace; }
 
         .preview-doc .invoice-logo {
-            width: 68px;
-            height: 68px;
-            border-radius: var(--radius-md);
-            object-fit: cover;
-            border: 1px solid var(--border);
+            width: 68px; height: 68px; border-radius: var(--radius-md);
+            object-fit: cover; border: 1px solid var(--border);
         }
 
         .preview-doc .invoice-logo-placeholder {
-            width: 68px;
-            height: 68px;
-            border-radius: var(--radius-md);
-            background: var(--bg-input);
-            border: 2px dashed var(--border);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
+            width: 68px; height: 68px; border-radius: var(--radius-md);
+            background: var(--bg-input); border: 2px dashed var(--border);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
         }
 
         .preview-doc .invoice-logo-placeholder .ph-icon { font-size: 18px; opacity: 0.3; }
 
         .preview-doc .invoice-logo-placeholder .ph-text {
-            font-size: 8px;
-            color: var(--text-muted);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
+            font-size: 8px; color: var(--text-muted); font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.4px;
         }
 
         .preview-doc .invoice-parties {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 24px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;
         }
 
         .preview-doc .party-box {
-            padding: 12px 14px;
-            background: #f8fafc;
-            border-radius: var(--radius-sm);
-            border-left: 3px solid var(--accent);
+            padding: 12px 14px; background: #f8fafc;
+            border-radius: var(--radius-sm); border-left: 3px solid var(--accent);
         }
 
         .preview-doc .party-label {
-            font-size: 9px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            margin-bottom: 4px;
+            font-size: 9px; font-weight: 700; letter-spacing: 1px;
+            text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;
         }
 
         .preview-doc .party-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
         .preview-doc .party-detail { font-size: 11px; color: var(--text-secondary); white-space: pre-wrap; }
 
         .preview-doc .items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 16px;
-            font-size: 11.5px;
+            width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 11.5px;
         }
 
         .preview-doc .items-table thead th {
-            padding: 8px 10px;
-            text-align: left;
-            font-size: 9.5px;
-            font-weight: 700;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            color: white;
-            background: var(--navy);
+            padding: 8px 10px; text-align: left; font-size: 9.5px; font-weight: 700;
+            letter-spacing: 0.8px; text-transform: uppercase; color: white; background: var(--navy);
         }
 
         .preview-doc .items-table thead th:last-child { text-align: right; }
@@ -1127,37 +761,24 @@
         .preview-doc .items-table tbody td:last-child { text-align: right; font-family: 'DM Mono', monospace; }
         .preview-doc .items-table tbody td.qty-cell { color: var(--text-secondary); text-align: center; }
         .preview-doc .items-table tbody td.price-cell { color: var(--text-secondary); font-family: 'DM Mono', monospace; text-align: right; }
-
         .preview-doc .invoice-totals { margin-left: auto; width: 220px; }
 
         .preview-doc .total-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px 0;
-            font-size: 11.5px;
-            color: var(--text-secondary);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 5px 0; font-size: 11.5px; color: var(--text-secondary);
             border-bottom: 1px solid var(--border);
         }
 
         .preview-doc .total-row:last-child {
-            border-bottom: none;
-            font-size: 13.5px;
-            font-weight: 700;
-            color: var(--navy);
-            margin-top: 4px;
-            padding-top: 8px;
+            border-bottom: none; font-size: 13.5px; font-weight: 700;
+            color: var(--navy); margin-top: 4px; padding-top: 8px;
         }
 
         .preview-doc .total-row .total-value { font-family: 'DM Mono', monospace; }
 
         .preview-doc .invoice-notes {
-            margin-top: 24px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border);
-            font-size: 11px;
-            color: var(--text-muted);
-            text-align: center;
+            margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);
+            font-size: 11px; color: var(--text-muted); text-align: center;
         }
 
         /* =====================================================
@@ -1168,35 +789,30 @@
         .empty-preview p { font-size: 13px; margin: 0; }
 
         /* =====================================================
-           INVOICE TAX FIELD
+           TEMPLATE EXTRAS
         ===================================================== */
-        .tax-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 12px;
-            padding-top: 12px;
+        .template-extras {
+            margin-top: 20px;
+            padding-top: 20px;
             border-top: 1px solid var(--border);
         }
 
-        .tax-row label { font-size: 12px; font-weight: 500; color: var(--text-secondary); white-space: nowrap; flex-shrink: 0; }
+        .tax-row { display: flex; align-items: center; gap: 10px; }
+
+        .tax-row label {
+            font-size: 12px; font-weight: 500; color: var(--text-secondary);
+            white-space: nowrap; flex-shrink: 0;
+        }
 
         .tax-row input {
-            width: 80px;
-            padding: 7px 10px;
-            font-family: 'DM Mono', monospace;
-            font-size: 13px;
-            color: var(--text-primary);
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            outline: none;
-            transition: border-color 0.15s, box-shadow 0.15s;
+            width: 80px; padding: 7px 10px; font-family: 'DM Mono', monospace;
+            font-size: 13px; color: var(--text-primary); background: white;
+            border: 1px solid var(--border); border-radius: var(--radius-sm);
+            outline: none; transition: border-color 0.15s, box-shadow 0.15s;
         }
 
         .tax-row input:focus {
-            border-color: var(--border-focus);
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+            border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
         }
 
         .tax-row .tax-hint { font-size: 11px; color: var(--text-muted); }
@@ -1205,41 +821,27 @@
            PDF EXPORT OVERLAY
         ===================================================== */
         .pdf-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
+            position: fixed; inset: 0; z-index: 9999;
             background: rgba(15,23,42,0.72);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
         }
 
         .pdf-overlay-card {
-            background: white;
-            border-radius: var(--radius-lg);
-            padding: 36px 44px;
-            text-align: center;
-            box-shadow: var(--shadow-lg);
-            min-width: 260px;
+            background: white; border-radius: var(--radius-lg);
+            padding: 36px 44px; text-align: center;
+            box-shadow: var(--shadow-lg); min-width: 260px;
         }
 
         .pdf-overlay-spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 0.75s linear infinite;
-            margin: 0 auto 16px;
+            width: 36px; height: 36px; border: 3px solid var(--border);
+            border-top-color: var(--accent); border-radius: 50%;
+            animation: spin 0.75s linear infinite; margin: 0 auto 16px;
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
         .pdf-overlay-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 4px;
+            font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px;
         }
 
         .pdf-overlay-sub { font-size: 12px; color: var(--text-muted); }
@@ -1267,13 +869,22 @@ const { useState, useRef } = React;
 const { jsPDF } = window.jspdf;
 
 /* ============================================================
-   VALIDATION RULES
+   UNIVERSAL VALIDATION ENGINE
 ============================================================ */
 
 const MAX_TEXT   = 3000;
 const MAX_NUMBER = 1000000000;
 
+function validateTextLike(v, required) {
+    if (!v || !v.trim()) return required ? "This field is required" : null;
+    if (v.length > MAX_TEXT) return `Maximum ${MAX_TEXT.toLocaleString()} characters allowed`;
+    return null;
+}
+
 const VALIDATORS = {
+
+    text:     { validate: (v, required) => validateTextLike(v, required) },
+    textarea: { validate: (v, required) => validateTextLike(v, required) },
 
     email: {
         validate: (v, required) => {
@@ -1302,17 +913,6 @@ const VALIDATORS = {
         }
     },
 
-    year: {
-        validate: (v, required) => {
-            if (!v || !v.trim()) return required ? "This field is required" : null;
-            const trimmed = v.trim();
-            if (!/^\d{4}$/.test(trimmed)) return "Please enter a 4-digit year (e.g. 2019)";
-            const n = parseInt(trimmed, 10);
-            if (n < 1900 || n > 2100) return "Year must be between 1900 and 2100";
-            return null;
-        }
-    },
-
     date: {
         validate: (v, required) => {
             if (!v || !v.trim()) return required ? "This field is required" : null;
@@ -1322,7 +922,19 @@ const VALIDATORS = {
                 /^\d{2}-\d{2}-\d{4}$/,
                 /^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/
             ];
-            if (!patterns.some(p => p.test(trimmed))) return "Use DD/MM/YYYY, DD-MM-YYYY or e.g. 23 Feb 2026";
+            if (!patterns.some(p => p.test(trimmed)))
+                return "Use DD/MM/YYYY, DD-MM-YYYY or e.g. 23 Feb 2026";
+            return null;
+        }
+    },
+
+    year: {
+        validate: (v, required) => {
+            if (!v || !v.trim()) return required ? "This field is required" : null;
+            const trimmed = v.trim();
+            if (!/^\d{4}$/.test(trimmed)) return "Please enter a 4-digit year (e.g. 2019)";
+            const n = parseInt(trimmed, 10);
+            if (n < 1900 || n > 2100) return "Year must be between 1900 and 2100";
             return null;
         }
     },
@@ -1355,18 +967,32 @@ const VALIDATORS = {
         }
     },
 
-    text: {
+    /* daterange — start + end dates with optional "Present" toggle.
+       The value stored is an object: { start, end, present }
+       Validation checks: start required, end required unless present is true,
+       end must be after start unless present is true. */
+    daterange: {
         validate: (v, required) => {
-            if (!v || !v.trim()) return required ? "This field is required" : null;
-            if (v.length > MAX_TEXT) return `Maximum ${MAX_TEXT.toLocaleString()} characters allowed`;
-            return null;
-        }
-    },
-
-    textarea: {
-        validate: (v, required) => {
-            if (!v || !v.trim()) return required ? "This field is required" : null;
-            if (v.length > MAX_TEXT) return `Maximum ${MAX_TEXT.toLocaleString()} characters allowed`;
+            if (!v || typeof v !== "object") return required ? "This field is required" : null;
+            const { start, end, present } = v;
+            if (!start || !start.trim()) return required ? "Start date is required" : null;
+            /* Validate start date format */
+            const patterns = [
+                /^\d{2}\/\d{2}\/\d{4}$/,
+                /^\d{2}-\d{2}-\d{4}$/,
+                /^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/
+            ];
+            if (!patterns.some(p => p.test(start.trim())))
+                return "Start date: use DD/MM/YYYY or e.g. 01 Jan 2022";
+            if (present) return null;
+            if (!end || !end.trim()) return "End date is required, or toggle Present";
+            if (!patterns.some(p => p.test(end.trim())))
+                return "End date: use DD/MM/YYYY or e.g. 01 Mar 2025";
+            /* Cross-field: end must be after start */
+            const startDate = parseDisplayDate(start);
+            const endDate   = parseDisplayDate(end);
+            if (startDate && endDate && endDate <= startDate)
+                return "End date must be after the start date";
             return null;
         }
     }
@@ -1386,31 +1012,98 @@ function nativeDateToDisplay(nativeVal) {
 }
 
 /* ============================================================
-   TEMPLATE CONFIGURATION
+   UNIVERSAL CROSS-FIELD VALIDATION
+   Handles afterField rules for standard date fields.
+   daterange fields handle their own internal cross-check
+   inside the daterange validator above.
+============================================================ */
 
-   RESUME — required: name, title, email, phone, summary,
-   experience (role + company), education (degree + school).
-   Optional: address, linkedin, website, period, description,
-   year, skills.
+function parseDisplayDate(str) {
+    if (!str || !str.trim()) return null;
+    const s = str.trim();
 
-   INVOICE — required (legally/bureaucratically necessary):
-   sender name, sender address, sender email,
-   invoice number, issue date, due date,
-   client name, client address, client email,
-   each line item: description + qty + price.
-   Optional: sender website, logo image.
+    const dmy = s.match(/^(\d{1,2})[\/\-](\d{2})[\/\-](\d{4})$/);
+    if (dmy) return new Date(+dmy[3], +dmy[2] - 1, +dmy[1]);
+
+    const months = {
+        jan:0, feb:1, mar:2, apr:3, may:4,  jun:5,
+        jul:6, aug:7, sep:8, oct:9, nov:10, dec:11
+    };
+    const named = s.match(/^(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})$/);
+    if (named) {
+        const m = months[named[2].toLowerCase().slice(0, 3)];
+        if (m !== undefined) return new Date(+named[3], m, +named[1]);
+    }
+    return null;
+}
+
+function validateCrossFields(section, block) {
+    const errors = [];
+    section.fields.forEach(field => {
+        if (!field.afterField) return;
+        const thisVal  = block[field.name]      || "";
+        const otherVal = block[field.afterField] || "";
+        if (!thisVal.trim || !thisVal.trim() || !otherVal.trim()) return;
+        const thisDate  = parseDisplayDate(thisVal);
+        const otherDate = parseDisplayDate(otherVal);
+        if (!thisDate || !otherDate) return;
+        if (thisDate <= otherDate) {
+            const otherField = section.fields.find(f => f.name === field.afterField);
+            const otherLabel = otherField ? otherField.label : field.afterField;
+            errors.push({ fieldName: field.name, error: `Must be after the ${otherLabel}` });
+        }
+    });
+    return errors;
+}
+
+function getAllFieldErrors(template, documentData) {
+    const errors = [];
+    template.sections.forEach(section => {
+        const blocks = Array.isArray(documentData[section.id])
+            ? documentData[section.id]
+            : [documentData[section.id]];
+        blocks.forEach((block, idx) => {
+            section.fields.forEach(field => {
+                const err = validateField(field, block[field.name] !== undefined ? block[field.name] : "");
+                if (err) errors.push({ sectionId: section.id, blockIndex: idx, fieldName: field.name });
+            });
+            validateCrossFields(section, block).forEach(({ fieldName }) => {
+                errors.push({ sectionId: section.id, blockIndex: idx, fieldName });
+            });
+        });
+    });
+    return errors;
+}
+
+/* ============================================================
+   HELPER — format a daterange value for display in the preview.
+   Returns e.g. "01/03/2020 – Present" or "01/03/2020 – 15/06/2024"
+============================================================ */
+
+function formatDateRange(v) {
+    if (!v || typeof v !== "object") return "";
+    const { start, end, present } = v;
+    if (!start) return "";
+    if (present) return `${start} – Present`;
+    if (end) return `${start} – ${end}`;
+    return start;
+}
+
+/* ============================================================
+   TEMPLATE REGISTRY
 ============================================================ */
 
 const TEMPLATES = [
     {
-        id: "resume",
-        name: "Professional Resume",
-        icon: "📄",
-        category: "Personal",
+        id:          "resume",
+        name:        "Professional Resume",
+        icon:        "📄",
+        category:    "Personal",
         description: "Clean, modern resume for any industry",
+        image:       { shape: "circle", label: "Profile Photo", icon: "👤" },
         sections: [
             {
-                id: "header",
+                id:    "header",
                 title: "Personal Info",
                 fields: [
                     { name: "name",     label: "Full Name",            placeholder: "e.g. Alexandra Reyes",         validate: "text"                   },
@@ -1423,71 +1116,74 @@ const TEMPLATES = [
                 ]
             },
             {
-                id: "summary",
+                id:    "summary",
                 title: "Professional Summary",
                 fields: [
                     { name: "summary", label: "Summary", type: "textarea", placeholder: "Write a short professional summary...", validate: "textarea" }
                 ]
             },
             {
-                id: "skills",
-                title: "Skills",
+                id:         "skills",
+                title:      "Skills",
                 repeatable: true,
                 fields: [
                     { name: "skill", label: "Skill", placeholder: "e.g. Figma, React, Project Management", validate: "skill", optional: true }
                 ]
             },
             {
-                id: "experience",
-                title: "Experience",
+                id:         "experience",
+                title:      "Experience",
                 repeatable: true,
                 fields: [
-                    { name: "role",        label: "Job Title",   placeholder: "e.g. Product Designer",               validate: "text"                    },
-                    { name: "company",     label: "Company",     placeholder: "e.g. Acme Corp",                      validate: "text"                    },
-                    { name: "period",      label: "Period",      placeholder: "e.g. Jan 2022 – Present",             validate: "text",  optional: true   },
-                    { name: "description", label: "Description", type: "textarea", placeholder: "Describe your responsibilities...", validate: "textarea", optional: true }
+                    { name: "role",        label: "Job Title",    placeholder: "e.g. Product Designer",               validate: "text"                    },
+                    { name: "company",     label: "Company",      placeholder: "e.g. Acme Corp",                      validate: "text"                    },
+                    /* daterange — two calendar pickers + Present toggle, stored as { start, end, present } */
+                    { name: "period",      label: "Period",       validate: "daterange",                              optional: true                      },
+                    { name: "description", label: "Description",  type: "textarea", placeholder: "Describe your responsibilities...", validate: "textarea", optional: true }
                 ]
             },
             {
-                id: "education",
-                title: "Education",
+                id:         "education",
+                title:      "Education",
                 repeatable: true,
                 fields: [
-                    { name: "degree", label: "Degree / Qualification", placeholder: "e.g. BSc Computer Science", validate: "text"                  },
-                    { name: "school", label: "Institution",            placeholder: "e.g. University of Lisbon", validate: "text"                  },
-                    { name: "year",   label: "Year",                   placeholder: "e.g. 2019",                 validate: "year", optional: true  }
+                    { name: "degree", label: "Degree / Qualification", placeholder: "e.g. BSc Computer Science", validate: "text"                 },
+                    { name: "school", label: "Institution",            placeholder: "e.g. University of Lisbon", validate: "text"                 },
+                    { name: "year",   label: "Year",                   placeholder: "e.g. 2019",                 validate: "year", optional: true }
                 ]
             }
         ]
     },
+
     {
-        id: "invoice",
-        name: "Invoice",
-        icon: "💰",
-        category: "Business",
+        id:          "invoice",
+        name:        "Invoice",
+        icon:        "💰",
+        category:    "Business",
         description: "Professional invoice with totals and tax",
+        image:       { shape: "square", label: "Company Logo", icon: "🏢" },
         sections: [
             {
-                id: "sender",
+                id:    "sender",
                 title: "Your Details",
                 fields: [
-                    { name: "senderName",    label: "Your Name / Business Name", placeholder: "e.g. Studio Nova",            validate: "text"                    },
+                    { name: "senderName",    label: "Your Name / Business Name", placeholder: "e.g. Studio Nova",            validate: "text"                     },
                     { name: "senderAddress", label: "Address",                   placeholder: "e.g. 12 Oak Street, Lisbon",  validate: "address", type: "textarea" },
-                    { name: "senderEmail",   label: "Email",                     placeholder: "e.g. billing@studionova.com", validate: "email"                   },
-                    { name: "senderWebsite", label: "Website",                   placeholder: "e.g. www.studionova.com",     validate: "url",     optional: true  }
+                    { name: "senderEmail",   label: "Email",                     placeholder: "e.g. billing@studionova.com", validate: "email"                    },
+                    { name: "senderWebsite", label: "Website",                   placeholder: "e.g. www.studionova.com",     validate: "url",     optional: true   }
                 ]
             },
             {
-                id: "header",
+                id:    "header",
                 title: "Invoice Details",
                 fields: [
                     { name: "invoiceNumber", label: "Invoice Number", placeholder: "e.g. INV-0042", validate: "text" },
                     { name: "date",          label: "Issue Date",     placeholder: "DD/MM/YYYY",    validate: "date" },
-                    { name: "dueDate",       label: "Due Date",       placeholder: "DD/MM/YYYY",    validate: "date" }
+                    { name: "dueDate",       label: "Due Date",       placeholder: "DD/MM/YYYY",    validate: "date", afterField: "date" }
                 ]
             },
             {
-                id: "client",
+                id:    "client",
                 title: "Bill To",
                 fields: [
                     { name: "clientName",    label: "Client Name",    placeholder: "e.g. Bright Ideas Ltd",          validate: "text"                     },
@@ -1496,8 +1192,8 @@ const TEMPLATES = [
                 ]
             },
             {
-                id: "items",
-                title: "Line Items",
+                id:         "items",
+                title:      "Line Items",
                 repeatable: true,
                 fields: [
                     { name: "item",  label: "Description", placeholder: "e.g. Website Design", validate: "text"   },
@@ -1513,40 +1209,29 @@ const FEATURED_IDS = ["resume", "invoice"];
 
 /* ============================================================
    DOCUMENT INITIALIZATION
+   daterange fields are initialised as objects, not strings.
 ============================================================ */
 
 function initSection(section) {
     const obj = {};
-    section.fields.forEach(f => { obj[f.name] = ""; });
+    section.fields.forEach(f => {
+        if (f.validate === "daterange") {
+            obj[f.name] = { start: "", end: "", present: false };
+        } else {
+            obj[f.name] = "";
+        }
+    });
     return obj;
 }
 
 function initDocument(template) {
     const data = {};
     template.sections.forEach(section => {
-        data[section.id] = section.repeatable ? [initSection(section)] : initSection(section);
+        data[section.id] = section.repeatable
+            ? [initSection(section)]
+            : initSection(section);
     });
     return data;
-}
-
-/* ============================================================
-   VALIDATION HELPER — download guard
-============================================================ */
-
-function getAllFieldErrors(template, documentData) {
-    const errors = [];
-    template.sections.forEach(section => {
-        const blocks = Array.isArray(documentData[section.id])
-            ? documentData[section.id]
-            : [documentData[section.id]];
-        blocks.forEach((block, idx) => {
-            section.fields.forEach(field => {
-                const err = validateField(field, block[field.name] || "");
-                if (err) errors.push({ sectionId: section.id, blockIndex: idx, fieldName: field.name });
-            });
-        });
-    });
-    return errors;
 }
 
 /* ============================================================
@@ -1582,68 +1267,63 @@ function readImageAsBase64(file) {
 }
 
 /* ============================================================
-   PDF EXPORT — html2canvas screenshot approach
-   Screenshots the live .preview-doc element, slices it into
-   A4 pages, embeds as JPEG in jsPDF.
-   Result: PDF is pixel-perfect match of the live preview.
+   PDF EXPORT — maximum quality html2canvas
+   scale: 3  →  3× pixel density (sharpest practical value)
+   JPEG quality: 1.0  →  maximum (no compression loss)
+   windowWidth: fixed at 1400px so the preview renders at a
+   consistent width regardless of the user's screen size,
+   preventing layout shifts between exports.
 ============================================================ */
 
 async function exportPreviewToPDF(previewDocRef, filename) {
     const node = previewDocRef.current;
     if (!node) return;
 
-    /* Temporarily strip box-shadow, margin and border-radius
-       so the screenshot has clean edges with no drop shadow */
+    /* Strip decorative styles so the PDF has clean white edges */
     const prevShadow = node.style.boxShadow;
     const prevMargin = node.style.margin;
     const prevRadius = node.style.borderRadius;
-
     node.style.boxShadow    = "none";
     node.style.margin       = "0";
     node.style.borderRadius = "0";
 
-    /* Render at 2× pixel density for sharp text */
+    /* Render at 3× scale — maximum practical sharpness */
     const canvas = await window.html2canvas(node, {
-        scale:           2,
+        scale:           3,
         useCORS:         true,
         allowTaint:      true,
         backgroundColor: "#ffffff",
         logging:         false,
-        removeContainer: true
+        removeContainer: true,
+        windowWidth:     1400
     });
 
-    /* Restore styles */
+    /* Restore decorative styles */
     node.style.boxShadow    = prevShadow;
     node.style.margin       = prevMargin;
     node.style.borderRadius = prevRadius;
 
-    /* A4 page size in mm */
-    const A4_W = 210;
-    const A4_H = 297;
-
+    const A4_W     = 210;
+    const A4_H     = 297;
     const canvasW  = canvas.width;
     const canvasH  = canvas.height;
     const pxPerMm  = canvasW / A4_W;
     const pageH_px = A4_H * pxPerMm;
     const pages    = Math.ceil(canvasH / pageH_px);
-
-    const pdf = new jsPDF("p", "mm", "a4");
+    const pdf      = new jsPDF("p", "mm", "a4");
 
     for (let p = 0; p < pages; p++) {
         if (p > 0) pdf.addPage();
-
-        const sliceY  = p * pageH_px;
-        const sliceH  = Math.min(pageH_px, canvasH - sliceY);
-
-        const pageCanvas    = document.createElement("canvas");
-        pageCanvas.width    = canvasW;
-        pageCanvas.height   = sliceH;
-        const ctx           = pageCanvas.getContext("2d");
+        const sliceY      = p * pageH_px;
+        const sliceH      = Math.min(pageH_px, canvasH - sliceY);
+        const pageCanvas  = document.createElement("canvas");
+        pageCanvas.width  = canvasW;
+        pageCanvas.height = sliceH;
+        const ctx         = pageCanvas.getContext("2d");
         ctx.drawImage(canvas, 0, sliceY, canvasW, sliceH, 0, 0, canvasW, sliceH);
-
-        const imgData       = pageCanvas.toDataURL("image/jpeg", 0.95);
-        const sliceH_mm     = sliceH / pxPerMm;
-
+        /* quality: 1.0 — maximum JPEG quality, no compression loss */
+        const imgData     = pageCanvas.toDataURL("image/jpeg", 1.0);
+        const sliceH_mm   = sliceH / pxPerMm;
         pdf.addImage(imgData, "JPEG", 0, 0, A4_W, sliceH_mm);
     }
 
@@ -1651,15 +1331,15 @@ async function exportPreviewToPDF(previewDocRef, filename) {
 }
 
 /* ============================================================
-   SAVE / LOAD HELPERS
+   SAVE / LOAD
 ============================================================ */
 
-function saveProgressToFile(template, documentData, taxRate, uploadedImage) {
+function saveProgressToFile(template, documentData, extrasState, uploadedImage) {
     const payload = {
-        easydocVersion: "1.2",
+        easydocVersion: "1.4",
         templateId:     template.id,
-        taxRate,
         documentData,
+        extrasState,
         uploadedImage:  uploadedImage || null
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
@@ -1696,7 +1376,413 @@ function loadProgressFromFile() {
 }
 
 /* ============================================================
-   RESUME PREVIEW COMPONENT
+   UNIVERSAL IMAGE UPLOAD ZONE
+============================================================ */
+
+function ImageUploadZone({ imageConfig, uploadedImage, onImageChange }) {
+    const fileInputRef = useRef(null);
+    if (!imageConfig) return null;
+
+    const isCircle = imageConfig.shape === "circle";
+
+    async function handleFileChange(e) {
+        const file = e.target.files[0];
+        if (!file || !file.type.startsWith("image/")) return;
+        try {
+            const base64 = await readImageAsBase64(file);
+            onImageChange(base64);
+        } catch { /* silently ignore */ }
+        e.target.value = "";
+    }
+
+    function handleRemove(e) {
+        e.stopPropagation();
+        onImageChange(null);
+    }
+
+    return (
+        <div className="image-upload-section">
+            <div className="image-upload-label">{imageConfig.label}</div>
+            <div className="image-upload-zone">
+                <div
+                    className={isCircle ? "image-upload-trigger" : "image-upload-trigger square"}
+                    onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                    title={uploadedImage ? "Click to change image" : "Click to upload image"}
+                >
+                    {uploadedImage ? (
+                        <>
+                            <img src={uploadedImage} alt="Uploaded" />
+                            <div className="image-overlay">
+                                <span className="overlay-icon">✏️</span>
+                                <span className="overlay-text">Change</span>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="image-upload-placeholder">
+                            <span className="upload-icon">{imageConfig.icon}</span>
+                            <span className="upload-hint">Upload</span>
+                        </div>
+                    )}
+                </div>
+                <div className="image-upload-info">
+                    <p>Optional. Click to upload.<br />JPG, PNG or WebP. Max 5 MB.</p>
+                    {uploadedImage && (
+                        <button className="btn-remove-image" onClick={handleRemove}>
+                            ✕ Remove
+                        </button>
+                    )}
+                </div>
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="image-file-input"
+                    onChange={handleFileChange}
+                />
+            </div>
+        </div>
+    );
+}
+
+/* ============================================================
+   UNIVERSAL DATE PICKER SUB-COMPONENT
+   Shared by SmartField (single date) and DateRangeField.
+   Renders: text input + 📅 calendar button + hidden native input.
+============================================================ */
+
+function DatePicker({ value, onChange, onBlur, placeholder, inputClass, fieldName }) {
+    const datePickerRef = useRef(null);
+
+    function openCalendar() {
+        if (datePickerRef.current) {
+            datePickerRef.current.showPicker
+                ? datePickerRef.current.showPicker()
+                : datePickerRef.current.click();
+        }
+    }
+
+    function handleNativeChange(e) {
+        onChange(nativeDateToDisplay(e.target.value));
+        if (onBlur) onBlur();
+    }
+
+    return (
+        <div className="date-field-wrapper">
+            <input
+                className={inputClass || "field-input"}
+                type="text"
+                placeholder={placeholder || "DD/MM/YYYY"}
+                value={value}
+                onChange={e => onChange(e.target.value)}
+                onBlur={onBlur}
+                data-field-name={fieldName}
+            />
+            <button
+                type="button"
+                className="date-calendar-btn"
+                onClick={openCalendar}
+                title="Open calendar"
+            >
+                📅
+            </button>
+            <input
+                ref={datePickerRef}
+                type="date"
+                className="date-native-picker"
+                onChange={handleNativeChange}
+                tabIndex="-1"
+            />
+        </div>
+    );
+}
+
+/* ============================================================
+   DATE RANGE FIELD COMPONENT
+   Renders: [Start Date 📅] — [End Date 📅] [Present]
+   Value is an object: { start: string, end: string, present: bool }
+   When Present is active, the end date input is hidden.
+   Cross-field check (end > start) is inside the daterange validator.
+============================================================ */
+
+function DateRangeField({ field, value, onChange, forceShowError }) {
+    const [touched, setTouched] = useState(false);
+
+    /* value may be a string if loaded from older save — normalise */
+    const safeValue = (value && typeof value === "object")
+        ? value
+        : { start: "", end: "", present: false };
+
+    const { start, end, present } = safeValue;
+
+    const shouldShowError = touched || forceShowError;
+    const errorMsg        = shouldShowError ? validateField(field, safeValue) : null;
+    const isValid         = shouldShowError && !errorMsg && start.length > 0;
+
+    const startClass = [
+        "field-input",
+        isValid  ? "is-valid"   : "",
+        errorMsg ? "is-invalid" : ""
+    ].filter(Boolean).join(" ");
+
+    const endClass = [
+        "field-input",
+        isValid  ? "is-valid"   : "",
+        (errorMsg && !present) ? "is-invalid" : ""
+    ].filter(Boolean).join(" ");
+
+    function updateStart(v) {
+        onChange({ ...safeValue, start: v });
+    }
+
+    function updateEnd(v) {
+        onChange({ ...safeValue, end: v });
+    }
+
+    function togglePresent() {
+        onChange({ ...safeValue, present: !present, end: present ? end : "" });
+        setTouched(true);
+    }
+
+    function handleBlur() { setTouched(true); }
+
+    return (
+        <div className="daterange-wrapper" data-field-name={field.name}>
+            <div className="daterange-row">
+                <DatePicker
+                    value={start}
+                    onChange={updateStart}
+                    onBlur={handleBlur}
+                    placeholder="Start date"
+                    inputClass={startClass}
+                    fieldName={field.name + "_start"}
+                />
+                <span className="daterange-separator">–</span>
+                {present ? (
+                    <button
+                        type="button"
+                        className="btn-present is-active"
+                        onClick={togglePresent}
+                        title="Click to set an end date"
+                    >
+                        Present
+                    </button>
+                ) : (
+                    <>
+                        <DatePicker
+                            value={end}
+                            onChange={updateEnd}
+                            onBlur={handleBlur}
+                            placeholder="End date"
+                            inputClass={endClass}
+                            fieldName={field.name + "_end"}
+                        />
+                        <button
+                            type="button"
+                            className="btn-present"
+                            onClick={togglePresent}
+                            title="Currently working here"
+                        >
+                            Present
+                        </button>
+                    </>
+                )}
+            </div>
+            {errorMsg && (
+                <div className="field-error">
+                    <span className="error-icon">⚠</span>{errorMsg}
+                </div>
+            )}
+        </div>
+    );
+}
+
+/* ============================================================
+   UNIVERSAL SMART FIELD COMPONENT
+   Dispatches to the correct input type automatically.
+   daterange → DateRangeField (two pickers + Present toggle)
+   date      → DatePicker (single calendar picker)
+   textarea  → resizable textarea with character counter
+   number    → digits-only input
+   all other → standard text input
+============================================================ */
+
+function SmartField({ field, value, onChange, forceShowError, crossFieldError }) {
+    const [touched,     setTouched] = useState(false);
+
+    const shouldShowError = touched || forceShowError;
+    const isDateField     = field.validate === "date";
+    const isDateRange     = field.validate === "daterange";
+    const isNumberField   = field.validate === "number";
+    const isTextarea      = field.type === "textarea";
+    const showCounter     = isTextarea
+        || field.validate === "textarea"
+        || field.validate === "text";
+
+    /* daterange has its own component with internal state */
+    if (isDateRange) {
+        return (
+            <DateRangeField
+                field={field}
+                value={value}
+                onChange={onChange}
+                forceShowError={forceShowError}
+            />
+        );
+    }
+
+    const fieldError = shouldShowError ? validateField(field, value) : null;
+    const errorMsg   = fieldError || (shouldShowError ? (crossFieldError || null) : null);
+    const isValid    = shouldShowError && !fieldError && !crossFieldError && value.length > 0;
+
+    const charCount    = (value || "").length;
+    const counterClass = charCount > MAX_TEXT
+        ? "field-counter counter-over"
+        : charCount > MAX_TEXT * 0.85
+        ? "field-counter counter-warn"
+        : "field-counter";
+
+    const inputClass = [
+        "field-input",
+        isValid  ? "is-valid"   : "",
+        errorMsg ? "is-invalid" : ""
+    ].filter(Boolean).join(" ");
+
+    function handleChange(e) {
+        let val = e.target.value;
+        if (isNumberField) {
+            val = val.replace(/[^0-9.]/g, "");
+            const parts = val.split(".");
+            if (parts.length > 2) val = parts[0] + "." + parts.slice(1).join("");
+        }
+        onChange(val);
+    }
+
+    function handleBlur() { setTouched(true); }
+
+    const dateWrapClass = isDateField
+        ? ["date-field-wrapper",
+           isValid  ? "date-valid"   : "",
+           errorMsg ? "date-invalid" : ""]
+            .filter(Boolean).join(" ")
+        : null;
+
+    /* ── TEXTAREA ── */
+    if (isTextarea) {
+        return (
+            <div>
+                <textarea
+                    className={inputClass}
+                    rows="3"
+                    placeholder={field.placeholder || ""}
+                    value={value || ""}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    maxLength={MAX_TEXT + 1}
+                    data-field-name={field.name}
+                />
+                {showCounter && (
+                    <div className={counterClass}>
+                        {charCount.toLocaleString()} / {MAX_TEXT.toLocaleString()}
+                    </div>
+                )}
+                {errorMsg && (
+                    <div className="field-error">
+                        <span className="error-icon">⚠</span>{errorMsg}
+                    </div>
+                )}
+            </div>
+        );
+    }
+
+    /* ── SINGLE DATE — universal calendar picker ── */
+    if (isDateField) {
+        return (
+            <div>
+                <div className={dateWrapClass}>
+                    <DatePicker
+                        value={value || ""}
+                        onChange={v => { onChange(v); }}
+                        onBlur={handleBlur}
+                        placeholder={field.placeholder || "DD/MM/YYYY"}
+                        inputClass={inputClass}
+                        fieldName={field.name}
+                    />
+                </div>
+                {errorMsg && (
+                    <div className="field-error">
+                        <span className="error-icon">⚠</span>{errorMsg}
+                    </div>
+                )}
+            </div>
+        );
+    }
+
+    /* ── ALL OTHER FIELD TYPES ── */
+    return (
+        <div>
+            <input
+                className={inputClass}
+                type="text"
+                placeholder={field.placeholder || ""}
+                value={value || ""}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                inputMode={isNumberField ? "decimal" : "text"}
+                data-field-name={field.name}
+            />
+            {showCounter && (
+                <div className={counterClass}>
+                    {charCount.toLocaleString()} / {MAX_TEXT.toLocaleString()}
+                </div>
+            )}
+            {errorMsg && (
+                <div className="field-error">
+                    <span className="error-icon">⚠</span>{errorMsg}
+                </div>
+            )}
+        </div>
+    );
+}
+
+/* ============================================================
+   TEMPLATE-SPECIFIC EXTRAS REGISTRY
+============================================================ */
+
+function InvoiceExtras({ extrasState, setExtrasState }) {
+    const taxRate = (extrasState.invoice && extrasState.invoice.taxRate) || "0";
+
+    function setTaxRate(val) {
+        setExtrasState(prev => ({
+            ...prev,
+            invoice: { ...prev.invoice, taxRate: val }
+        }));
+    }
+
+    return (
+        <div className="template-extras">
+            <div className="tax-row">
+                <label>Tax Rate</label>
+                <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.5"
+                    value={taxRate}
+                    onChange={e => setTaxRate(e.target.value)}
+                    placeholder="0"
+                />
+                <span className="tax-hint">% (leave 0 for no tax)</span>
+            </div>
+        </div>
+    );
+}
+
+const EXTRAS_REGISTRY = {
+    invoice: InvoiceExtras
+};
+
+/* ============================================================
+   PREVIEW COMPONENTS
 ============================================================ */
 
 function ResumePreview({ data, uploadedImage, previewDocRef }) {
@@ -1711,7 +1797,7 @@ function ResumePreview({ data, uploadedImage, previewDocRef }) {
         hdr.name || hdr.title || hdr.email || hdr.phone ||
         hdr.address || hdr.linkedin || hdr.website ||
         sum.summary || hasSkills ||
-        exp.some(e => e.role   || e.company) ||
+        exp.some(e => e.role || e.company) ||
         edu.some(e => e.degree || e.school);
 
     if (!hasAnyContent) {
@@ -1773,21 +1859,29 @@ function ResumePreview({ data, uploadedImage, previewDocRef }) {
             {exp.some(e => e.role || e.company) && (
                 <div>
                     <div className="section-heading">Experience</div>
-                    {exp.map((e, i) => (
-                        (e.role || e.company) ? (
+                    {exp.map((e, i) => {
+                        /* period is now a daterange object — format it for display */
+                        const periodDisplay = formatDateRange(e.period);
+                        return (e.role || e.company) ? (
                             <div key={i} style={{ marginBottom: "12px" }}>
                                 {e.role && <div className="exp-role">{e.role}</div>}
-                                {(e.company || e.period) && (
+                                {(e.company || periodDisplay) && (
                                     <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                                         {e.company && <span className="exp-company">{e.company}</span>}
-                                        {e.company && e.period && <span style={{ color: "#cbd5e1", fontSize: "10px" }}>·</span>}
-                                        {e.period  && <span className="exp-period">{e.period}</span>}
+                                        {e.company && periodDisplay && (
+                                            <span style={{ color: "#cbd5e1", fontSize: "10px" }}>·</span>
+                                        )}
+                                        {periodDisplay && (
+                                            <span className="exp-period">{periodDisplay}</span>
+                                        )}
                                     </div>
                                 )}
-                                {e.description && <div className="exp-description">{e.description}</div>}
+                                {e.description && (
+                                    <div className="exp-description">{e.description}</div>
+                                )}
                             </div>
-                        ) : null
-                    ))}
+                        ) : null;
+                    })}
                 </div>
             )}
 
@@ -1800,8 +1894,10 @@ function ResumePreview({ data, uploadedImage, previewDocRef }) {
                                 {e.degree && <div className="edu-degree">{e.degree}</div>}
                                 <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                                     {e.school && <span className="edu-school">{e.school}</span>}
-                                    {e.school && e.year && <span style={{ color: "#cbd5e1", fontSize: "10px" }}>·</span>}
-                                    {e.year   && <span className="edu-year">{e.year}</span>}
+                                    {e.school && e.year && (
+                                        <span style={{ color: "#cbd5e1", fontSize: "10px" }}>·</span>
+                                    )}
+                                    {e.year && <span className="edu-year">{e.year}</span>}
                                 </div>
                             </div>
                         ) : null
@@ -1813,15 +1909,12 @@ function ResumePreview({ data, uploadedImage, previewDocRef }) {
     );
 }
 
-/* ============================================================
-   INVOICE PREVIEW COMPONENT
-============================================================ */
-
-function InvoicePreview({ data, taxRate, uploadedImage, previewDocRef }) {
-    const sender = data.sender || {};
-    const hdr    = data.header || {};
-    const client = data.client || {};
-    const items  = data.items  || [];
+function InvoicePreview({ data, extrasState, uploadedImage, previewDocRef }) {
+    const taxRate    = (extrasState.invoice && extrasState.invoice.taxRate) || "0";
+    const sender     = data.sender || {};
+    const hdr        = data.header || {};
+    const client     = data.client || {};
+    const items      = data.items  || [];
 
     const { subtotal, taxAmount, total } = calcInvoiceTotals(items, taxRate);
     const taxRateNum = parseNumber(taxRate);
@@ -1883,14 +1976,26 @@ function InvoicePreview({ data, taxRate, uploadedImage, previewDocRef }) {
                         <div className="party-label">From</div>
                         {sender.senderName    && <div className="party-name">{sender.senderName}</div>}
                         {sender.senderAddress && <div className="party-detail">{sender.senderAddress}</div>}
-                        {sender.senderEmail   && <div className="party-detail" style={{ color: "#3b82f6" }}>{sender.senderEmail}</div>}
-                        {sender.senderWebsite && <div className="party-detail" style={{ color: "#3b82f6" }}>{sender.senderWebsite}</div>}
+                        {sender.senderEmail   && (
+                            <div className="party-detail" style={{ color: "#3b82f6" }}>
+                                {sender.senderEmail}
+                            </div>
+                        )}
+                        {sender.senderWebsite && (
+                            <div className="party-detail" style={{ color: "#3b82f6" }}>
+                                {sender.senderWebsite}
+                            </div>
+                        )}
                     </div>
                     <div className="party-box">
                         <div className="party-label">Bill To</div>
                         {client.clientName    && <div className="party-name">{client.clientName}</div>}
                         {client.clientAddress && <div className="party-detail">{client.clientAddress}</div>}
-                        {client.clientEmail   && <div className="party-detail" style={{ color: "#3b82f6" }}>{client.clientEmail}</div>}
+                        {client.clientEmail   && (
+                            <div className="party-detail" style={{ color: "#3b82f6" }}>
+                                {client.clientEmail}
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
@@ -1914,7 +2019,9 @@ function InvoicePreview({ data, taxRate, uploadedImage, previewDocRef }) {
                                 <tr key={i}>
                                     <td>{row.item || ""}</td>
                                     <td className="qty-cell">{row.qty || ""}</td>
-                                    <td className="price-cell">{row.price ? formatMoney(parseNumber(row.price)) : ""}</td>
+                                    <td className="price-cell">
+                                        {row.price ? formatMoney(parseNumber(row.price)) : ""}
+                                    </td>
                                     <td style={{ textAlign: "right", fontFamily: "'DM Mono', monospace" }}>
                                         {line > 0 ? formatMoney(line) : ""}
                                     </td>
@@ -1951,252 +2058,107 @@ function InvoicePreview({ data, taxRate, uploadedImage, previewDocRef }) {
 }
 
 /* ============================================================
-   UNIFIED PREVIEW DISPATCHER
+   PREVIEW REGISTRY
 ============================================================ */
 
-function Preview({ template, data, taxRate, uploadedImage, previewDocRef }) {
+const PREVIEW_REGISTRY = {
+    resume:  ResumePreview,
+    invoice: InvoicePreview
+};
+
+function Preview({ template, data, extrasState, uploadedImage, previewDocRef }) {
     if (!template) return null;
-    if (template.id === "resume") {
-        return (
-            <ResumePreview
-                data={data}
-                uploadedImage={uploadedImage}
-                previewDocRef={previewDocRef}
-            />
-        );
-    }
-    if (template.id === "invoice") {
-        return (
-            <InvoicePreview
-                data={data}
-                taxRate={taxRate}
-                uploadedImage={uploadedImage}
-                previewDocRef={previewDocRef}
-            />
-        );
-    }
-    return null;
-}
-
-/* ============================================================
-   IMAGE UPLOAD ZONE COMPONENT
-============================================================ */
-
-function ImageUploadZone({ templateId, uploadedImage, onImageChange }) {
-    const fileInputRef = useRef(null);
-    const isResume     = templateId === "resume";
-    const label        = isResume ? "Profile Photo" : "Company Logo";
-    const hint         = isResume
-        ? "Optional. Click to upload a profile photo."
-        : "Optional. Click to upload a company logo.";
-
-    async function handleFileChange(e) {
-        const file = e.target.files[0];
-        if (!file || !file.type.startsWith("image/")) return;
-        try {
-            const base64 = await readImageAsBase64(file);
-            onImageChange(base64);
-        } catch { /* silently ignore */ }
-        e.target.value = "";
-    }
-
-    function handleRemove(e) {
-        e.stopPropagation();
-        onImageChange(null);
-    }
-
+    const Component = PREVIEW_REGISTRY[template.id];
+    if (!Component) return null;
     return (
-        <div className="image-upload-section">
-            <div className="image-upload-label">{label}</div>
-            <div className="image-upload-zone">
-                <div
-                    className={isResume ? "image-upload-trigger" : "image-upload-trigger square"}
-                    onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                    title={uploadedImage ? "Click to change image" : "Click to upload image"}
-                >
-                    {uploadedImage ? (
-                        <>
-                            <img src={uploadedImage} alt="Uploaded" />
-                            <div className="image-overlay">
-                                <span className="overlay-icon">✏️</span>
-                                <span className="overlay-text">Change</span>
-                            </div>
-                        </>
-                    ) : (
-                        <div className="image-upload-placeholder">
-                            <span className="upload-icon">{isResume ? "👤" : "🏢"}</span>
-                            <span className="upload-hint">Upload</span>
-                        </div>
-                    )}
-                </div>
-                <div className="image-upload-info">
-                    <p>{hint}<br />JPG, PNG or WebP. Max 5 MB.</p>
-                    {uploadedImage && (
-                        <button className="btn-remove-image" onClick={handleRemove}>
-                            ✕ Remove
-                        </button>
-                    )}
-                </div>
-                <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    className="image-file-input"
-                    onChange={handleFileChange}
-                />
-            </div>
-        </div>
+        <Component
+            data={data}
+            extrasState={extrasState}
+            uploadedImage={uploadedImage}
+            previewDocRef={previewDocRef}
+        />
     );
 }
 
 /* ============================================================
-   SMART FIELD COMPONENT
+   UNIVERSAL FORM RENDERER
 ============================================================ */
 
-function SmartField({ field, value, onChange, forceShowError }) {
-    const [touched,     setTouched] = useState(false);
-    const datePickerRef             = useRef(null);
-
-    const shouldShowError = touched || forceShowError;
-    const isDateField     = field.validate === "date";
-    const isNumberField   = field.validate === "number";
-    const isTextarea      = field.type === "textarea";
-    const showCounter     = isTextarea || field.validate === "textarea" || field.validate === "text";
-
-    const errorMsg = shouldShowError ? validateField(field, value) : null;
-    const isValid  = shouldShowError && !errorMsg && value.length > 0;
-
-    const charCount    = value.length;
-    const counterClass = charCount > MAX_TEXT
-        ? "field-counter counter-over"
-        : charCount > MAX_TEXT * 0.85
-        ? "field-counter counter-warn"
-        : "field-counter";
-
-    const inputClass = [
-        "field-input",
-        isValid  ? "is-valid"   : "",
-        errorMsg ? "is-invalid" : ""
-    ].filter(Boolean).join(" ");
-
-    function handleChange(e) {
-        let val = e.target.value;
-        if (isNumberField) {
-            val = val.replace(/[^0-9.]/g, "");
-            const parts = val.split(".");
-            if (parts.length > 2) val = parts[0] + "." + parts.slice(1).join("");
-        }
-        onChange(val);
-    }
-
-    function handleBlur() { setTouched(true); }
-
-    function openCalendar() {
-        if (datePickerRef.current) {
-            datePickerRef.current.showPicker
-                ? datePickerRef.current.showPicker()
-                : datePickerRef.current.click();
-        }
-    }
-
-    function handleNativeDateChange(e) {
-        onChange(nativeDateToDisplay(e.target.value));
-        setTouched(true);
-    }
-
-    const dateWrapClass = isDateField
-        ? ["date-field-wrapper", isValid ? "date-valid" : "", errorMsg ? "date-invalid" : ""]
-            .filter(Boolean).join(" ")
-        : null;
-
-    if (isTextarea) {
-        return (
-            <div>
-                <textarea
-                    className={inputClass}
-                    rows="3"
-                    placeholder={field.placeholder || ""}
-                    value={value}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    maxLength={MAX_TEXT + 1}
-                    data-field-name={field.name}
-                />
-                {showCounter && (
-                    <div className={counterClass}>
-                        {charCount.toLocaleString()} / {MAX_TEXT.toLocaleString()}
-                    </div>
-                )}
-                {errorMsg && (
-                    <div className="field-error">
-                        <span className="error-icon">⚠</span>{errorMsg}
-                    </div>
-                )}
-            </div>
-        );
-    }
-
-    if (isDateField) {
-        return (
-            <div>
-                <div className={dateWrapClass}>
-                    <input
-                        className={inputClass}
-                        type="text"
-                        placeholder={field.placeholder || "DD/MM/YYYY"}
-                        value={value}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        data-field-name={field.name}
-                    />
-                    <button
-                        type="button"
-                        className="date-calendar-btn"
-                        onClick={openCalendar}
-                        title="Open calendar"
-                    >
-                        📅
-                    </button>
-                    <input
-                        ref={datePickerRef}
-                        type="date"
-                        className="date-native-picker"
-                        onChange={handleNativeDateChange}
-                        tabIndex="-1"
-                    />
-                </div>
-                {errorMsg && (
-                    <div className="field-error">
-                        <span className="error-icon">⚠</span>{errorMsg}
-                    </div>
-                )}
-            </div>
-        );
-    }
-
+function UniversalForm({ template, documentData, updateField, addBlock, removeBlock, forceShowErrors }) {
     return (
-        <div>
-            <input
-                className={inputClass}
-                type="text"
-                placeholder={field.placeholder || ""}
-                value={value}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                inputMode={isNumberField ? "decimal" : "text"}
-                data-field-name={field.name}
-            />
-            {showCounter && (
-                <div className={counterClass}>
-                    {charCount.toLocaleString()} / {MAX_TEXT.toLocaleString()}
-                </div>
-            )}
-            {errorMsg && (
-                <div className="field-error">
-                    <span className="error-icon">⚠</span>{errorMsg}
-                </div>
-            )}
-        </div>
+        <>
+            {template.sections.map(section => {
+                const blocks = Array.isArray(documentData[section.id])
+                    ? documentData[section.id]
+                    : [documentData[section.id]];
+
+                return (
+                    <div key={section.id} className="section-block">
+
+                        <div className="section-label">{section.title}</div>
+
+                        {blocks.map((block, idx) => {
+                            const crossErrors = {};
+                            validateCrossFields(section, block).forEach(({ fieldName, error }) => {
+                                crossErrors[fieldName] = error;
+                            });
+
+                            return (
+                                <div
+                                    key={idx}
+                                    className={section.repeatable ? "repeatable-block" : ""}
+                                >
+                                    {section.repeatable && (
+                                        <div className="repeatable-block-header">
+                                            <span className="repeatable-block-index">
+                                                #{String(idx + 1).padStart(2, "0")}
+                                            </span>
+                                            {blocks.length > 1 && (
+                                                <button
+                                                    className="btn-remove"
+                                                    onClick={() => removeBlock(section, idx)}
+                                                >
+                                                    ✕ Remove
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {section.fields.map(field => (
+                                        <div key={field.name} className="field-group">
+                                            <label className="field-label">
+                                                {field.label}
+                                                {field.optional && (
+                                                    <span className="optional-badge">optional</span>
+                                                )}
+                                            </label>
+                                            <SmartField
+                                                field={field}
+                                                value={block[field.name]}
+                                                forceShowError={forceShowErrors}
+                                                crossFieldError={crossErrors[field.name] || null}
+                                                onChange={val =>
+                                                    updateField(section.id, idx, field.name, val)
+                                                }
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        })}
+
+                        {section.repeatable && (
+                            <button
+                                className="btn-add"
+                                onClick={() => addBlock(section)}
+                            >
+                                + Add {section.title}
+                            </button>
+                        )}
+                    </div>
+                );
+            })}
+        </>
     );
 }
 
@@ -2208,7 +2170,7 @@ function App() {
     const [stage,           setStage]           = useState("home");
     const [template,        setTemplate]        = useState(null);
     const [documentData,    setDocumentData]    = useState({});
-    const [taxRate,         setTaxRate]         = useState("0");
+    const [extrasState,     setExtrasState]     = useState({});
     const [search,          setSearch]          = useState("");
     const [forceShowErrors, setForceShowErrors] = useState(false);
     const [loadError,       setLoadError]       = useState("");
@@ -2221,10 +2183,10 @@ function App() {
     function selectTemplate(tpl) {
         setTemplate(tpl);
         setDocumentData(initDocument(tpl));
-        setTaxRate("0");
         setForceShowErrors(false);
         setLoadError("");
         setUploadedImage(null);
+        setExtrasState(prev => ({ ...prev, [tpl.id]: {} }));
         setStage("edit");
     }
 
@@ -2258,7 +2220,6 @@ function App() {
 
     async function handleExportPDF() {
         const errors = getAllFieldErrors(template, documentData);
-
         if (errors.length > 0) {
             setForceShowErrors(true);
             requestAnimationFrame(() => {
@@ -2272,7 +2233,6 @@ function App() {
             });
             return;
         }
-
         setExporting(true);
         try {
             await exportPreviewToPDF(previewDocRef, template.id + ".pdf");
@@ -2282,7 +2242,7 @@ function App() {
     }
 
     function handleSave() {
-        saveProgressToFile(template, documentData, taxRate, uploadedImage);
+        saveProgressToFile(template, documentData, extrasState, uploadedImage);
     }
 
     async function handleLoad() {
@@ -2300,7 +2260,7 @@ function App() {
             }
             setTemplate(tpl);
             setDocumentData(payload.documentData);
-            setTaxRate(payload.taxRate || "0");
+            setExtrasState(payload.extrasState || {});
             setUploadedImage(payload.uploadedImage || null);
             setForceShowErrors(false);
             setLoadError("");
@@ -2311,17 +2271,17 @@ function App() {
     }
 
     const featuredTemplates = TEMPLATES.filter(tpl => FEATURED_IDS.includes(tpl.id));
-
     const filteredTemplates = TEMPLATES.filter(tpl =>
         tpl.name.toLowerCase().includes(search.toLowerCase()) ||
         tpl.description.toLowerCase().includes(search.toLowerCase()) ||
         tpl.category.toLowerCase().includes(search.toLowerCase())
     );
 
+    const ExtrasComponent = template ? (EXTRAS_REGISTRY[template.id] || null) : null;
+
     return (
         <div style={{ minHeight: "100vh" }}>
 
-            {/* PDF export overlay */}
             {exporting && (
                 <div className="pdf-overlay">
                     <div className="pdf-overlay-card">
@@ -2332,9 +2292,6 @@ function App() {
                 </div>
             )}
 
-            {/* ================================================
-                HEADER
-            ================================================ */}
             <header className="app-header">
                 <div className="header-inner">
                     <div className="app-logo">
@@ -2349,9 +2306,6 @@ function App() {
                 </div>
             </header>
 
-            {/* ================================================
-                HOME SCREEN
-            ================================================ */}
             {stage === "home" && (
                 <div className="home-wrapper">
 
@@ -2430,14 +2384,10 @@ function App() {
                 </div>
             )}
 
-            {/* ================================================
-                EDITOR SCREEN
-            ================================================ */}
             {stage === "edit" && template && (
                 <div className="editor-wrapper">
                     <div className="editor-grid">
 
-                        {/* ---- FORM PANEL ---- */}
                         <div className="form-panel animate-in">
 
                             <div className="form-panel-header">
@@ -2448,86 +2398,25 @@ function App() {
                             <div className="form-panel-body" ref={formPanelBodyRef}>
 
                                 <ImageUploadZone
-                                    templateId={template.id}
+                                    imageConfig={template.image}
                                     uploadedImage={uploadedImage}
                                     onImageChange={setUploadedImage}
                                 />
 
-                                {template.sections.map(section => (
-                                    <div key={section.id} className="section-block">
+                                <UniversalForm
+                                    template={template}
+                                    documentData={documentData}
+                                    updateField={updateField}
+                                    addBlock={addBlock}
+                                    removeBlock={removeBlock}
+                                    forceShowErrors={forceShowErrors}
+                                />
 
-                                        <div className="section-label">{section.title}</div>
-
-                                        {(Array.isArray(documentData[section.id])
-                                            ? documentData[section.id]
-                                            : [documentData[section.id]]
-                                        ).map((block, idx) => (
-                                            <div
-                                                key={idx}
-                                                className={section.repeatable ? "repeatable-block" : ""}
-                                            >
-                                                {section.repeatable && (
-                                                    <div className="repeatable-block-header">
-                                                        <span className="repeatable-block-index">
-                                                            #{String(idx + 1).padStart(2, "0")}
-                                                        </span>
-                                                        {documentData[section.id].length > 1 && (
-                                                            <button
-                                                                className="btn-remove"
-                                                                onClick={() => removeBlock(section, idx)}
-                                                            >
-                                                                ✕ Remove
-                                                            </button>
-                                                        )}
-                                                    </div>
-                                                )}
-
-                                                {section.fields.map(field => (
-                                                    <div key={field.name} className="field-group">
-                                                        <label className="field-label">
-                                                            {field.label}
-                                                            {field.optional && (
-                                                                <span className="optional-badge">optional</span>
-                                                            )}
-                                                        </label>
-                                                        <SmartField
-                                                            field={field}
-                                                            value={block[field.name]}
-                                                            forceShowError={forceShowErrors}
-                                                            onChange={val =>
-                                                                updateField(section.id, idx, field.name, val)
-                                                            }
-                                                        />
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ))}
-
-                                        {section.repeatable && (
-                                            <button
-                                                className="btn-add"
-                                                onClick={() => addBlock(section)}
-                                            >
-                                                + Add {section.title}
-                                            </button>
-                                        )}
-                                    </div>
-                                ))}
-
-                                {template.id === "invoice" && (
-                                    <div className="tax-row">
-                                        <label>Tax Rate</label>
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            max="100"
-                                            step="0.5"
-                                            value={taxRate}
-                                            onChange={e => setTaxRate(e.target.value)}
-                                            placeholder="0"
-                                        />
-                                        <span className="tax-hint">% (leave 0 for no tax)</span>
-                                    </div>
+                                {ExtrasComponent && (
+                                    <ExtrasComponent
+                                        extrasState={extrasState}
+                                        setExtrasState={setExtrasState}
+                                    />
                                 )}
 
                             </div>
@@ -2570,7 +2459,6 @@ function App() {
 
                         </div>
 
-                        {/* ---- PREVIEW PANEL ---- */}
                         <div className="preview-panel animate-in" style={{ animationDelay: "80ms" }}>
 
                             <div className="preview-panel-header">
@@ -2582,7 +2470,7 @@ function App() {
                                 <Preview
                                     template={template}
                                     data={documentData}
-                                    taxRate={taxRate}
+                                    extrasState={extrasState}
                                     uploadedImage={uploadedImage}
                                     previewDocRef={previewDocRef}
                                 />
