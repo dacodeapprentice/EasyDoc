@@ -297,25 +297,10 @@
         /* =====================================================
            VALIDATION STATES
         ===================================================== */
-        .field-input.is-valid {
-            border-color: var(--success);
-            box-shadow: 0 0 0 3px rgba(16,185,129,0.10);
-        }
-
-        .field-input.is-valid:focus {
-            border-color: var(--success);
-            box-shadow: 0 0 0 3px rgba(16,185,129,0.18);
-        }
-
-        .field-input.is-invalid {
-            border-color: var(--danger);
-            box-shadow: 0 0 0 3px rgba(239,68,68,0.10);
-        }
-
-        .field-input.is-invalid:focus {
-            border-color: var(--danger);
-            box-shadow: 0 0 0 3px rgba(239,68,68,0.18);
-        }
+        .field-input.is-valid { border-color: var(--success); box-shadow: 0 0 0 3px rgba(16,185,129,0.10); }
+        .field-input.is-valid:focus { border-color: var(--success); box-shadow: 0 0 0 3px rgba(16,185,129,0.18); }
+        .field-input.is-invalid { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,0.10); }
+        .field-input.is-invalid:focus { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,0.18); }
 
         .field-error {
             display: flex; align-items: center; gap: 5px; margin-top: 5px;
@@ -356,16 +341,9 @@
 
         .date-calendar-btn:hover { background: var(--accent-soft); border-color: var(--accent); }
 
-        .date-field-wrapper.date-valid .field-input {
-            border-color: var(--success); box-shadow: 0 0 0 3px rgba(16,185,129,0.10);
-        }
-
+        .date-field-wrapper.date-valid .field-input { border-color: var(--success); box-shadow: 0 0 0 3px rgba(16,185,129,0.10); }
         .date-field-wrapper.date-valid .date-calendar-btn { border-color: var(--success); }
-
-        .date-field-wrapper.date-invalid .field-input {
-            border-color: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,0.10);
-        }
-
+        .date-field-wrapper.date-invalid .field-input { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,0.10); }
         .date-field-wrapper.date-invalid .date-calendar-btn { border-color: var(--danger); }
 
         .date-native-picker {
@@ -374,76 +352,35 @@
         }
 
         /* =====================================================
-           DATE RANGE FIELD — start + end with Present toggle
-           Used by the experience period in resume.
-           validate: "daterange" triggers this layout in SmartField.
+           DATE RANGE FIELD
         ===================================================== */
-        .daterange-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .daterange-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .daterange-row .date-field-wrapper {
-            flex: 1;
-            min-width: 0;
-        }
+        .daterange-wrapper { display: flex; flex-direction: column; gap: 8px; }
+        .daterange-row { display: flex; align-items: center; gap: 8px; }
+        .daterange-row .date-field-wrapper { flex: 1; min-width: 0; }
 
         .daterange-separator {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 500;
-            flex-shrink: 0;
-            padding: 0 2px;
+            font-size: 12px; color: var(--text-muted);
+            font-weight: 500; flex-shrink: 0; padding: 0 2px;
         }
 
         .btn-present {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            display: inline-flex; align-items: center; justify-content: center;
             padding: 7px 11px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.2px;
-            color: var(--text-secondary);
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: var(--transition);
-            white-space: nowrap;
-            flex-shrink: 0;
+            font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600;
+            letter-spacing: 0.2px; color: var(--text-secondary);
+            background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition);
+            white-space: nowrap; flex-shrink: 0;
         }
 
-        .btn-present:hover {
-            color: var(--accent);
-            border-color: var(--accent);
-            background: var(--accent-soft);
-        }
-
-        .btn-present.is-active {
-            color: white;
-            background: var(--accent);
-            border-color: var(--accent-dark);
-        }
-
-        .btn-present.is-active:hover {
-            background: var(--accent-dark);
-        }
+        .btn-present:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+        .btn-present.is-active { color: white; background: var(--accent); border-color: var(--accent-dark); }
+        .btn-present.is-active:hover { background: var(--accent-dark); }
 
         /* =====================================================
-           IMAGE UPLOAD ZONE — universal
+           IMAGE UPLOAD ZONE
         ===================================================== */
-        .image-upload-section {
-            margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border);
-        }
+        .image-upload-section { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
 
         .image-upload-label {
             font-size: 11px; font-weight: 700; letter-spacing: 0.9px;
@@ -460,13 +397,18 @@
             border-radius: 50%; overflow: hidden; cursor: pointer;
             border: 2px dashed var(--border); background: var(--bg-input);
             transition: var(--transition); display: flex; align-items: center; justify-content: center;
+            /* Image background properties — natural size, centred, no scaling */
+            background-size: auto;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         .image-upload-trigger.square { border-radius: var(--radius-md); }
-        .image-upload-trigger:hover { border-color: var(--accent); background: var(--accent-soft); }
+        .image-upload-trigger:hover { border-color: var(--accent); }
 
         .image-upload-placeholder {
-            display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;
+            display: flex; flex-direction: column; align-items: center;
+            gap: 4px; pointer-events: none; position: relative; z-index: 1;
         }
 
         .image-upload-placeholder .upload-icon { font-size: 22px; opacity: 0.4; }
@@ -476,14 +418,11 @@
             letter-spacing: 0.5px; color: var(--text-muted);
         }
 
-        .image-upload-trigger img {
-            position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-        }
-
         .image-upload-trigger .image-overlay {
             position: absolute; inset: 0; background: rgba(0,0,0,0.45);
             display: flex; flex-direction: column; align-items: center;
             justify-content: center; gap: 2px; opacity: 0; transition: opacity 0.2s;
+            z-index: 2;
         }
 
         .image-upload-trigger:hover .image-overlay { opacity: 1; }
@@ -495,10 +434,7 @@
         }
 
         .image-upload-info { flex: 1; }
-
-        .image-upload-info p {
-            font-size: 12px; color: var(--text-secondary); margin: 0 0 8px 0; line-height: 1.5;
-        }
+        .image-upload-info p { font-size: 12px; color: var(--text-secondary); margin: 0 0 8px 0; line-height: 1.5; }
 
         .btn-remove-image {
             display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;
@@ -550,9 +486,7 @@
             border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition);
         }
 
-        .btn-secondary:hover {
-            color: var(--text-primary); border-color: var(--navy-light); box-shadow: var(--shadow-sm);
-        }
+        .btn-secondary:hover { color: var(--text-primary); border-color: var(--navy-light); box-shadow: var(--shadow-sm); }
 
         .btn-download {
             display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -563,16 +497,9 @@
             transition: var(--transition); letter-spacing: 0.1px;
         }
 
-        .btn-download:hover {
-            background: var(--accent-dark);
-            box-shadow: 0 4px 14px rgba(59,130,246,0.4); transform: translateY(-1px);
-        }
-
+        .btn-download:hover { background: var(--accent-dark); box-shadow: 0 4px 14px rgba(59,130,246,0.4); transform: translateY(-1px); }
         .btn-download:active { transform: translateY(0); }
-
-        .btn-download:disabled {
-            background: var(--text-muted); cursor: not-allowed; box-shadow: none; transform: none;
-        }
+        .btn-download:disabled { background: var(--text-muted); cursor: not-allowed; box-shadow: none; transform: none; }
 
         /* =====================================================
            PREVIEW PANEL
@@ -617,7 +544,7 @@
         .preview-scroll-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
         /* =====================================================
-           PREVIEW DOCUMENT — source of truth for PDF export
+           PREVIEW DOCUMENT — outer shell only
         ===================================================== */
         .preview-doc {
             background: white; margin: 20px; border-radius: var(--radius-md);
@@ -626,157 +553,265 @@
             color: #1e293b; font-family: 'DM Sans', sans-serif;
         }
 
-        /* Resume */
-        .preview-doc .resume-header-row {
-            display: flex; align-items: flex-start; justify-content: space-between;
-            gap: 20px; padding-bottom: 14px; border-bottom: 2px solid var(--navy);
+        /* =====================================================
+           DESIGN SYSTEM — universal building blocks
+           Change anything here → ALL templates update.
+        ===================================================== */
+
+        /* ── DocHeader ── */
+        .ds-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid var(--navy);
             margin-bottom: 18px;
         }
 
-        .preview-doc .resume-header-text { flex: 1; min-width: 0; }
+        .ds-header-text { flex: 1; min-width: 0; }
 
-        .preview-doc .resume-name {
+        .ds-header-title {
             font-size: 24px; font-weight: 700; letter-spacing: -0.5px;
             color: var(--navy); margin-bottom: 2px;
         }
 
-        .preview-doc .resume-title {
-            font-size: 13px; color: var(--accent); font-weight: 500; margin-bottom: 8px;
+        .ds-header-subtitle {
+            font-size: 13px; color: var(--accent);
+            font-weight: 500; margin-bottom: 6px;
         }
 
-        .preview-doc .resume-contact {
-            font-size: 11px; color: var(--text-secondary); display: flex; gap: 12px; flex-wrap: wrap;
+        .ds-header-meta {
+            font-size: 11px;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0;
+            margin-top: 4px;
         }
 
-        .preview-doc .resume-photo {
-            width: 76px; height: 76px; border-radius: 50%;
-            object-fit: cover; flex-shrink: 0; border: 2px solid var(--border);
+        .ds-header-meta-item {
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
         }
 
-        .preview-doc .resume-photo-placeholder {
-            width: 76px; height: 76px; border-radius: 50%; flex-shrink: 0;
-            background: var(--bg-input); border: 2px dashed var(--border);
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+        .ds-header-meta-item + .ds-header-meta-item::before {
+            content: '·';
+            margin: 0 7px;
+            color: var(--text-muted);
+            font-size: 10px;
         }
 
-        .preview-doc .resume-photo-placeholder .ph-icon { font-size: 20px; opacity: 0.3; }
+        .ds-header-meta-link { color: var(--accent); }
 
-        .preview-doc .resume-photo-placeholder .ph-text {
+        /* ── Image containers — background approach.
+           background-size: auto  → natural pixel dimensions, never scaled.
+           background-position: center → centred inside the mask.
+           overflow: hidden + border-radius → the mask that crops the excess.
+           The image keeps its original proportions no matter its size. ── */
+
+        .ds-header-image-circle {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 2px solid var(--border);
+            background-color: var(--bg-input);
+            background-size: auto;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .ds-header-image-square {
+            width: 68px;
+            height: 68px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+            background-color: var(--bg-input);
+            background-size: auto;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .ds-header-image-placeholder-circle {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            background-color: var(--bg-input);
+            border: 2px dashed var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .ds-header-image-placeholder-square {
+            width: 68px;
+            height: 68px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            flex-shrink: 0;
+            background-color: var(--bg-input);
+            border: 2px dashed var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .ds-header-image-placeholder-circle .ph-icon,
+        .ds-header-image-placeholder-square .ph-icon { font-size: 20px; opacity: 0.3; }
+
+        .ds-header-image-placeholder-circle .ph-text,
+        .ds-header-image-placeholder-square .ph-text {
             font-size: 8px; color: var(--text-muted); font-weight: 600;
             text-transform: uppercase; letter-spacing: 0.4px;
         }
 
-        .preview-doc .section-heading {
+        .ds-header-right {
+            display: flex; flex-direction: column;
+            align-items: flex-end; gap: 8px; flex-shrink: 0;
+        }
+
+        .ds-header-right-title {
+            font-size: 14px; font-weight: 700; color: var(--navy);
+            letter-spacing: 0.5px; text-transform: uppercase;
+        }
+
+        .ds-header-right-meta {
+            text-align: right; font-size: 11px;
+            color: var(--text-secondary); line-height: 1.8;
+        }
+
+        .ds-header-right-meta strong {
+            color: var(--text-primary); font-family: 'DM Mono', monospace;
+        }
+
+        /* ── DocSection ── */
+        .ds-section { margin-top: 20px; }
+
+        .ds-section-heading {
             font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
             text-transform: uppercase; color: var(--accent);
-            margin-top: 20px; margin-bottom: 10px;
             padding-bottom: 4px; border-bottom: 1px solid var(--border);
+            margin-bottom: 10px;
         }
 
-        .preview-doc .exp-role { font-size: 13px; font-weight: 600; color: var(--text-primary); }
-        .preview-doc .exp-company { font-size: 12px; color: var(--text-secondary); }
-        .preview-doc .exp-period { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono', monospace; }
-        .preview-doc .exp-description { font-size: 11.5px; color: var(--text-secondary); margin-top: 4px; white-space: pre-wrap; }
-        .preview-doc .edu-degree { font-size: 13px; font-weight: 600; color: var(--text-primary); }
-        .preview-doc .edu-school { font-size: 12px; color: var(--text-secondary); }
-        .preview-doc .edu-year { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono', monospace; }
-        .preview-doc .skills-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
-
-        .preview-doc .skill-tag {
-            display: inline-block; padding: 3px 9px; font-size: 10.5px; font-weight: 500;
-            color: var(--accent-dark); background: var(--accent-soft);
-            border: 1px solid rgba(59,130,246,0.2); border-radius: 20px;
+        /* ── DocTwoColumn ── */
+        .ds-two-column {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 16px; margin-bottom: 20px;
         }
 
-        /* Invoice */
-        .preview-doc .invoice-header {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            margin-bottom: 28px; padding-bottom: 20px;
-            border-bottom: 2px solid var(--navy); gap: 16px;
-        }
-
-        .preview-doc .invoice-header-left { flex: 1; min-width: 0; }
-
-        .preview-doc .invoice-header-right {
-            display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0;
-        }
-
-        .preview-doc .invoice-brand { font-size: 22px; font-weight: 700; color: var(--navy); letter-spacing: -0.5px; }
-        .preview-doc .invoice-tag { font-size: 12px; color: var(--text-muted); }
-
-        .preview-doc .invoice-meta {
-            text-align: right; font-size: 11px; color: var(--text-secondary); line-height: 1.8;
-        }
-
-        .preview-doc .invoice-meta strong { color: var(--text-primary); font-family: 'DM Mono', monospace; }
-
-        .preview-doc .invoice-logo {
-            width: 68px; height: 68px; border-radius: var(--radius-md);
-            object-fit: cover; border: 1px solid var(--border);
-        }
-
-        .preview-doc .invoice-logo-placeholder {
-            width: 68px; height: 68px; border-radius: var(--radius-md);
-            background: var(--bg-input); border: 2px dashed var(--border);
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-        }
-
-        .preview-doc .invoice-logo-placeholder .ph-icon { font-size: 18px; opacity: 0.3; }
-
-        .preview-doc .invoice-logo-placeholder .ph-text {
-            font-size: 8px; color: var(--text-muted); font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.4px;
-        }
-
-        .preview-doc .invoice-parties {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;
-        }
-
-        .preview-doc .party-box {
+        .ds-column-box {
             padding: 12px 14px; background: #f8fafc;
             border-radius: var(--radius-sm); border-left: 3px solid var(--accent);
         }
 
-        .preview-doc .party-label {
+        .ds-column-label {
             font-size: 9px; font-weight: 700; letter-spacing: 1px;
-            text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;
+            text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px;
         }
 
-        .preview-doc .party-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
-        .preview-doc .party-detail { font-size: 11px; color: var(--text-secondary); white-space: pre-wrap; }
-
-        .preview-doc .items-table {
-            width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 11.5px;
+        .ds-column-name {
+            font-size: 13px; font-weight: 600;
+            color: var(--text-primary); margin-bottom: 3px;
         }
 
-        .preview-doc .items-table thead th {
-            padding: 8px 10px; text-align: left; font-size: 9.5px; font-weight: 700;
-            letter-spacing: 0.8px; text-transform: uppercase; color: white; background: var(--navy);
+        .ds-column-detail {
+            font-size: 11px; color: var(--text-secondary);
+            white-space: pre-wrap; line-height: 1.5;
         }
 
-        .preview-doc .items-table thead th:last-child { text-align: right; }
-        .preview-doc .items-table tbody tr { border-bottom: 1px solid var(--border); }
-        .preview-doc .items-table tbody tr:last-child { border-bottom: none; }
-        .preview-doc .items-table tbody td { padding: 8px 10px; color: var(--text-primary); vertical-align: top; }
-        .preview-doc .items-table tbody td:last-child { text-align: right; font-family: 'DM Mono', monospace; }
-        .preview-doc .items-table tbody td.qty-cell { color: var(--text-secondary); text-align: center; }
-        .preview-doc .items-table tbody td.price-cell { color: var(--text-secondary); font-family: 'DM Mono', monospace; text-align: right; }
-        .preview-doc .invoice-totals { margin-left: auto; width: 220px; }
+        .ds-column-detail-link { color: var(--accent); }
 
-        .preview-doc .total-row {
+        /* ── DocEntryList ── */
+        .ds-entry { margin-bottom: 12px; }
+        .ds-entry-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+        .ds-entry-meta { display: flex; align-items: center; gap: 8px; margin-top: 1px; }
+        .ds-entry-meta-primary { font-size: 12px; color: var(--text-secondary); }
+        .ds-entry-meta-separator { color: #cbd5e1; font-size: 10px; }
+
+        .ds-entry-meta-secondary {
+            font-size: 11px; color: var(--text-muted);
+            font-family: 'DM Mono', monospace;
+        }
+
+        .ds-entry-body {
+            font-size: 11.5px; color: var(--text-secondary);
+            margin-top: 4px; white-space: pre-wrap; line-height: 1.55;
+        }
+
+        /* ── DocTagList ── */
+        .ds-tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+
+        .ds-tag {
+            display: inline-block; padding: 3px 9px;
+            font-size: 10.5px; font-weight: 500;
+            color: var(--accent-dark); background: var(--accent-soft);
+            border: 1px solid rgba(59,130,246,0.2); border-radius: 20px;
+        }
+
+        /* ── DocTable ── */
+        .ds-table {
+            width: 100%; border-collapse: collapse;
+            margin-bottom: 16px; font-size: 11.5px;
+        }
+
+        .ds-table thead th {
+            padding: 8px 10px; text-align: left;
+            font-size: 9.5px; font-weight: 700; letter-spacing: 0.8px;
+            text-transform: uppercase; color: white; background: var(--navy);
+        }
+
+        .ds-table thead th:last-child { text-align: right; }
+        .ds-table tbody tr { border-bottom: 1px solid var(--border); }
+        .ds-table tbody tr:last-child { border-bottom: none; }
+        .ds-table tbody td { padding: 8px 10px; color: var(--text-primary); vertical-align: top; }
+        .ds-table tbody td.ds-table-center { text-align: center; color: var(--text-secondary); }
+
+        .ds-table tbody td.ds-table-mono {
+            text-align: right; font-family: 'DM Mono', monospace; color: var(--text-secondary);
+        }
+
+        .ds-table tbody td.ds-table-total {
+            text-align: right; font-family: 'DM Mono', monospace; color: var(--text-primary);
+        }
+
+        /* ── DocTotals ── */
+        .ds-totals { margin-left: auto; width: 220px; }
+
+        .ds-totals-row {
             display: flex; justify-content: space-between; align-items: center;
             padding: 5px 0; font-size: 11.5px; color: var(--text-secondary);
             border-bottom: 1px solid var(--border);
         }
 
-        .preview-doc .total-row:last-child {
+        .ds-totals-row:last-child {
             border-bottom: none; font-size: 13.5px; font-weight: 700;
             color: var(--navy); margin-top: 4px; padding-top: 8px;
         }
 
-        .preview-doc .total-row .total-value { font-family: 'DM Mono', monospace; }
+        .ds-totals-value { font-family: 'DM Mono', monospace; }
 
-        .preview-doc .invoice-notes {
+        /* ── DocTextBlock ── */
+        .ds-text-block {
+            font-size: 11px; color: #475569;
+            line-height: 1.65; white-space: pre-wrap; margin: 0;
+        }
+
+        /* ── DocNote ── */
+        .ds-note {
             margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);
             font-size: 11px; color: var(--text-muted); text-align: center;
         }
@@ -791,11 +826,7 @@
         /* =====================================================
            TEMPLATE EXTRAS
         ===================================================== */
-        .template-extras {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
-        }
+        .template-extras { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
 
         .tax-row { display: flex; align-items: center; gap: 10px; }
 
@@ -811,10 +842,7 @@
             outline: none; transition: border-color 0.15s, box-shadow 0.15s;
         }
 
-        .tax-row input:focus {
-            border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
-        }
-
+        .tax-row input:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
         .tax-row .tax-hint { font-size: 11px; color: var(--text-muted); }
 
         /* =====================================================
@@ -840,10 +868,7 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .pdf-overlay-title {
-            font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px;
-        }
-
+        .pdf-overlay-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
         .pdf-overlay-sub { font-size: 12px; color: var(--text-muted); }
 
         /* =====================================================
@@ -882,7 +907,6 @@ function validateTextLike(v, required) {
 }
 
 const VALIDATORS = {
-
     text:     { validate: (v, required) => validateTextLike(v, required) },
     textarea: { validate: (v, required) => validateTextLike(v, required) },
 
@@ -967,16 +991,11 @@ const VALIDATORS = {
         }
     },
 
-    /* daterange — start + end dates with optional "Present" toggle.
-       The value stored is an object: { start, end, present }
-       Validation checks: start required, end required unless present is true,
-       end must be after start unless present is true. */
     daterange: {
         validate: (v, required) => {
             if (!v || typeof v !== "object") return required ? "This field is required" : null;
             const { start, end, present } = v;
             if (!start || !start.trim()) return required ? "Start date is required" : null;
-            /* Validate start date format */
             const patterns = [
                 /^\d{2}\/\d{2}\/\d{4}$/,
                 /^\d{2}-\d{2}-\d{4}$/,
@@ -988,7 +1007,6 @@ const VALIDATORS = {
             if (!end || !end.trim()) return "End date is required, or toggle Present";
             if (!patterns.some(p => p.test(end.trim())))
                 return "End date: use DD/MM/YYYY or e.g. 01 Mar 2025";
-            /* Cross-field: end must be after start */
             const startDate = parseDisplayDate(start);
             const endDate   = parseDisplayDate(end);
             if (startDate && endDate && endDate <= startDate)
@@ -1013,18 +1031,13 @@ function nativeDateToDisplay(nativeVal) {
 
 /* ============================================================
    UNIVERSAL CROSS-FIELD VALIDATION
-   Handles afterField rules for standard date fields.
-   daterange fields handle their own internal cross-check
-   inside the daterange validator above.
 ============================================================ */
 
 function parseDisplayDate(str) {
     if (!str || !str.trim()) return null;
     const s = str.trim();
-
     const dmy = s.match(/^(\d{1,2})[\/\-](\d{2})[\/\-](\d{4})$/);
     if (dmy) return new Date(+dmy[3], +dmy[2] - 1, +dmy[1]);
-
     const months = {
         jan:0, feb:1, mar:2, apr:3, may:4,  jun:5,
         jul:6, aug:7, sep:8, oct:9, nov:10, dec:11
@@ -1043,7 +1056,8 @@ function validateCrossFields(section, block) {
         if (!field.afterField) return;
         const thisVal  = block[field.name]      || "";
         const otherVal = block[field.afterField] || "";
-        if (!thisVal.trim || !thisVal.trim() || !otherVal.trim()) return;
+        if (!thisVal || !thisVal.trim || !thisVal.trim()) return;
+        if (!otherVal || !otherVal.trim()) return;
         const thisDate  = parseDisplayDate(thisVal);
         const otherDate = parseDisplayDate(otherVal);
         if (!thisDate || !otherDate) return;
@@ -1064,7 +1078,8 @@ function getAllFieldErrors(template, documentData) {
             : [documentData[section.id]];
         blocks.forEach((block, idx) => {
             section.fields.forEach(field => {
-                const err = validateField(field, block[field.name] !== undefined ? block[field.name] : "");
+                const val = block[field.name] !== undefined ? block[field.name] : "";
+                const err = validateField(field, val);
                 if (err) errors.push({ sectionId: section.id, blockIndex: idx, fieldName: field.name });
             });
             validateCrossFields(section, block).forEach(({ fieldName }) => {
@@ -1076,8 +1091,7 @@ function getAllFieldErrors(template, documentData) {
 }
 
 /* ============================================================
-   HELPER — format a daterange value for display in the preview.
-   Returns e.g. "01/03/2020 – Present" or "01/03/2020 – 15/06/2024"
+   DATE RANGE DISPLAY HELPER
 ============================================================ */
 
 function formatDateRange(v) {
@@ -1090,10 +1104,353 @@ function formatDateRange(v) {
 }
 
 /* ============================================================
+   DESIGN SYSTEM — UNIVERSAL BUILDING BLOCKS
+   Change any component here → every template updates instantly.
+   Templates never set their own styles — only compose these.
+============================================================ */
+
+/* ── DocHeader ── */
+function DocHeader({ title, subtitle, metaItems, rightPanel, image }) {
+    const hasLeft  = title || subtitle || (metaItems && metaItems.length > 0);
+    const hasRight = rightPanel || image;
+
+    return (
+        <div className="ds-header">
+            {hasLeft && (
+                <div className="ds-header-text">
+                    {title    && <div className="ds-header-title">{title}</div>}
+                    {subtitle && <div className="ds-header-subtitle">{subtitle}</div>}
+                    {metaItems && metaItems.length > 0 && (
+                        <div className="ds-header-meta">
+                            {metaItems.map((item, i) => (
+                                <span
+                                    key={i}
+                                    className={
+                                        "ds-header-meta-item" +
+                                        (item.isLink ? " ds-header-meta-link" : "")
+                                    }
+                                >
+                                    {item.value}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+            {hasRight && (
+                <div className="ds-header-right">
+                    {image && (
+                        image.src ? (
+                            /* Background approach: natural proportions, centred,
+                               border-radius mask crops the excess — no scaling ever */
+                            <div
+                                className={
+                                    image.shape === "square"
+                                        ? "ds-header-image-square"
+                                        : "ds-header-image-circle"
+                                }
+                                style={{
+                                    backgroundImage:    `url(${image.src})`,
+                                    backgroundSize:     "auto",
+                                    backgroundPosition: "center",
+                                    backgroundRepeat:   "no-repeat"
+                                }}
+                            />
+                        ) : (
+                            <div
+                                className={
+                                    image.shape === "square"
+                                        ? "ds-header-image-placeholder-square"
+                                        : "ds-header-image-placeholder-circle"
+                                }
+                            >
+                                <span className="ph-icon">{image.icon}</span>
+                                <span className="ph-text">{image.label}</span>
+                            </div>
+                        )
+                    )}
+                    {rightPanel && (
+                        <div>
+                            {rightPanel.title && (
+                                <div className="ds-header-right-title">{rightPanel.title}</div>
+                            )}
+                            {rightPanel.rows && rightPanel.rows.length > 0 && (
+                                <div className="ds-header-right-meta">
+                                    {rightPanel.rows.map((row, i) => (
+                                        <div key={i}>
+                                            {row.label}: <strong>{row.value}</strong>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+}
+
+/* ── DocSection ── */
+function DocSection({ title, children }) {
+    if (!children) return null;
+    return (
+        <div className="ds-section">
+            <div className="ds-section-heading">{title}</div>
+            {children}
+        </div>
+    );
+}
+
+/* ── DocTwoColumn ── */
+function DocTwoColumn({ columns }) {
+    if (!columns || columns.length === 0) return null;
+    return (
+        <div className="ds-two-column">
+            {columns.map((col, i) => (
+                <div key={i} className="ds-column-box">
+                    {col.label && <div className="ds-column-label">{col.label}</div>}
+                    {col.name  && <div className="ds-column-name">{col.name}</div>}
+                    {col.lines && col.lines.map((line, j) => (
+                        line.value ? (
+                            <div
+                                key={j}
+                                className={
+                                    "ds-column-detail" +
+                                    (line.isLink ? " ds-column-detail-link" : "")
+                                }
+                            >
+                                {line.value}
+                            </div>
+                        ) : null
+                    ))}
+                </div>
+            ))}
+        </div>
+    );
+}
+
+/* ── DocEntryList ── */
+function DocEntryList({ entries }) {
+    if (!entries || entries.length === 0) return null;
+    return (
+        <div>
+            {entries.map((entry, i) => (
+                <div key={i} className="ds-entry">
+                    {entry.title && (
+                        <div className="ds-entry-title">{entry.title}</div>
+                    )}
+                    {(entry.primary || entry.secondary) && (
+                        <div className="ds-entry-meta">
+                            {entry.primary && (
+                                <span className="ds-entry-meta-primary">{entry.primary}</span>
+                            )}
+                            {entry.primary && entry.secondary && (
+                                <span className="ds-entry-meta-separator">·</span>
+                            )}
+                            {entry.secondary && (
+                                <span className="ds-entry-meta-secondary">{entry.secondary}</span>
+                            )}
+                        </div>
+                    )}
+                    {entry.body && (
+                        <div className="ds-entry-body">{entry.body}</div>
+                    )}
+                </div>
+            ))}
+        </div>
+    );
+}
+
+/* ── DocTagList ── */
+function DocTagList({ tags }) {
+    if (!tags || tags.length === 0) return null;
+    return (
+        <div className="ds-tag-list">
+            {tags.map((tag, i) => (
+                <span key={i} className="ds-tag">{tag}</span>
+            ))}
+        </div>
+    );
+}
+
+/* ── DocTable ── */
+function DocTable({ columns, rows }) {
+    if (!rows || rows.length === 0) return null;
+    return (
+        <table className="ds-table">
+            <thead>
+                <tr>
+                    {columns.map((col, i) => (
+                        <th key={i} style={{ width: col.width, textAlign: col.align || "left" }}>
+                            {col.label}
+                        </th>
+                    ))}
+                </tr>
+            </thead>
+            <tbody>
+                {rows.map((row, i) => (
+                    <tr key={i}>
+                        {row.cells.map((cell, j) => (
+                            <td
+                                key={j}
+                                className={
+                                    cell.mono && cell.center ? "ds-table-center" :
+                                    cell.mono               ? "ds-table-mono"   :
+                                    cell.total              ? "ds-table-total"  : ""
+                                }
+                            >
+                                {cell.value}
+                            </td>
+                        ))}
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    );
+}
+
+/* ── DocTotals ── */
+function DocTotals({ rows }) {
+    if (!rows || rows.length === 0) return null;
+    return (
+        <div className="ds-totals">
+            {rows.map((row, i) => (
+                <div key={i} className="ds-totals-row">
+                    <span>{row.label}</span>
+                    <span className="ds-totals-value">{row.value}</span>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+/* ── DocTextBlock ── */
+function DocTextBlock({ text }) {
+    if (!text) return null;
+    return <p className="ds-text-block">{text}</p>;
+}
+
+/* ── DocNote ── */
+function DocNote({ text }) {
+    if (!text) return null;
+    return <div className="ds-note">{text}</div>;
+}
+
+/* ============================================================
+   UNIVERSAL PREVIEW
+   One component for every template ever made.
+   Reads template.layoutFn, renders matching design system blocks.
+============================================================ */
+
+function UniversalPreview({ template, documentData, extrasState, uploadedImage, previewDocRef }) {
+    if (!template) return null;
+
+    const blocks = template.layoutFn
+        ? template.layoutFn({ documentData, extrasState, uploadedImage })
+        : [];
+
+    const hasContent = blocks.some(b => b.hasContent !== false);
+
+    if (!hasContent) {
+        return (
+            <div className="empty-preview" ref={previewDocRef}>
+                <div className="empty-icon">{template.icon}</div>
+                <p>Fill in the form to see your {template.name.toLowerCase()} preview</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="preview-doc" ref={previewDocRef}>
+            {blocks.map((block, i) => {
+                if (block.hasContent === false) return null;
+
+                switch (block.type) {
+
+                    case "header":
+                        return (
+                            <DocHeader
+                                key={i}
+                                title={block.title}
+                                subtitle={block.subtitle}
+                                metaItems={block.metaItems}
+                                rightPanel={block.rightPanel}
+                                image={block.image}
+                            />
+                        );
+
+                    case "twoColumn":
+                        return <DocTwoColumn key={i} columns={block.columns} />;
+
+                    case "entryList":
+                        return (
+                            <DocSection key={i} title={block.title}>
+                                <DocEntryList entries={block.entries} />
+                            </DocSection>
+                        );
+
+                    case "tagList":
+                        return (
+                            <DocSection key={i} title={block.title}>
+                                <DocTagList tags={block.tags} />
+                            </DocSection>
+                        );
+
+                    case "table":
+                        return (
+                            <DocSection key={i} title={block.title}>
+                                <DocTable columns={block.columns} rows={block.rows} />
+                            </DocSection>
+                        );
+
+                    case "totals":
+                        return <DocTotals key={i} rows={block.rows} />;
+
+                    case "textBlock":
+                        return (
+                            <DocSection key={i} title={block.title}>
+                                <DocTextBlock text={block.text} />
+                            </DocSection>
+                        );
+
+                    case "note":
+                        return <DocNote key={i} text={block.text} />;
+
+                    default:
+                        return null;
+                }
+            })}
+        </div>
+    );
+}
+
+/* ============================================================
+   INVOICE CALCULATION HELPERS
+============================================================ */
+
+function parseNumber(val) {
+    const n = parseFloat(String(val).replace(/[^0-9.]/g, ""));
+    return isNaN(n) ? 0 : n;
+}
+
+function calcInvoiceTotals(items, taxRate) {
+    const subtotal  = items.reduce((s, r) => s + parseNumber(r.qty) * parseNumber(r.price), 0);
+    const taxAmount = subtotal * (parseNumber(taxRate) / 100);
+    return { subtotal, taxAmount, total: subtotal + taxAmount };
+}
+
+function formatMoney(num) {
+    return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+/* ============================================================
    TEMPLATE REGISTRY
 ============================================================ */
 
 const TEMPLATES = [
+
+    /* ── PROFESSIONAL RESUME ── */
     {
         id:          "resume",
         name:        "Professional Resume",
@@ -1101,6 +1458,7 @@ const TEMPLATES = [
         category:    "Personal",
         description: "Clean, modern resume for any industry",
         image:       { shape: "circle", label: "Profile Photo", icon: "👤" },
+
         sections: [
             {
                 id:    "header",
@@ -1135,11 +1493,10 @@ const TEMPLATES = [
                 title:      "Experience",
                 repeatable: true,
                 fields: [
-                    { name: "role",        label: "Job Title",    placeholder: "e.g. Product Designer",               validate: "text"                    },
-                    { name: "company",     label: "Company",      placeholder: "e.g. Acme Corp",                      validate: "text"                    },
-                    /* daterange — two calendar pickers + Present toggle, stored as { start, end, present } */
-                    { name: "period",      label: "Period",       validate: "daterange",                              optional: true                      },
-                    { name: "description", label: "Description",  type: "textarea", placeholder: "Describe your responsibilities...", validate: "textarea", optional: true }
+                    { name: "role",        label: "Job Title",   placeholder: "e.g. Product Designer",               validate: "text"                    },
+                    { name: "company",     label: "Company",     placeholder: "e.g. Acme Corp",                      validate: "text"                    },
+                    { name: "period",      label: "Period",      validate: "daterange",                              optional: true                      },
+                    { name: "description", label: "Description", type: "textarea", placeholder: "Describe your responsibilities...", validate: "textarea", optional: true }
                 ]
             },
             {
@@ -1152,9 +1509,103 @@ const TEMPLATES = [
                     { name: "year",   label: "Year",                   placeholder: "e.g. 2019",                 validate: "year", optional: true }
                 ]
             }
-        ]
+        ],
+
+        layoutFn({ documentData, uploadedImage }) {
+            const hdr    = documentData.header     || {};
+            const sum    = documentData.summary    || {};
+            const skills = documentData.skills     || [];
+            const exp    = documentData.experience || [];
+            const edu    = documentData.education  || [];
+
+            const skillTags     = skills.map(s => s.skill).filter(Boolean);
+            const hasSkills     = skillTags.length > 0;
+            const hasExp        = exp.some(e => e.role || e.company);
+            const hasEdu        = edu.some(e => e.degree || e.school);
+            const hasAnyContent = hdr.name || hdr.title || hdr.email || hdr.phone ||
+                hdr.address || hdr.linkedin || hdr.website ||
+                sum.summary || hasSkills || hasExp || hasEdu;
+
+            if (!hasAnyContent) return [{ type: "empty", hasContent: false }];
+
+            const metaItems = [
+                hdr.email    && { value: hdr.email,    isLink: false },
+                hdr.phone    && { value: hdr.phone,    isLink: false },
+                hdr.address  && { value: hdr.address,  isLink: false },
+                hdr.linkedin && { value: hdr.linkedin, isLink: true  },
+                hdr.website  && { value: hdr.website,  isLink: true  }
+            ].filter(Boolean);
+
+            const blocks = [];
+
+            blocks.push({
+                type:       "header",
+                hasContent: true,
+                title:      hdr.name  || null,
+                subtitle:   hdr.title || null,
+                metaItems:  metaItems.length > 0 ? metaItems : null,
+                image: {
+                    shape: "circle",
+                    src:   uploadedImage || null,
+                    icon:  "👤",
+                    label: "Photo"
+                }
+            });
+
+            if (sum.summary) {
+                blocks.push({
+                    type:       "textBlock",
+                    hasContent: true,
+                    title:      "Professional Summary",
+                    text:       sum.summary
+                });
+            }
+
+            if (hasSkills) {
+                blocks.push({
+                    type:       "tagList",
+                    hasContent: true,
+                    title:      "Skills",
+                    tags:       skillTags
+                });
+            }
+
+            if (hasExp) {
+                blocks.push({
+                    type:       "entryList",
+                    hasContent: true,
+                    title:      "Experience",
+                    entries:    exp
+                        .filter(e => e.role || e.company)
+                        .map(e => ({
+                            title:     e.role        || null,
+                            primary:   e.company     || null,
+                            secondary: formatDateRange(e.period) || null,
+                            body:      e.description || null
+                        }))
+                });
+            }
+
+            if (hasEdu) {
+                blocks.push({
+                    type:       "entryList",
+                    hasContent: true,
+                    title:      "Education",
+                    entries:    edu
+                        .filter(e => e.degree || e.school)
+                        .map(e => ({
+                            title:     e.degree || null,
+                            primary:   e.school || null,
+                            secondary: e.year   || null
+                        }))
+                });
+            }
+
+            return blocks;
+        }
     },
 
+    /* ── INVOICE ── */
     {
         id:          "invoice",
         name:        "Invoice",
@@ -1162,6 +1613,7 @@ const TEMPLATES = [
         category:    "Business",
         description: "Professional invoice with totals and tax",
         image:       { shape: "square", label: "Company Logo", icon: "🏢" },
+
         sections: [
             {
                 id:    "sender",
@@ -1201,7 +1653,133 @@ const TEMPLATES = [
                     { name: "price", label: "Unit Price",  placeholder: "0.00",                validate: "number" }
                 ]
             }
-        ]
+        ],
+
+        layoutFn({ documentData, extrasState, uploadedImage }) {
+            const taxRate    = (extrasState.invoice && extrasState.invoice.taxRate) || "0";
+            const sender     = documentData.sender || {};
+            const hdr        = documentData.header || {};
+            const client     = documentData.client || {};
+            const items      = documentData.items  || [];
+
+            const { subtotal, taxAmount, total } = calcInvoiceTotals(items, taxRate);
+            const taxRateNum    = parseNumber(taxRate);
+            const hasItems      = items.some(i => i.item);
+            const hasAnyContent = sender.senderName || hdr.invoiceNumber ||
+                client.clientName || hasItems;
+
+            if (!hasAnyContent) return [{ type: "empty", hasContent: false }];
+
+            const rightRows = [
+                hdr.invoiceNumber && { label: "No.",    value: hdr.invoiceNumber },
+                hdr.date          && { label: "Issued", value: hdr.date          },
+                hdr.dueDate       && { label: "Due",    value: hdr.dueDate       }
+            ].filter(Boolean);
+
+            const blocks = [];
+
+            blocks.push({
+                type:       "header",
+                hasContent: true,
+                title:      sender.senderName  || "Your Business",
+                subtitle:   sender.senderEmail || null,
+                metaItems: [
+                    sender.senderAddress && { value: sender.senderAddress, isLink: false },
+                    sender.senderWebsite && { value: sender.senderWebsite, isLink: true  }
+                ].filter(Boolean),
+                image: {
+                    shape: "square",
+                    src:   uploadedImage || null,
+                    icon:  "🏢",
+                    label: "Logo"
+                },
+                rightPanel: {
+                    title: "INVOICE",
+                    rows:  rightRows
+                }
+            });
+
+            if (sender.senderName || client.clientName) {
+                blocks.push({
+                    type:       "twoColumn",
+                    hasContent: true,
+                    columns: [
+                        {
+                            label: "From",
+                            name:  sender.senderName || null,
+                            lines: [
+                                { value: sender.senderAddress || null, isLink: false },
+                                { value: sender.senderEmail   || null, isLink: true  },
+                                { value: sender.senderWebsite || null, isLink: true  }
+                            ]
+                        },
+                        {
+                            label: "Bill To",
+                            name:  client.clientName || null,
+                            lines: [
+                                { value: client.clientAddress || null, isLink: false },
+                                { value: client.clientEmail   || null, isLink: true  }
+                            ]
+                        }
+                    ]
+                });
+            }
+
+            if (hasItems) {
+                const tableRows = items
+                    .filter(row => row.item)
+                    .map(row => {
+                        const qty   = parseNumber(row.qty);
+                        const price = parseNumber(row.price);
+                        const line  = qty * price;
+                        return {
+                            cells: [
+                                { value: row.item || "" },
+                                { value: row.qty  || "", mono: true, center: true },
+                                { value: row.price ? formatMoney(parseNumber(row.price)) : "", mono: true },
+                                { value: line > 0 ? formatMoney(line) : "", total: true }
+                            ]
+                        };
+                    });
+
+                blocks.push({
+                    type:       "table",
+                    hasContent: true,
+                    title:      null,
+                    columns: [
+                        { label: "Description", width: "50%"  },
+                        { label: "Qty",         width: "12%", align: "center" },
+                        { label: "Unit Price",  width: "18%", align: "right"  },
+                        { label: "Total",       width: "20%", align: "right"  }
+                    ],
+                    rows: tableRows
+                });
+            }
+
+            if (subtotal > 0) {
+                const totalRows = [
+                    { label: "Subtotal",                   value: formatMoney(subtotal)  },
+                    taxRateNum > 0
+                        ? { label: `Tax (${taxRateNum}%)`, value: formatMoney(taxAmount) }
+                        : null,
+                    { label: "Total Due",                  value: formatMoney(total)     }
+                ].filter(Boolean);
+
+                blocks.push({
+                    type:       "totals",
+                    hasContent: true,
+                    rows:       totalRows
+                });
+            }
+
+            blocks.push({
+                type:       "note",
+                hasContent: true,
+                text:       "Thank you for your business."
+            });
+
+            return blocks;
+        }
     }
 ];
 
@@ -1209,17 +1787,14 @@ const FEATURED_IDS = ["resume", "invoice"];
 
 /* ============================================================
    DOCUMENT INITIALIZATION
-   daterange fields are initialised as objects, not strings.
 ============================================================ */
 
 function initSection(section) {
     const obj = {};
     section.fields.forEach(f => {
-        if (f.validate === "daterange") {
-            obj[f.name] = { start: "", end: "", present: false };
-        } else {
-            obj[f.name] = "";
-        }
+        obj[f.name] = f.validate === "daterange"
+            ? { start: "", end: "", present: false }
+            : "";
     });
     return obj;
 }
@@ -1232,25 +1807,6 @@ function initDocument(template) {
             : initSection(section);
     });
     return data;
-}
-
-/* ============================================================
-   INVOICE CALCULATION HELPERS
-============================================================ */
-
-function parseNumber(val) {
-    const n = parseFloat(String(val).replace(/[^0-9.]/g, ""));
-    return isNaN(n) ? 0 : n;
-}
-
-function calcInvoiceTotals(items, taxRate) {
-    const subtotal  = items.reduce((s, r) => s + parseNumber(r.qty) * parseNumber(r.price), 0);
-    const taxAmount = subtotal * (parseNumber(taxRate) / 100);
-    return { subtotal, taxAmount, total: subtotal + taxAmount };
-}
-
-function formatMoney(num) {
-    return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 /* ============================================================
@@ -1267,19 +1823,14 @@ function readImageAsBase64(file) {
 }
 
 /* ============================================================
-   PDF EXPORT — maximum quality html2canvas
-   scale: 3  →  3× pixel density (sharpest practical value)
-   JPEG quality: 1.0  →  maximum (no compression loss)
-   windowWidth: fixed at 1400px so the preview renders at a
-   consistent width regardless of the user's screen size,
-   preventing layout shifts between exports.
+   PDF EXPORT — maximum quality
+   scale: 3, PNG lossless, imageTimeout: 0, windowWidth: 1400
 ============================================================ */
 
 async function exportPreviewToPDF(previewDocRef, filename) {
     const node = previewDocRef.current;
     if (!node) return;
 
-    /* Strip decorative styles so the PDF has clean white edges */
     const prevShadow = node.style.boxShadow;
     const prevMargin = node.style.margin;
     const prevRadius = node.style.borderRadius;
@@ -1287,7 +1838,6 @@ async function exportPreviewToPDF(previewDocRef, filename) {
     node.style.margin       = "0";
     node.style.borderRadius = "0";
 
-    /* Render at 3× scale — maximum practical sharpness */
     const canvas = await window.html2canvas(node, {
         scale:           3,
         useCORS:         true,
@@ -1295,10 +1845,10 @@ async function exportPreviewToPDF(previewDocRef, filename) {
         backgroundColor: "#ffffff",
         logging:         false,
         removeContainer: true,
-        windowWidth:     1400
+        windowWidth:     1400,
+        imageTimeout:    0
     });
 
-    /* Restore decorative styles */
     node.style.boxShadow    = prevShadow;
     node.style.margin       = prevMargin;
     node.style.borderRadius = prevRadius;
@@ -1314,17 +1864,16 @@ async function exportPreviewToPDF(previewDocRef, filename) {
 
     for (let p = 0; p < pages; p++) {
         if (p > 0) pdf.addPage();
-        const sliceY      = p * pageH_px;
-        const sliceH      = Math.min(pageH_px, canvasH - sliceY);
-        const pageCanvas  = document.createElement("canvas");
+        const sliceY     = p * pageH_px;
+        const sliceH     = Math.min(pageH_px, canvasH - sliceY);
+        const pageCanvas = document.createElement("canvas");
         pageCanvas.width  = canvasW;
         pageCanvas.height = sliceH;
         const ctx         = pageCanvas.getContext("2d");
         ctx.drawImage(canvas, 0, sliceY, canvasW, sliceH, 0, 0, canvasW, sliceH);
-        /* quality: 1.0 — maximum JPEG quality, no compression loss */
-        const imgData     = pageCanvas.toDataURL("image/jpeg", 1.0);
-        const sliceH_mm   = sliceH / pxPerMm;
-        pdf.addImage(imgData, "JPEG", 0, 0, A4_W, sliceH_mm);
+        const imgData   = pageCanvas.toDataURL("image/png");
+        const sliceH_mm = sliceH / pxPerMm;
+        pdf.addImage(imgData, "PNG", 0, 0, A4_W, sliceH_mm);
     }
 
     pdf.save(filename);
@@ -1336,7 +1885,7 @@ async function exportPreviewToPDF(previewDocRef, filename) {
 
 function saveProgressToFile(template, documentData, extrasState, uploadedImage) {
     const payload = {
-        easydocVersion: "1.4",
+        easydocVersion: "2.0",
         templateId:     template.id,
         documentData,
         extrasState,
@@ -1377,12 +1926,14 @@ function loadProgressFromFile() {
 
 /* ============================================================
    UNIVERSAL IMAGE UPLOAD ZONE
+   Uses background-image approach so the upload trigger preview
+   matches exactly what the document preview shows — natural
+   proportions, centred, cropped by the shape mask.
 ============================================================ */
 
 function ImageUploadZone({ imageConfig, uploadedImage, onImageChange }) {
     const fileInputRef = useRef(null);
     if (!imageConfig) return null;
-
     const isCircle = imageConfig.shape === "circle";
 
     async function handleFileChange(e) {
@@ -1400,23 +1951,33 @@ function ImageUploadZone({ imageConfig, uploadedImage, onImageChange }) {
         onImageChange(null);
     }
 
+    /* When an image is uploaded, apply it as a background so the
+       trigger preview uses the same natural-proportions approach */
+    const triggerStyle = uploadedImage
+        ? {
+            backgroundImage:    `url(${uploadedImage})`,
+            backgroundSize:     "auto",
+            backgroundPosition: "center",
+            backgroundRepeat:   "no-repeat"
+          }
+        : {};
+
     return (
         <div className="image-upload-section">
             <div className="image-upload-label">{imageConfig.label}</div>
             <div className="image-upload-zone">
                 <div
                     className={isCircle ? "image-upload-trigger" : "image-upload-trigger square"}
+                    style={triggerStyle}
                     onClick={() => fileInputRef.current && fileInputRef.current.click()}
                     title={uploadedImage ? "Click to change image" : "Click to upload image"}
                 >
                     {uploadedImage ? (
-                        <>
-                            <img src={uploadedImage} alt="Uploaded" />
-                            <div className="image-overlay">
-                                <span className="overlay-icon">✏️</span>
-                                <span className="overlay-text">Change</span>
-                            </div>
-                        </>
+                        /* Overlay only — no img tag, background handles the image */
+                        <div className="image-overlay">
+                            <span className="overlay-icon">✏️</span>
+                            <span className="overlay-text">Change</span>
+                        </div>
                     ) : (
                         <div className="image-upload-placeholder">
                             <span className="upload-icon">{imageConfig.icon}</span>
@@ -1446,8 +2007,6 @@ function ImageUploadZone({ imageConfig, uploadedImage, onImageChange }) {
 
 /* ============================================================
    UNIVERSAL DATE PICKER SUB-COMPONENT
-   Shared by SmartField (single date) and DateRangeField.
-   Renders: text input + 📅 calendar button + hidden native input.
 ============================================================ */
 
 function DatePicker({ value, onChange, onBlur, placeholder, inputClass, fieldName }) {
@@ -1498,45 +2057,25 @@ function DatePicker({ value, onChange, onBlur, placeholder, inputClass, fieldNam
 
 /* ============================================================
    DATE RANGE FIELD COMPONENT
-   Renders: [Start Date 📅] — [End Date 📅] [Present]
-   Value is an object: { start: string, end: string, present: bool }
-   When Present is active, the end date input is hidden.
-   Cross-field check (end > start) is inside the daterange validator.
 ============================================================ */
 
 function DateRangeField({ field, value, onChange, forceShowError }) {
     const [touched, setTouched] = useState(false);
 
-    /* value may be a string if loaded from older save — normalise */
     const safeValue = (value && typeof value === "object")
         ? value
         : { start: "", end: "", present: false };
 
     const { start, end, present } = safeValue;
-
     const shouldShowError = touched || forceShowError;
     const errorMsg        = shouldShowError ? validateField(field, safeValue) : null;
     const isValid         = shouldShowError && !errorMsg && start.length > 0;
 
-    const startClass = [
-        "field-input",
-        isValid  ? "is-valid"   : "",
-        errorMsg ? "is-invalid" : ""
-    ].filter(Boolean).join(" ");
+    const startClass = ["field-input", isValid ? "is-valid" : "", errorMsg ? "is-invalid" : ""].filter(Boolean).join(" ");
+    const endClass   = ["field-input", isValid ? "is-valid" : "", (errorMsg && !present) ? "is-invalid" : ""].filter(Boolean).join(" ");
 
-    const endClass = [
-        "field-input",
-        isValid  ? "is-valid"   : "",
-        (errorMsg && !present) ? "is-invalid" : ""
-    ].filter(Boolean).join(" ");
-
-    function updateStart(v) {
-        onChange({ ...safeValue, start: v });
-    }
-
-    function updateEnd(v) {
-        onChange({ ...safeValue, end: v });
-    }
+    function updateStart(v) { onChange({ ...safeValue, start: v }); }
+    function updateEnd(v)   { onChange({ ...safeValue, end: v });   }
 
     function togglePresent() {
         onChange({ ...safeValue, present: !present, end: present ? end : "" });
@@ -1598,27 +2137,18 @@ function DateRangeField({ field, value, onChange, forceShowError }) {
 
 /* ============================================================
    UNIVERSAL SMART FIELD COMPONENT
-   Dispatches to the correct input type automatically.
-   daterange → DateRangeField (two pickers + Present toggle)
-   date      → DatePicker (single calendar picker)
-   textarea  → resizable textarea with character counter
-   number    → digits-only input
-   all other → standard text input
 ============================================================ */
 
 function SmartField({ field, value, onChange, forceShowError, crossFieldError }) {
-    const [touched,     setTouched] = useState(false);
+    const [touched, setTouched] = useState(false);
 
     const shouldShowError = touched || forceShowError;
     const isDateField     = field.validate === "date";
     const isDateRange     = field.validate === "daterange";
     const isNumberField   = field.validate === "number";
     const isTextarea      = field.type === "textarea";
-    const showCounter     = isTextarea
-        || field.validate === "textarea"
-        || field.validate === "text";
+    const showCounter     = isTextarea || field.validate === "textarea" || field.validate === "text";
 
-    /* daterange has its own component with internal state */
     if (isDateRange) {
         return (
             <DateRangeField
@@ -1632,7 +2162,7 @@ function SmartField({ field, value, onChange, forceShowError, crossFieldError })
 
     const fieldError = shouldShowError ? validateField(field, value) : null;
     const errorMsg   = fieldError || (shouldShowError ? (crossFieldError || null) : null);
-    const isValid    = shouldShowError && !fieldError && !crossFieldError && value.length > 0;
+    const isValid    = shouldShowError && !fieldError && !crossFieldError && (value || "").length > 0;
 
     const charCount    = (value || "").length;
     const counterClass = charCount > MAX_TEXT
@@ -1660,13 +2190,10 @@ function SmartField({ field, value, onChange, forceShowError, crossFieldError })
     function handleBlur() { setTouched(true); }
 
     const dateWrapClass = isDateField
-        ? ["date-field-wrapper",
-           isValid  ? "date-valid"   : "",
-           errorMsg ? "date-invalid" : ""]
+        ? ["date-field-wrapper", isValid ? "date-valid" : "", errorMsg ? "date-invalid" : ""]
             .filter(Boolean).join(" ")
         : null;
 
-    /* ── TEXTAREA ── */
     if (isTextarea) {
         return (
             <div>
@@ -1694,14 +2221,13 @@ function SmartField({ field, value, onChange, forceShowError, crossFieldError })
         );
     }
 
-    /* ── SINGLE DATE — universal calendar picker ── */
     if (isDateField) {
         return (
             <div>
                 <div className={dateWrapClass}>
                     <DatePicker
                         value={value || ""}
-                        onChange={v => { onChange(v); }}
+                        onChange={v => onChange(v)}
                         onBlur={handleBlur}
                         placeholder={field.placeholder || "DD/MM/YYYY"}
                         inputClass={inputClass}
@@ -1717,7 +2243,6 @@ function SmartField({ field, value, onChange, forceShowError, crossFieldError })
         );
     }
 
-    /* ── ALL OTHER FIELD TYPES ── */
     return (
         <div>
             <input
@@ -1763,10 +2288,7 @@ function InvoiceExtras({ extrasState, setExtrasState }) {
             <div className="tax-row">
                 <label>Tax Rate</label>
                 <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    step="0.5"
+                    type="number" min="0" max="100" step="0.5"
                     value={taxRate}
                     onChange={e => setTaxRate(e.target.value)}
                     placeholder="0"
@@ -1780,305 +2302,6 @@ function InvoiceExtras({ extrasState, setExtrasState }) {
 const EXTRAS_REGISTRY = {
     invoice: InvoiceExtras
 };
-
-/* ============================================================
-   PREVIEW COMPONENTS
-============================================================ */
-
-function ResumePreview({ data, uploadedImage, previewDocRef }) {
-    const hdr    = data.header     || {};
-    const sum    = data.summary    || {};
-    const skills = data.skills     || [];
-    const exp    = data.experience || [];
-    const edu    = data.education  || [];
-
-    const hasSkills     = skills.some(s => s.skill);
-    const hasAnyContent =
-        hdr.name || hdr.title || hdr.email || hdr.phone ||
-        hdr.address || hdr.linkedin || hdr.website ||
-        sum.summary || hasSkills ||
-        exp.some(e => e.role || e.company) ||
-        edu.some(e => e.degree || e.school);
-
-    if (!hasAnyContent) {
-        return (
-            <div className="empty-preview" ref={previewDocRef}>
-                <div className="empty-icon">📄</div>
-                <p>Fill in the form to see your resume preview</p>
-            </div>
-        );
-    }
-
-    return (
-        <div className="preview-doc" ref={previewDocRef}>
-
-            <div className="resume-header-row">
-                <div className="resume-header-text">
-                    {hdr.name  && <div className="resume-name">{hdr.name}</div>}
-                    {hdr.title && <div className="resume-title">{hdr.title}</div>}
-                    {(hdr.email || hdr.phone || hdr.address || hdr.linkedin || hdr.website) && (
-                        <div className="resume-contact">
-                            {hdr.email    && <span>{hdr.email}</span>}
-                            {hdr.phone    && <span>{hdr.phone}</span>}
-                            {hdr.address  && <span>{hdr.address}</span>}
-                            {hdr.linkedin && <span style={{ color: "#3b82f6" }}>{hdr.linkedin}</span>}
-                            {hdr.website  && <span style={{ color: "#3b82f6" }}>{hdr.website}</span>}
-                        </div>
-                    )}
-                </div>
-                {uploadedImage ? (
-                    <img src={uploadedImage} className="resume-photo" alt="Profile" />
-                ) : (
-                    <div className="resume-photo-placeholder">
-                        <span className="ph-icon">👤</span>
-                        <span className="ph-text">Photo</span>
-                    </div>
-                )}
-            </div>
-
-            {sum.summary && (
-                <div>
-                    <div className="section-heading">Professional Summary</div>
-                    <p style={{ margin: 0, fontSize: "11px", color: "#475569", whiteSpace: "pre-wrap" }}>
-                        {sum.summary}
-                    </p>
-                </div>
-            )}
-
-            {hasSkills && (
-                <div>
-                    <div className="section-heading">Skills</div>
-                    <div className="skills-list">
-                        {skills.filter(s => s.skill).map((s, i) => (
-                            <span key={i} className="skill-tag">{s.skill}</span>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {exp.some(e => e.role || e.company) && (
-                <div>
-                    <div className="section-heading">Experience</div>
-                    {exp.map((e, i) => {
-                        /* period is now a daterange object — format it for display */
-                        const periodDisplay = formatDateRange(e.period);
-                        return (e.role || e.company) ? (
-                            <div key={i} style={{ marginBottom: "12px" }}>
-                                {e.role && <div className="exp-role">{e.role}</div>}
-                                {(e.company || periodDisplay) && (
-                                    <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                                        {e.company && <span className="exp-company">{e.company}</span>}
-                                        {e.company && periodDisplay && (
-                                            <span style={{ color: "#cbd5e1", fontSize: "10px" }}>·</span>
-                                        )}
-                                        {periodDisplay && (
-                                            <span className="exp-period">{periodDisplay}</span>
-                                        )}
-                                    </div>
-                                )}
-                                {e.description && (
-                                    <div className="exp-description">{e.description}</div>
-                                )}
-                            </div>
-                        ) : null;
-                    })}
-                </div>
-            )}
-
-            {edu.some(e => e.degree || e.school) && (
-                <div>
-                    <div className="section-heading">Education</div>
-                    {edu.map((e, i) => (
-                        (e.degree || e.school) ? (
-                            <div key={i} style={{ marginBottom: "10px" }}>
-                                {e.degree && <div className="edu-degree">{e.degree}</div>}
-                                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                                    {e.school && <span className="edu-school">{e.school}</span>}
-                                    {e.school && e.year && (
-                                        <span style={{ color: "#cbd5e1", fontSize: "10px" }}>·</span>
-                                    )}
-                                    {e.year && <span className="edu-year">{e.year}</span>}
-                                </div>
-                            </div>
-                        ) : null
-                    ))}
-                </div>
-            )}
-
-        </div>
-    );
-}
-
-function InvoicePreview({ data, extrasState, uploadedImage, previewDocRef }) {
-    const taxRate    = (extrasState.invoice && extrasState.invoice.taxRate) || "0";
-    const sender     = data.sender || {};
-    const hdr        = data.header || {};
-    const client     = data.client || {};
-    const items      = data.items  || [];
-
-    const { subtotal, taxAmount, total } = calcInvoiceTotals(items, taxRate);
-    const taxRateNum = parseNumber(taxRate);
-
-    const hasAnyContent =
-        sender.senderName || hdr.invoiceNumber ||
-        client.clientName || items.some(i => i.item);
-
-    if (!hasAnyContent) {
-        return (
-            <div className="empty-preview" ref={previewDocRef}>
-                <div className="empty-icon">💰</div>
-                <p>Fill in the form to see your invoice preview</p>
-            </div>
-        );
-    }
-
-    return (
-        <div className="preview-doc" ref={previewDocRef}>
-
-            <div className="invoice-header">
-                <div className="invoice-header-left">
-                    <div className="invoice-brand">{sender.senderName || "Your Business"}</div>
-                    <div className="invoice-tag">{sender.senderEmail || ""}</div>
-                    {sender.senderAddress && (
-                        <div style={{ fontSize: "10px", color: "#64748b", marginTop: "2px", whiteSpace: "pre-wrap" }}>
-                            {sender.senderAddress}
-                        </div>
-                    )}
-                    {sender.senderWebsite && (
-                        <div style={{ fontSize: "10px", color: "#3b82f6", marginTop: "1px" }}>
-                            {sender.senderWebsite}
-                        </div>
-                    )}
-                </div>
-                <div className="invoice-header-right">
-                    {uploadedImage ? (
-                        <img src={uploadedImage} className="invoice-logo" alt="Logo" />
-                    ) : (
-                        <div className="invoice-logo-placeholder">
-                            <span className="ph-icon">🏢</span>
-                            <span className="ph-text">Logo</span>
-                        </div>
-                    )}
-                    <div className="invoice-meta">
-                        <div style={{ fontSize: "14px", fontWeight: "700", color: "#0f172a", marginBottom: "6px" }}>
-                            INVOICE
-                        </div>
-                        {hdr.invoiceNumber && <div>No. <strong>{hdr.invoiceNumber}</strong></div>}
-                        {hdr.date    && <div>Issued: <strong>{hdr.date}</strong></div>}
-                        {hdr.dueDate && <div>Due: <strong>{hdr.dueDate}</strong></div>}
-                    </div>
-                </div>
-            </div>
-
-            {(sender.senderName || client.clientName) && (
-                <div className="invoice-parties">
-                    <div className="party-box">
-                        <div className="party-label">From</div>
-                        {sender.senderName    && <div className="party-name">{sender.senderName}</div>}
-                        {sender.senderAddress && <div className="party-detail">{sender.senderAddress}</div>}
-                        {sender.senderEmail   && (
-                            <div className="party-detail" style={{ color: "#3b82f6" }}>
-                                {sender.senderEmail}
-                            </div>
-                        )}
-                        {sender.senderWebsite && (
-                            <div className="party-detail" style={{ color: "#3b82f6" }}>
-                                {sender.senderWebsite}
-                            </div>
-                        )}
-                    </div>
-                    <div className="party-box">
-                        <div className="party-label">Bill To</div>
-                        {client.clientName    && <div className="party-name">{client.clientName}</div>}
-                        {client.clientAddress && <div className="party-detail">{client.clientAddress}</div>}
-                        {client.clientEmail   && (
-                            <div className="party-detail" style={{ color: "#3b82f6" }}>
-                                {client.clientEmail}
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
-
-            {items.some(i => i.item) && (
-                <table className="items-table">
-                    <thead>
-                        <tr>
-                            <th style={{ width: "50%" }}>Description</th>
-                            <th style={{ width: "12%", textAlign: "center" }}>Qty</th>
-                            <th style={{ width: "18%", textAlign: "right" }}>Unit Price</th>
-                            <th style={{ width: "20%", textAlign: "right" }}>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {items.map((row, i) => {
-                            const qty   = parseNumber(row.qty);
-                            const price = parseNumber(row.price);
-                            const line  = qty * price;
-                            return (
-                                <tr key={i}>
-                                    <td>{row.item || ""}</td>
-                                    <td className="qty-cell">{row.qty || ""}</td>
-                                    <td className="price-cell">
-                                        {row.price ? formatMoney(parseNumber(row.price)) : ""}
-                                    </td>
-                                    <td style={{ textAlign: "right", fontFamily: "'DM Mono', monospace" }}>
-                                        {line > 0 ? formatMoney(line) : ""}
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            )}
-
-            {subtotal > 0 && (
-                <div className="invoice-totals">
-                    <div className="total-row">
-                        <span>Subtotal</span>
-                        <span className="total-value">{formatMoney(subtotal)}</span>
-                    </div>
-                    {taxRateNum > 0 && (
-                        <div className="total-row">
-                            <span>Tax ({taxRateNum}%)</span>
-                            <span className="total-value">{formatMoney(taxAmount)}</span>
-                        </div>
-                    )}
-                    <div className="total-row">
-                        <span>Total Due</span>
-                        <span className="total-value">{formatMoney(total)}</span>
-                    </div>
-                </div>
-            )}
-
-            <div className="invoice-notes">Thank you for your business.</div>
-
-        </div>
-    );
-}
-
-/* ============================================================
-   PREVIEW REGISTRY
-============================================================ */
-
-const PREVIEW_REGISTRY = {
-    resume:  ResumePreview,
-    invoice: InvoicePreview
-};
-
-function Preview({ template, data, extrasState, uploadedImage, previewDocRef }) {
-    if (!template) return null;
-    const Component = PREVIEW_REGISTRY[template.id];
-    if (!Component) return null;
-    return (
-        <Component
-            data={data}
-            extrasState={extrasState}
-            uploadedImage={uploadedImage}
-            previewDocRef={previewDocRef}
-        />
-    );
-}
 
 /* ============================================================
    UNIVERSAL FORM RENDERER
@@ -2104,10 +2327,7 @@ function UniversalForm({ template, documentData, updateField, addBlock, removeBl
                             });
 
                             return (
-                                <div
-                                    key={idx}
-                                    className={section.repeatable ? "repeatable-block" : ""}
-                                >
+                                <div key={idx} className={section.repeatable ? "repeatable-block" : ""}>
                                     {section.repeatable && (
                                         <div className="repeatable-block-header">
                                             <span className="repeatable-block-index">
@@ -2148,10 +2368,7 @@ function UniversalForm({ template, documentData, updateField, addBlock, removeBl
                         })}
 
                         {section.repeatable && (
-                            <button
-                                className="btn-add"
-                                onClick={() => addBlock(section)}
-                            >
+                            <button className="btn-add" onClick={() => addBlock(section)}>
                                 + Add {section.title}
                             </button>
                         )}
@@ -2467,9 +2684,9 @@ function App() {
                             </div>
 
                             <div className="preview-scroll-area">
-                                <Preview
+                                <UniversalPreview
                                     template={template}
-                                    data={documentData}
+                                    documentData={documentData}
                                     extrasState={extrasState}
                                     uploadedImage={uploadedImage}
                                     previewDocRef={previewDocRef}
