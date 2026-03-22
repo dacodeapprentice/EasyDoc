@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EasyDoc — Document Generator</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         :root {
@@ -71,9 +74,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 12px;
         }
 
-        .app-logo { display: flex; align-items: center; gap: 10px; }
+        .app-logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 
         .app-logo .logo-mark {
             width: 30px; height: 30px;
@@ -87,6 +91,14 @@
         .app-logo .logo-text {
             font-size: 17px; font-weight: 700;
             color: white; letter-spacing: -0.3px;
+        }
+
+        /* Header right side — back button + language switcher */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
         }
 
         .btn-back {
@@ -105,9 +117,82 @@
         }
 
         /* =====================================================
+           LANGUAGE SWITCHER
+        ===================================================== */
+        .lang-switcher {
+            position: relative;
+        }
+
+        .lang-trigger {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 10px;
+            font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+            color: rgba(255,255,255,0.80);
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .lang-trigger:hover {
+            color: white; background: rgba(255,255,255,0.14);
+            border-color: rgba(255,255,255,0.22);
+        }
+
+        .lang-trigger .lang-flag { font-size: 15px; line-height: 1; }
+        .lang-trigger .lang-code { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; }
+        .lang-trigger .lang-chevron { font-size: 9px; opacity: 0.6; margin-left: 2px; }
+
+        .lang-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            min-width: 160px;
+            background: var(--navy-mid);
+            border: 1px solid var(--navy-light);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            z-index: 200;
+            animation: fadeInDown 0.15s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .lang-option {
+            display: flex; align-items: center; gap: 10px;
+            width: 100%; padding: 10px 14px;
+            font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400;
+            color: rgba(255,255,255,0.75);
+            background: transparent; border: none; cursor: pointer;
+            transition: var(--transition); text-align: left;
+        }
+
+        .lang-option:hover { background: rgba(255,255,255,0.08); color: white; }
+
+        .lang-option.is-active {
+            color: white; font-weight: 600;
+            background: rgba(59,130,246,0.2);
+        }
+
+        .lang-option .opt-flag { font-size: 16px; }
+
+        .lang-option .opt-name { flex: 1; }
+
+        .lang-option .opt-check { font-size: 11px; color: var(--accent); opacity: 0; }
+
+        .lang-option.is-active .opt-check { opacity: 1; }
+
+        /* =====================================================
            HOME SCREEN
         ===================================================== */
         .home-wrapper { max-width: 1100px; margin: 0 auto; padding: 60px 24px 80px; }
+
+        @media (max-width: 600px) { .home-wrapper { padding: 32px 16px 60px; } }
+
         .home-heading { text-align: center; margin-bottom: 48px; }
 
         .home-heading h2 {
@@ -116,6 +201,11 @@
         }
 
         .home-heading p { font-size: 16px; color: var(--text-secondary); margin: 0; }
+
+        @media (max-width: 600px) {
+            .home-heading h2 { font-size: 24px; }
+            .home-heading p  { font-size: 14px; }
+        }
 
         .home-section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
 
@@ -164,9 +254,11 @@
 
         .template-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
         }
+
+        @media (max-width: 600px) { .template-grid { grid-template-columns: 1fr; gap: 12px; } }
 
         .template-card {
             background: var(--bg-card); border: 1.5px solid var(--border);
@@ -176,6 +268,8 @@
             box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
         }
 
+        @media (max-width: 600px) { .template-card { padding: 20px 18px; } }
+
         .template-card::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
             background: linear-gradient(90deg, var(--accent), #818cf8);
@@ -183,10 +277,7 @@
             transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .template-card:hover {
-            border-color: var(--accent); box-shadow: var(--shadow-lg); transform: translateY(-3px);
-        }
-
+        .template-card:hover { border-color: var(--accent); box-shadow: var(--shadow-lg); transform: translateY(-3px); }
         .template-card:hover::before { transform: scaleX(1); }
         .template-card .card-icon { font-size: 30px; margin-bottom: 16px; display: block; }
 
@@ -207,12 +298,11 @@
         ===================================================== */
         .editor-wrapper { max-width: 1200px; margin: 0 auto; padding: 32px 24px 60px; }
 
-        .editor-grid {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 28px; align-items: start;
-        }
+        @media (max-width: 600px) { .editor-wrapper { padding: 16px 12px 40px; } }
 
-        @media (max-width: 900px) { .editor-grid { grid-template-columns: 1fr; } }
+        .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+
+        @media (max-width: 900px) { .editor-grid { grid-template-columns: 1fr; gap: 20px; } }
 
         /* =====================================================
            FORM PANEL
@@ -227,6 +317,8 @@
             display: flex; align-items: center; gap: 10px;
         }
 
+        @media (max-width: 600px) { .form-panel-header { padding: 16px 16px 12px; } }
+
         .form-panel-header .panel-icon { font-size: 22px; }
 
         .form-panel-header .panel-title {
@@ -235,6 +327,9 @@
         }
 
         .form-panel-body { padding: 24px; max-height: calc(100vh - 200px); overflow-y: auto; }
+
+        @media (max-width: 600px) { .form-panel-body { padding: 16px; max-height: none; } }
+
         .form-panel-body::-webkit-scrollbar { width: 4px; }
         .form-panel-body::-webkit-scrollbar-track { background: transparent; }
         .form-panel-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
@@ -270,7 +365,10 @@
         .field-label {
             display: block; font-size: 12px; font-weight: 500;
             color: var(--text-secondary); margin-bottom: 5px; letter-spacing: 0.1px;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
+
+        @media (max-width: 480px) { .field-label { font-size: 11px; white-space: normal; } }
 
         .field-label .optional-badge {
             font-size: 10px; font-weight: 400;
@@ -279,18 +377,17 @@
 
         .field-input {
             width: 100%; padding: 9px 12px;
-            font-family: 'DM Sans', sans-serif; font-size: 13.5px;
+            font-family: 'DM Sans', sans-serif;
             color: var(--text-primary); background: white;
             border: 1px solid var(--border); border-radius: var(--radius-sm);
             outline: none; transition: border-color 0.15s, box-shadow 0.15s;
             appearance: none; -webkit-appearance: none;
+            font-size: max(13.5px, 16px);
         }
 
-        .field-input:focus {
-            border-color: var(--border-focus);
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
-        }
+        @media (min-width: 600px) { .field-input { font-size: 13.5px; } }
 
+        .field-input:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
         .field-input::placeholder { color: var(--text-muted); }
         textarea.field-input { resize: vertical; min-height: 80px; line-height: 1.5; }
 
@@ -301,6 +398,22 @@
         .field-input.is-valid:focus { border-color: var(--success); box-shadow: 0 0 0 3px rgba(16,185,129,0.18); }
         .field-input.is-invalid { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,0.10); }
         .field-input.is-invalid:focus { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(239,68,68,0.18); }
+
+        @keyframes validFlash {
+            0%   { box-shadow: 0 0 0 4px rgba(16,185,129,0.35); }
+            100% { box-shadow: 0 0 0 3px rgba(16,185,129,0.10); }
+        }
+
+        @keyframes invalidShake {
+            0%, 100% { transform: translateX(0); }
+            20%       { transform: translateX(-4px); }
+            40%       { transform: translateX(4px); }
+            60%       { transform: translateX(-3px); }
+            80%       { transform: translateX(3px); }
+        }
+
+        .field-input.is-valid   { animation: validFlash   0.4s ease-out  forwards; }
+        .field-input.is-invalid { animation: invalidShake 0.35s ease-out; }
 
         .field-error {
             display: flex; align-items: center; gap: 5px; margin-top: 5px;
@@ -319,14 +432,12 @@
         .field-counter.counter-over { color: var(--danger); font-weight: 600; }
 
         /* =====================================================
-           DATE FIELD — universal calendar picker
+           DATE FIELD
         ===================================================== */
         .date-field-wrapper { position: relative; display: flex; align-items: center; }
 
         .date-field-wrapper .field-input {
-            flex: 1;
-            border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-            border-right: none;
+            flex: 1; border-radius: var(--radius-sm) 0 0 var(--radius-sm); border-right: none;
         }
 
         .date-field-wrapper .field-input:focus { z-index: 1; }
@@ -358,10 +469,12 @@
         .daterange-row { display: flex; align-items: center; gap: 8px; }
         .daterange-row .date-field-wrapper { flex: 1; min-width: 0; }
 
-        .daterange-separator {
-            font-size: 12px; color: var(--text-muted);
-            font-weight: 500; flex-shrink: 0; padding: 0 2px;
+        @media (max-width: 480px) {
+            .daterange-row { flex-wrap: wrap; gap: 6px; }
+            .daterange-row .date-field-wrapper { flex: 1 1 calc(50% - 20px); min-width: 120px; }
         }
+
+        .daterange-separator { font-size: 12px; color: var(--text-muted); font-weight: 500; flex-shrink: 0; padding: 0 2px; }
 
         .btn-present {
             display: inline-flex; align-items: center; justify-content: center;
@@ -397,20 +510,13 @@
             border-radius: 50%; overflow: hidden; cursor: pointer;
             border: 2px dashed var(--border); background: var(--bg-input);
             transition: var(--transition); display: flex; align-items: center; justify-content: center;
-            /* Image background properties — natural size, centred, no scaling */
-            background-size: auto;
-            background-position: center;
-            background-repeat: no-repeat;
+            background-size: auto; background-position: center; background-repeat: no-repeat;
         }
 
         .image-upload-trigger.square { border-radius: var(--radius-md); }
         .image-upload-trigger:hover { border-color: var(--accent); }
 
-        .image-upload-placeholder {
-            display: flex; flex-direction: column; align-items: center;
-            gap: 4px; pointer-events: none; position: relative; z-index: 1;
-        }
-
+        .image-upload-placeholder { display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none; position: relative; z-index: 1; }
         .image-upload-placeholder .upload-icon { font-size: 22px; opacity: 0.4; }
 
         .image-upload-placeholder .upload-hint {
@@ -421,8 +527,7 @@
         .image-upload-trigger .image-overlay {
             position: absolute; inset: 0; background: rgba(0,0,0,0.45);
             display: flex; flex-direction: column; align-items: center;
-            justify-content: center; gap: 2px; opacity: 0; transition: opacity 0.2s;
-            z-index: 2;
+            justify-content: center; gap: 2px; opacity: 0; transition: opacity 0.2s; z-index: 2;
         }
 
         .image-upload-trigger:hover .image-overlay { opacity: 1; }
@@ -476,6 +581,8 @@
             background: var(--bg-input); display: flex; flex-direction: column; gap: 10px;
         }
 
+        @media (max-width: 600px) { .form-panel-footer { padding: 12px 16px; } }
+
         .footer-saveload-row { display: flex; gap: 8px; }
 
         .btn-secondary {
@@ -507,8 +614,11 @@
         .preview-panel {
             background: var(--bg-card); border: 1px solid var(--border);
             border-radius: var(--radius-lg); box-shadow: var(--shadow-md);
-            overflow: hidden; position: sticky; top: 78px;
+            overflow: hidden; position: sticky;
+            top: calc(78px + env(safe-area-inset-top, 0px));
         }
+
+        @media (max-width: 900px) { .preview-panel { position: static; } }
 
         .preview-panel-header {
             padding: 14px 20px; border-bottom: 1px solid var(--border);
@@ -540,11 +650,13 @@
             overflow-x: hidden; background: #f1f5f9;
         }
 
+        @media (max-width: 900px) { .preview-scroll-area { max-height: 60vh; } }
+
         .preview-scroll-area::-webkit-scrollbar { width: 4px; }
         .preview-scroll-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
         /* =====================================================
-           PREVIEW DOCUMENT — outer shell only
+           PREVIEW DOCUMENT
         ===================================================== */
         .preview-doc {
             background: white; margin: 20px; border-radius: var(--radius-md);
@@ -553,120 +665,56 @@
             color: #1e293b; font-family: 'DM Sans', sans-serif;
         }
 
+        @media (max-width: 600px) { .preview-doc { margin: 12px; padding: 20px 16px 28px; } }
+
         /* =====================================================
            DESIGN SYSTEM — universal building blocks
-           Change anything here → ALL templates update.
         ===================================================== */
-
-        /* ── DocHeader ── */
         .ds-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 20px;
-            padding-bottom: 14px;
-            border-bottom: 2px solid var(--navy);
-            margin-bottom: 18px;
+            display: flex; align-items: flex-start; justify-content: space-between;
+            gap: 20px; padding-bottom: 14px; border-bottom: 2px solid var(--navy); margin-bottom: 18px;
         }
 
         .ds-header-text { flex: 1; min-width: 0; }
-
-        .ds-header-title {
-            font-size: 24px; font-weight: 700; letter-spacing: -0.5px;
-            color: var(--navy); margin-bottom: 2px;
-        }
-
-        .ds-header-subtitle {
-            font-size: 13px; color: var(--accent);
-            font-weight: 500; margin-bottom: 6px;
-        }
+        .ds-header-title { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; color: var(--navy); margin-bottom: 2px; }
+        .ds-header-subtitle { font-size: 13px; color: var(--accent); font-weight: 500; margin-bottom: 6px; }
 
         .ds-header-meta {
-            font-size: 11px;
-            color: var(--text-secondary);
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0;
-            margin-top: 4px;
+            font-size: 11px; color: var(--text-secondary);
+            display: flex; flex-direction: row; flex-wrap: wrap;
+            align-items: center; gap: 0; margin-top: 4px;
         }
 
-        .ds-header-meta-item {
-            display: inline-flex;
-            align-items: center;
-            white-space: nowrap;
-        }
+        .ds-header-meta-item { display: inline-flex; align-items: center; white-space: nowrap; }
 
         .ds-header-meta-item + .ds-header-meta-item::before {
-            content: '·';
-            margin: 0 7px;
-            color: var(--text-muted);
-            font-size: 10px;
+            content: '·'; margin: 0 7px; color: var(--text-muted); font-size: 10px;
         }
 
         .ds-header-meta-link { color: var(--accent); }
 
-        /* ── Image containers — background approach.
-           background-size: auto  → natural pixel dimensions, never scaled.
-           background-position: center → centred inside the mask.
-           overflow: hidden + border-radius → the mask that crops the excess.
-           The image keeps its original proportions no matter its size. ── */
-
         .ds-header-image-circle {
-            width: 76px;
-            height: 76px;
-            border-radius: 50%;
-            overflow: hidden;
-            flex-shrink: 0;
-            border: 2px solid var(--border);
-            background-color: var(--bg-input);
-            background-size: auto;
-            background-position: center;
-            background-repeat: no-repeat;
+            width: 76px; height: 76px; border-radius: 50%; overflow: hidden;
+            flex-shrink: 0; border: 2px solid var(--border); background-color: var(--bg-input);
+            background-size: auto; background-position: center; background-repeat: no-repeat;
         }
 
         .ds-header-image-square {
-            width: 68px;
-            height: 68px;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            flex-shrink: 0;
-            border: 1px solid var(--border);
-            background-color: var(--bg-input);
-            background-size: auto;
-            background-position: center;
-            background-repeat: no-repeat;
+            width: 68px; height: 68px; border-radius: var(--radius-md); overflow: hidden;
+            flex-shrink: 0; border: 1px solid var(--border); background-color: var(--bg-input);
+            background-size: auto; background-position: center; background-repeat: no-repeat;
         }
 
         .ds-header-image-placeholder-circle {
-            width: 76px;
-            height: 76px;
-            border-radius: 50%;
-            overflow: hidden;
-            flex-shrink: 0;
-            background-color: var(--bg-input);
-            border: 2px dashed var(--border);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
+            width: 76px; height: 76px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+            background-color: var(--bg-input); border: 2px dashed var(--border);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
         }
 
         .ds-header-image-placeholder-square {
-            width: 68px;
-            height: 68px;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            flex-shrink: 0;
-            background-color: var(--bg-input);
-            border: 2px dashed var(--border);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
+            width: 68px; height: 68px; border-radius: var(--radius-md); overflow: hidden; flex-shrink: 0;
+            background-color: var(--bg-input); border: 2px dashed var(--border);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
         }
 
         .ds-header-image-placeholder-circle .ph-icon,
@@ -678,100 +726,50 @@
             text-transform: uppercase; letter-spacing: 0.4px;
         }
 
-        .ds-header-right {
-            display: flex; flex-direction: column;
-            align-items: flex-end; gap: 8px; flex-shrink: 0;
-        }
+        .ds-header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+        .ds-header-right-title { font-size: 14px; font-weight: 700; color: var(--navy); letter-spacing: 0.5px; text-transform: uppercase; }
+        .ds-header-right-meta { text-align: right; font-size: 11px; color: var(--text-secondary); line-height: 1.8; }
+        .ds-header-right-meta strong { color: var(--text-primary); font-family: 'DM Mono', monospace; }
 
-        .ds-header-right-title {
-            font-size: 14px; font-weight: 700; color: var(--navy);
-            letter-spacing: 0.5px; text-transform: uppercase;
-        }
-
-        .ds-header-right-meta {
-            text-align: right; font-size: 11px;
-            color: var(--text-secondary); line-height: 1.8;
-        }
-
-        .ds-header-right-meta strong {
-            color: var(--text-primary); font-family: 'DM Mono', monospace;
-        }
-
-        /* ── DocSection ── */
         .ds-section { margin-top: 20px; }
 
         .ds-section-heading {
             font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
             text-transform: uppercase; color: var(--accent);
-            padding-bottom: 4px; border-bottom: 1px solid var(--border);
-            margin-bottom: 10px;
+            padding-bottom: 4px; border-bottom: 1px solid var(--border); margin-bottom: 10px;
         }
 
-        /* ── DocTwoColumn ── */
-        .ds-two-column {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 16px; margin-bottom: 20px;
-        }
+        .ds-two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
 
-        .ds-column-box {
-            padding: 12px 14px; background: #f8fafc;
-            border-radius: var(--radius-sm); border-left: 3px solid var(--accent);
-        }
+        @media (max-width: 480px) { .ds-two-column { grid-template-columns: 1fr; gap: 10px; } }
 
-        .ds-column-label {
-            font-size: 9px; font-weight: 700; letter-spacing: 1px;
-            text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px;
-        }
-
-        .ds-column-name {
-            font-size: 13px; font-weight: 600;
-            color: var(--text-primary); margin-bottom: 3px;
-        }
-
-        .ds-column-detail {
-            font-size: 11px; color: var(--text-secondary);
-            white-space: pre-wrap; line-height: 1.5;
-        }
-
+        .ds-column-box { padding: 12px 14px; background: #f8fafc; border-radius: var(--radius-sm); border-left: 3px solid var(--accent); }
+        .ds-column-label { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; }
+        .ds-column-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; }
+        .ds-column-detail { font-size: 11px; color: var(--text-secondary); white-space: pre-wrap; line-height: 1.5; }
         .ds-column-detail-link { color: var(--accent); }
 
-        /* ── DocEntryList ── */
         .ds-entry { margin-bottom: 12px; }
         .ds-entry-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
         .ds-entry-meta { display: flex; align-items: center; gap: 8px; margin-top: 1px; }
         .ds-entry-meta-primary { font-size: 12px; color: var(--text-secondary); }
         .ds-entry-meta-separator { color: #cbd5e1; font-size: 10px; }
+        .ds-entry-meta-secondary { font-size: 11px; color: var(--text-muted); font-family: 'DM Mono', monospace; }
+        .ds-entry-body { font-size: 11.5px; color: var(--text-secondary); margin-top: 4px; white-space: pre-wrap; line-height: 1.55; }
 
-        .ds-entry-meta-secondary {
-            font-size: 11px; color: var(--text-muted);
-            font-family: 'DM Mono', monospace;
-        }
-
-        .ds-entry-body {
-            font-size: 11.5px; color: var(--text-secondary);
-            margin-top: 4px; white-space: pre-wrap; line-height: 1.55;
-        }
-
-        /* ── DocTagList ── */
         .ds-tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 
         .ds-tag {
-            display: inline-block; padding: 3px 9px;
-            font-size: 10.5px; font-weight: 500;
+            display: inline-block; padding: 3px 9px; font-size: 10.5px; font-weight: 500;
             color: var(--accent-dark); background: var(--accent-soft);
             border: 1px solid rgba(59,130,246,0.2); border-radius: 20px;
         }
 
-        /* ── DocTable ── */
-        .ds-table {
-            width: 100%; border-collapse: collapse;
-            margin-bottom: 16px; font-size: 11.5px;
-        }
+        .ds-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 11.5px; }
 
         .ds-table thead th {
-            padding: 8px 10px; text-align: left;
-            font-size: 9.5px; font-weight: 700; letter-spacing: 0.8px;
-            text-transform: uppercase; color: white; background: var(--navy);
+            padding: 8px 10px; text-align: left; font-size: 9.5px; font-weight: 700;
+            letter-spacing: 0.8px; text-transform: uppercase; color: white; background: var(--navy);
         }
 
         .ds-table thead th:last-child { text-align: right; }
@@ -779,42 +777,22 @@
         .ds-table tbody tr:last-child { border-bottom: none; }
         .ds-table tbody td { padding: 8px 10px; color: var(--text-primary); vertical-align: top; }
         .ds-table tbody td.ds-table-center { text-align: center; color: var(--text-secondary); }
+        .ds-table tbody td.ds-table-mono { text-align: right; font-family: 'DM Mono', monospace; color: var(--text-secondary); }
+        .ds-table tbody td.ds-table-total { text-align: right; font-family: 'DM Mono', monospace; color: var(--text-primary); }
 
-        .ds-table tbody td.ds-table-mono {
-            text-align: right; font-family: 'DM Mono', monospace; color: var(--text-secondary);
-        }
-
-        .ds-table tbody td.ds-table-total {
-            text-align: right; font-family: 'DM Mono', monospace; color: var(--text-primary);
-        }
-
-        /* ── DocTotals ── */
         .ds-totals { margin-left: auto; width: 220px; }
 
         .ds-totals-row {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 5px 0; font-size: 11.5px; color: var(--text-secondary);
-            border-bottom: 1px solid var(--border);
+            padding: 5px 0; font-size: 11.5px; color: var(--text-secondary); border-bottom: 1px solid var(--border);
         }
 
-        .ds-totals-row:last-child {
-            border-bottom: none; font-size: 13.5px; font-weight: 700;
-            color: var(--navy); margin-top: 4px; padding-top: 8px;
-        }
-
+        .ds-totals-row:last-child { border-bottom: none; font-size: 13.5px; font-weight: 700; color: var(--navy); margin-top: 4px; padding-top: 8px; }
         .ds-totals-value { font-family: 'DM Mono', monospace; }
 
-        /* ── DocTextBlock ── */
-        .ds-text-block {
-            font-size: 11px; color: #475569;
-            line-height: 1.65; white-space: pre-wrap; margin: 0;
-        }
+        .ds-text-block { font-size: 11px; color: #475569; line-height: 1.65; white-space: pre-wrap; margin: 0; }
 
-        /* ── DocNote ── */
-        .ds-note {
-            margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);
-            font-size: 11px; color: var(--text-muted); text-align: center;
-        }
+        .ds-note { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-muted); text-align: center; }
 
         /* =====================================================
            EMPTY STATE
@@ -827,13 +805,8 @@
            TEMPLATE EXTRAS
         ===================================================== */
         .template-extras { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
-
         .tax-row { display: flex; align-items: center; gap: 10px; }
-
-        .tax-row label {
-            font-size: 12px; font-weight: 500; color: var(--text-secondary);
-            white-space: nowrap; flex-shrink: 0;
-        }
+        .tax-row label { font-size: 12px; font-weight: 500; color: var(--text-secondary); white-space: nowrap; flex-shrink: 0; }
 
         .tax-row input {
             width: 80px; padding: 7px 10px; font-family: 'DM Mono', monospace;
@@ -856,8 +829,7 @@
 
         .pdf-overlay-card {
             background: white; border-radius: var(--radius-lg);
-            padding: 36px 44px; text-align: center;
-            box-shadow: var(--shadow-lg); min-width: 260px;
+            padding: 36px 44px; text-align: center; box-shadow: var(--shadow-lg); min-width: 260px;
         }
 
         .pdf-overlay-spinner {
@@ -890,147 +862,1046 @@
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useRef } = React;
+const { useState, useRef, useEffect, useContext, createContext } = React;
 const { jsPDF } = window.jspdf;
 
 /* ============================================================
-   UNIVERSAL VALIDATION ENGINE
+   i18n ENGINE
+   ─────────────────────────────────────────────────────────
+   How it works:
+   1. LANGUAGES object holds all 5 dictionaries.
+   2. LanguageContext provides the active language + t() to
+      every component in the tree without prop drilling.
+   3. t(key) resolves dot-notation keys like "ui.download_pdf"
+      → looks up LANGUAGES[activeLang]["ui"]["download_pdf"]
+      → falls back to English if the key is missing
+   4. Template fields use a labelKey instead of a hardcoded
+      label string — t() resolves it at render time.
+
+   Adding a new language = adding one new entry to LANGUAGES.
+   Adding a new UI string = adding one key to each dictionary.
+   Zero code changes needed in components.
 ============================================================ */
 
-const MAX_TEXT   = 3000;
-const MAX_NUMBER = 1000000000;
+const LANGUAGES = {
 
-function validateTextLike(v, required) {
-    if (!v || !v.trim()) return required ? "This field is required" : null;
-    if (v.length > MAX_TEXT) return `Maximum ${MAX_TEXT.toLocaleString()} characters allowed`;
-    return null;
-}
+    /* ── ENGLISH ─────────────────────────────────────────── */
+    en: {
+        meta: { name: "English", flag: "🇬🇧", code: "EN" },
 
-const VALIDATORS = {
-    text:     { validate: (v, required) => validateTextLike(v, required) },
-    textarea: { validate: (v, required) => validateTextLike(v, required) },
+        ui: {
+            app_name:           "EasyDoc",
+            back:               "← Back",
+            home_title:         "What would you like to create?",
+            home_subtitle:      "Choose a template and build a professional document in minutes",
+            featured:           "⭐ Featured",
+            all_documents:      "All Documents",
+            search_placeholder: "Search all templates...",
+            template_count_one: "template",
+            template_count_many:"templates",
+            no_results:         "No templates found for",
+            live_preview:       "Live Preview",
+            live:               "Live",
+            save_progress:      "💾 Save Progress",
+            load_progress:      "📂 Load Progress",
+            download_pdf:       "↓ Download PDF",
+            generating:         "Generating…",
+            pdf_generating:     "Generating PDF…",
+            pdf_subtitle:       "This takes just a moment",
+            optional:           "optional",
+            present:            "Present",
+            add_block:          "Add",
+            remove:             "✕ Remove",
+            upload:             "Upload",
+            change:             "Change",
+            remove_image:       "✕ Remove",
+            image_hint:         "Optional. Click to upload.",
+            image_hint2:        "JPG, PNG or WebP. Max 5 MB.",
+            load_error_invalid: "This file doesn't look like an EasyDoc save file.",
+            load_error_missing: "The template in this save file is not available.",
+            load_error_file:    "Could not load the file.",
+            fill_form:          "Fill in the form to see your",
+            fill_form2:         "preview",
+            thank_you:          "Thank you for your business.",
+            tax_rate:           "Tax Rate",
+            tax_hint:           "% (leave 0 for no tax)",
+        },
 
-    email: {
-        validate: (v, required) => {
-            if (!v || !v.trim()) return required ? "This field is required" : null;
-            const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
-            return ok ? null : "Please enter a valid email address (e.g. name@domain.com)";
+        errors: {
+            required:           "This field is required",
+            email:              "Please enter a valid email address (e.g. name@domain.com)",
+            phone:              "Phone can only contain digits, spaces, +, -, ( )",
+            number_invalid:     "Please enter a valid number (e.g. 150.00)",
+            number_negative:    "Number cannot be negative",
+            number_max:         "Number cannot exceed 1,000,000,000",
+            date_format:        "Use DD/MM/YYYY, DD-MM-YYYY or e.g. 23 Feb 2026",
+            year_format:        "Please enter a 4-digit year (e.g. 2019)",
+            year_range:         "Year must be between 1900 and 2100",
+            url:                "Please enter a valid URL (e.g. www.behance.net/yourname)",
+            address_short:      "Address is too short — include street name and number",
+            address_long:       "Address cannot exceed 200 characters",
+            address_format:     "Address must include a street name and number (e.g. 12 Oak Street)",
+            skill_long:         "Skill name cannot exceed 60 characters",
+            text_long:          "Maximum {max} characters allowed",
+            date_start_req:     "Start date is required",
+            date_start_fmt:     "Start date: use DD/MM/YYYY or e.g. 01 Jan 2022",
+            date_end_req:       "End date is required, or toggle Present",
+            date_end_fmt:       "End date: use DD/MM/YYYY or e.g. 01 Mar 2025",
+            date_end_before:    "End date must be after the start date",
+            date_after:         "Must be after the {field}",
+        },
+
+        templates: {
+            resume: {
+                name:        "Professional Resume",
+                description: "Clean, modern resume for any industry",
+                category:    "Personal",
+                image_label: "Profile Photo",
+                sections: {
+                    header:     "Personal Info",
+                    summary:    "Professional Summary",
+                    skills:     "Skills",
+                    experience: "Experience",
+                    education:  "Education",
+                },
+                fields: {
+                    name:        { label: "Full Name",            placeholder: "e.g. Alexandra Reyes"         },
+                    title:       { label: "Professional Title",   placeholder: "e.g. Senior Product Designer" },
+                    email:       { label: "Email Address",        placeholder: "e.g. alex@email.com"          },
+                    phone:       { label: "Phone Number",         placeholder: "e.g. +1 555 000 1234"         },
+                    address:     { label: "Address",              placeholder: "e.g. 12 Oak Street, Lisbon"   },
+                    linkedin:    { label: "LinkedIn / Portfolio", placeholder: "e.g. www.linkedin.com/in/you" },
+                    website:     { label: "Website / Behance",   placeholder: "e.g. www.behance.net/you"     },
+                    summary:     { label: "Summary",              placeholder: "Write a short professional summary..." },
+                    skill:       { label: "Skill",                placeholder: "e.g. Figma, React, Project Management" },
+                    role:        { label: "Job Title",            placeholder: "e.g. Product Designer"        },
+                    company:     { label: "Company",              placeholder: "e.g. Acme Corp"               },
+                    period:      { label: "Period",               placeholder: ""                             },
+                    description: { label: "Description",         placeholder: "Describe your responsibilities..." },
+                    degree:      { label: "Degree / Qualification", placeholder: "e.g. BSc Computer Science" },
+                    school:      { label: "Institution",          placeholder: "e.g. University of Lisbon"   },
+                    year:        { label: "Year",                 placeholder: "e.g. 2019"                   },
+                },
+                preview: {
+                    summary:    "Professional Summary",
+                    skills:     "Skills",
+                    experience: "Experience",
+                    education:  "Education",
+                    photo:      "Photo",
+                }
+            },
+
+            invoice: {
+                name:        "Invoice",
+                description: "Professional invoice with totals and tax",
+                category:    "Business",
+                image_label: "Company Logo",
+                sections: {
+                    sender: "Your Details",
+                    header: "Invoice Details",
+                    client: "Bill To",
+                    items:  "Line Items",
+                },
+                fields: {
+                    senderName:    { label: "Your Name / Business Name", placeholder: "e.g. Studio Nova"            },
+                    senderAddress: { label: "Address",                   placeholder: "e.g. 12 Oak Street, Lisbon"  },
+                    senderEmail:   { label: "Email",                     placeholder: "e.g. billing@studionova.com" },
+                    senderWebsite: { label: "Website",                   placeholder: "e.g. www.studionova.com"     },
+                    invoiceNumber: { label: "Invoice Number",            placeholder: "e.g. INV-0042"               },
+                    date:          { label: "Issue Date",                placeholder: "DD/MM/YYYY"                  },
+                    dueDate:       { label: "Due Date",                  placeholder: "DD/MM/YYYY"                  },
+                    clientName:    { label: "Client Name",               placeholder: "e.g. Bright Ideas Ltd"       },
+                    clientAddress: { label: "Client Address",            placeholder: "e.g. 99 Park Ave, Porto"     },
+                    clientEmail:   { label: "Client Email",              placeholder: "e.g. accounts@bright.com"   },
+                    item:          { label: "Description",               placeholder: "e.g. Website Design"        },
+                    qty:           { label: "Qty",                       placeholder: "1"                           },
+                    price:         { label: "Unit Price",                placeholder: "0.00"                        },
+                },
+                preview: {
+                    invoice:   "INVOICE",
+                    issued:    "Issued",
+                    due:       "Due",
+                    no:        "No.",
+                    from:      "From",
+                    bill_to:   "Bill To",
+                    desc:      "Description",
+                    qty:       "Qty",
+                    unit:      "Unit Price",
+                    total:     "Total",
+                    subtotal:  "Subtotal",
+                    tax:       "Tax",
+                    total_due: "Total Due",
+                    logo:      "Logo",
+                    thank_you: "Thank you for your business.",
+                }
+            }
         }
     },
 
-    phone: {
-        validate: (v, required) => {
-            if (!v || !v.trim()) return required ? "This field is required" : null;
-            const ok = /^[+\d][\d\s\-().]{3,24}$/.test(v.trim());
-            return ok ? null : "Phone can only contain digits, spaces, +, -, ( )";
+    /* ── PORTUGUESE ──────────────────────────────────────── */
+    pt: {
+        meta: { name: "Português", flag: "🇵🇹", code: "PT" },
+
+        ui: {
+            app_name:           "EasyDoc",
+            back:               "← Voltar",
+            home_title:         "O que quer criar?",
+            home_subtitle:      "Escolha um modelo e crie um documento profissional em minutos",
+            featured:           "⭐ Destaques",
+            all_documents:      "Todos os Documentos",
+            search_placeholder: "Pesquisar modelos...",
+            template_count_one: "modelo",
+            template_count_many:"modelos",
+            no_results:         "Nenhum modelo encontrado para",
+            live_preview:       "Pré-visualização",
+            live:               "Ao Vivo",
+            save_progress:      "💾 Guardar Progresso",
+            load_progress:      "📂 Carregar Progresso",
+            download_pdf:       "↓ Descarregar PDF",
+            generating:         "A gerar…",
+            pdf_generating:     "A gerar PDF…",
+            pdf_subtitle:       "Só um momento",
+            optional:           "opcional",
+            present:            "Atual",
+            add_block:          "Adicionar",
+            remove:             "✕ Remover",
+            upload:             "Carregar",
+            change:             "Alterar",
+            remove_image:       "✕ Remover",
+            image_hint:         "Opcional. Clique para carregar.",
+            image_hint2:        "JPG, PNG ou WebP. Máx. 5 MB.",
+            load_error_invalid: "Este ficheiro não parece ser um ficheiro EasyDoc.",
+            load_error_missing: "O modelo deste ficheiro não está disponível.",
+            load_error_file:    "Não foi possível carregar o ficheiro.",
+            fill_form:          "Preencha o formulário para ver a sua",
+            fill_form2:         "pré-visualização",
+            thank_you:          "Obrigado pelo seu negócio.",
+            tax_rate:           "Taxa de IVA",
+            tax_hint:           "% (deixe 0 para sem IVA)",
+        },
+
+        errors: {
+            required:           "Este campo é obrigatório",
+            email:              "Insira um e-mail válido (ex: nome@dominio.com)",
+            phone:              "O telefone só pode ter dígitos, espaços, +, -, ( )",
+            number_invalid:     "Insira um número válido (ex: 150.00)",
+            number_negative:    "O número não pode ser negativo",
+            number_max:         "O número não pode exceder 1.000.000.000",
+            date_format:        "Use DD/MM/AAAA, DD-MM-AAAA ou ex: 23 Fev 2026",
+            year_format:        "Insira um ano com 4 dígitos (ex: 2019)",
+            year_range:         "O ano deve estar entre 1900 e 2100",
+            url:                "Insira um URL válido (ex: www.behance.net/seunome)",
+            address_short:      "Morada demasiado curta — inclua rua e número",
+            address_long:       "A morada não pode ter mais de 200 caracteres",
+            address_format:     "A morada deve incluir o nome da rua e o número",
+            skill_long:         "O nome da competência não pode ter mais de 60 caracteres",
+            text_long:          "Máximo de {max} caracteres permitidos",
+            date_start_req:     "A data de início é obrigatória",
+            date_start_fmt:     "Data de início: use DD/MM/AAAA ou ex: 01 Jan 2022",
+            date_end_req:       "Data de fim obrigatória, ou selecione Atual",
+            date_end_fmt:       "Data de fim: use DD/MM/AAAA ou ex: 01 Mar 2025",
+            date_end_before:    "A data de fim deve ser posterior à data de início",
+            date_after:         "Deve ser posterior a {field}",
+        },
+
+        templates: {
+            resume: {
+                name:        "Currículo Profissional",
+                description: "Currículo limpo e moderno para qualquer área",
+                category:    "Pessoal",
+                image_label: "Fotografia",
+                sections: {
+                    header:     "Informação Pessoal",
+                    summary:    "Resumo Profissional",
+                    skills:     "Competências",
+                    experience: "Experiência",
+                    education:  "Educação",
+                },
+                fields: {
+                    name:        { label: "Nome Completo",          placeholder: "ex: Alexandra Reyes"              },
+                    title:       { label: "Título Profissional",    placeholder: "ex: Designer Sénior de Produto"   },
+                    email:       { label: "Endereço de E-mail",     placeholder: "ex: alex@email.com"               },
+                    phone:       { label: "Número de Telefone",     placeholder: "ex: +351 912 345 678"             },
+                    address:     { label: "Morada",                 placeholder: "ex: Rua das Flores 12, Lisboa"    },
+                    linkedin:    { label: "LinkedIn / Portfólio",   placeholder: "ex: www.linkedin.com/in/voce"     },
+                    website:     { label: "Website / Behance",      placeholder: "ex: www.behance.net/voce"         },
+                    summary:     { label: "Resumo",                 placeholder: "Escreva um breve resumo profissional..." },
+                    skill:       { label: "Competência",            placeholder: "ex: Figma, React, Gestão de Projetos" },
+                    role:        { label: "Cargo",                  placeholder: "ex: Designer de Produto"          },
+                    company:     { label: "Empresa",                placeholder: "ex: Empresa XYZ"                  },
+                    period:      { label: "Período",                placeholder: ""                                  },
+                    description: { label: "Descrição",              placeholder: "Descreva as suas responsabilidades..." },
+                    degree:      { label: "Grau / Qualificação",    placeholder: "ex: Licenciatura em Informática"  },
+                    school:      { label: "Instituição",            placeholder: "ex: Universidade de Lisboa"       },
+                    year:        { label: "Ano",                    placeholder: "ex: 2019"                         },
+                },
+                preview: {
+                    summary:    "Resumo Profissional",
+                    skills:     "Competências",
+                    experience: "Experiência",
+                    education:  "Educação",
+                    photo:      "Foto",
+                }
+            },
+
+            invoice: {
+                name:        "Fatura",
+                description: "Fatura profissional com totais e IVA",
+                category:    "Negócios",
+                image_label: "Logótipo da Empresa",
+                sections: {
+                    sender: "Os Seus Dados",
+                    header: "Detalhes da Fatura",
+                    client: "Faturar a",
+                    items:  "Itens",
+                },
+                fields: {
+                    senderName:    { label: "Nome / Nome da Empresa",   placeholder: "ex: Studio Nova"               },
+                    senderAddress: { label: "Morada",                   placeholder: "ex: Rua das Flores 12, Lisboa" },
+                    senderEmail:   { label: "E-mail",                   placeholder: "ex: faturacao@studionova.com"  },
+                    senderWebsite: { label: "Website",                  placeholder: "ex: www.studionova.com"        },
+                    invoiceNumber: { label: "Número de Fatura",         placeholder: "ex: FAT-0042"                  },
+                    date:          { label: "Data de Emissão",          placeholder: "DD/MM/AAAA"                    },
+                    dueDate:       { label: "Data de Vencimento",       placeholder: "DD/MM/AAAA"                    },
+                    clientName:    { label: "Nome do Cliente",          placeholder: "ex: Empresa Cliente Lda"       },
+                    clientAddress: { label: "Morada do Cliente",        placeholder: "ex: Av. da Liberdade 99, Porto"},
+                    clientEmail:   { label: "E-mail do Cliente",        placeholder: "ex: contabilidade@cliente.com" },
+                    item:          { label: "Descrição",                placeholder: "ex: Design de Website"         },
+                    qty:           { label: "Qtd",                      placeholder: "1"                             },
+                    price:         { label: "Preço Unitário",           placeholder: "0,00"                          },
+                },
+                preview: {
+                    invoice:   "FATURA",
+                    issued:    "Emitida",
+                    due:       "Vencimento",
+                    no:        "N.º",
+                    from:      "De",
+                    bill_to:   "Faturar a",
+                    desc:      "Descrição",
+                    qty:       "Qtd",
+                    unit:      "Preço Unit.",
+                    total:     "Total",
+                    subtotal:  "Subtotal",
+                    tax:       "IVA",
+                    total_due: "Total a Pagar",
+                    logo:      "Logo",
+                    thank_you: "Obrigado pelo seu negócio.",
+                }
+            }
         }
     },
 
-    number: {
-        validate: (v, required) => {
-            if (!v || !v.trim()) return required ? "This field is required" : null;
-            const n = parseFloat(String(v).replace(/,/g, ""));
-            if (isNaN(n))       return "Please enter a valid number (e.g. 150.00)";
-            if (n < 0)          return "Number cannot be negative";
-            if (n > MAX_NUMBER) return "Number cannot exceed 1,000,000,000";
-            return null;
+    /* ── FRENCH ──────────────────────────────────────────── */
+    fr: {
+        meta: { name: "Français", flag: "🇫🇷", code: "FR" },
+
+        ui: {
+            app_name:           "EasyDoc",
+            back:               "← Retour",
+            home_title:         "Que souhaitez-vous créer ?",
+            home_subtitle:      "Choisissez un modèle et créez un document professionnel en quelques minutes",
+            featured:           "⭐ En vedette",
+            all_documents:      "Tous les documents",
+            search_placeholder: "Rechercher des modèles...",
+            template_count_one: "modèle",
+            template_count_many:"modèles",
+            no_results:         "Aucun modèle trouvé pour",
+            live_preview:       "Aperçu en direct",
+            live:               "En direct",
+            save_progress:      "💾 Sauvegarder",
+            load_progress:      "📂 Charger",
+            download_pdf:       "↓ Télécharger le PDF",
+            generating:         "Génération…",
+            pdf_generating:     "Génération du PDF…",
+            pdf_subtitle:       "Juste un instant",
+            optional:           "optionnel",
+            present:            "Présent",
+            add_block:          "Ajouter",
+            remove:             "✕ Supprimer",
+            upload:             "Téléverser",
+            change:             "Modifier",
+            remove_image:       "✕ Supprimer",
+            image_hint:         "Optionnel. Cliquez pour téléverser.",
+            image_hint2:        "JPG, PNG ou WebP. Max. 5 Mo.",
+            load_error_invalid: "Ce fichier ne semble pas être un fichier EasyDoc.",
+            load_error_missing: "Le modèle de ce fichier n'est pas disponible.",
+            load_error_file:    "Impossible de charger le fichier.",
+            fill_form:          "Remplissez le formulaire pour voir votre",
+            fill_form2:         "aperçu",
+            thank_you:          "Merci pour votre confiance.",
+            tax_rate:           "Taux de TVA",
+            tax_hint:           "% (laisser 0 pour sans TVA)",
+        },
+
+        errors: {
+            required:           "Ce champ est obligatoire",
+            email:              "Veuillez saisir une adresse e-mail valide (ex: nom@domaine.com)",
+            phone:              "Le téléphone ne peut contenir que des chiffres, espaces, +, -, ( )",
+            number_invalid:     "Veuillez saisir un nombre valide (ex: 150.00)",
+            number_negative:    "Le nombre ne peut pas être négatif",
+            number_max:         "Le nombre ne peut pas dépasser 1 000 000 000",
+            date_format:        "Utilisez JJ/MM/AAAA, JJ-MM-AAAA ou ex: 23 Fév 2026",
+            year_format:        "Veuillez saisir une année à 4 chiffres (ex: 2019)",
+            year_range:         "L'année doit être comprise entre 1900 et 2100",
+            url:                "Veuillez saisir une URL valide (ex: www.behance.net/votrenom)",
+            address_short:      "Adresse trop courte — incluez le nom de la rue et le numéro",
+            address_long:       "L'adresse ne peut pas dépasser 200 caractères",
+            address_format:     "L'adresse doit inclure un nom de rue et un numéro",
+            skill_long:         "Le nom de la compétence ne peut pas dépasser 60 caractères",
+            text_long:          "Maximum {max} caractères autorisés",
+            date_start_req:     "La date de début est obligatoire",
+            date_start_fmt:     "Date de début: utilisez JJ/MM/AAAA ou ex: 01 Jan 2022",
+            date_end_req:       "Date de fin obligatoire, ou sélectionnez Présent",
+            date_end_fmt:       "Date de fin: utilisez JJ/MM/AAAA ou ex: 01 Mar 2025",
+            date_end_before:    "La date de fin doit être postérieure à la date de début",
+            date_after:         "Doit être postérieure à {field}",
+        },
+
+        templates: {
+            resume: {
+                name:        "CV Professionnel",
+                description: "CV épuré et moderne pour tous les secteurs",
+                category:    "Personnel",
+                image_label: "Photo de profil",
+                sections: {
+                    header:     "Informations personnelles",
+                    summary:    "Résumé professionnel",
+                    skills:     "Compétences",
+                    experience: "Expérience",
+                    education:  "Formation",
+                },
+                fields: {
+                    name:        { label: "Nom complet",            placeholder: "ex: Alexandra Reyes"              },
+                    title:       { label: "Titre professionnel",    placeholder: "ex: Designer Produit Senior"      },
+                    email:       { label: "Adresse e-mail",         placeholder: "ex: alex@email.com"               },
+                    phone:       { label: "Numéro de téléphone",    placeholder: "ex: +33 6 12 34 56 78"            },
+                    address:     { label: "Adresse",                placeholder: "ex: 12 rue des Fleurs, Paris"     },
+                    linkedin:    { label: "LinkedIn / Portfolio",   placeholder: "ex: www.linkedin.com/in/vous"     },
+                    website:     { label: "Site web / Behance",     placeholder: "ex: www.behance.net/vous"         },
+                    summary:     { label: "Résumé",                 placeholder: "Rédigez un bref résumé professionnel..." },
+                    skill:       { label: "Compétence",             placeholder: "ex: Figma, React, Gestion projet" },
+                    role:        { label: "Intitulé du poste",      placeholder: "ex: Designer Produit"             },
+                    company:     { label: "Entreprise",             placeholder: "ex: Acme Corp"                    },
+                    period:      { label: "Période",                placeholder: ""                                  },
+                    description: { label: "Description",            placeholder: "Décrivez vos responsabilités..." },
+                    degree:      { label: "Diplôme / Qualification", placeholder: "ex: Licence Informatique"       },
+                    school:      { label: "Établissement",          placeholder: "ex: Université Paris-Saclay"      },
+                    year:        { label: "Année",                  placeholder: "ex: 2019"                         },
+                },
+                preview: {
+                    summary:    "Résumé professionnel",
+                    skills:     "Compétences",
+                    experience: "Expérience",
+                    education:  "Formation",
+                    photo:      "Photo",
+                }
+            },
+
+            invoice: {
+                name:        "Facture",
+                description: "Facture professionnelle avec totaux et TVA",
+                category:    "Affaires",
+                image_label: "Logo de l'entreprise",
+                sections: {
+                    sender: "Vos coordonnées",
+                    header: "Détails de la facture",
+                    client: "Facturer à",
+                    items:  "Lignes de facturation",
+                },
+                fields: {
+                    senderName:    { label: "Nom / Raison sociale",    placeholder: "ex: Studio Nova"               },
+                    senderAddress: { label: "Adresse",                 placeholder: "ex: 12 rue des Fleurs, Paris"  },
+                    senderEmail:   { label: "E-mail",                  placeholder: "ex: facturation@studionova.com"},
+                    senderWebsite: { label: "Site web",                placeholder: "ex: www.studionova.com"        },
+                    invoiceNumber: { label: "Numéro de facture",       placeholder: "ex: FAC-0042"                  },
+                    date:          { label: "Date d'émission",         placeholder: "JJ/MM/AAAA"                    },
+                    dueDate:       { label: "Date d'échéance",         placeholder: "JJ/MM/AAAA"                    },
+                    clientName:    { label: "Nom du client",           placeholder: "ex: Société Client SAS"        },
+                    clientAddress: { label: "Adresse du client",       placeholder: "ex: 99 av. des Champs, Lyon"  },
+                    clientEmail:   { label: "E-mail du client",        placeholder: "ex: compta@client.com"         },
+                    item:          { label: "Description",             placeholder: "ex: Conception de site web"    },
+                    qty:           { label: "Qté",                     placeholder: "1"                             },
+                    price:         { label: "Prix unitaire",           placeholder: "0,00"                          },
+                },
+                preview: {
+                    invoice:   "FACTURE",
+                    issued:    "Émise le",
+                    due:       "Échéance",
+                    no:        "N°",
+                    from:      "De",
+                    bill_to:   "Facturer à",
+                    desc:      "Description",
+                    qty:       "Qté",
+                    unit:      "Prix unit.",
+                    total:     "Total",
+                    subtotal:  "Sous-total",
+                    tax:       "TVA",
+                    total_due: "Total TTC",
+                    logo:      "Logo",
+                    thank_you: "Merci pour votre confiance.",
+                }
+            }
         }
     },
 
-    date: {
-        validate: (v, required) => {
-            if (!v || !v.trim()) return required ? "This field is required" : null;
-            const trimmed  = v.trim();
-            const patterns = [
-                /^\d{2}\/\d{2}\/\d{4}$/,
-                /^\d{2}-\d{2}-\d{4}$/,
-                /^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/
-            ];
-            if (!patterns.some(p => p.test(trimmed)))
-                return "Use DD/MM/YYYY, DD-MM-YYYY or e.g. 23 Feb 2026";
-            return null;
+    /* ── HINDI ───────────────────────────────────────────── */
+    hi: {
+        meta: { name: "हिन्दी", flag: "🇮🇳", code: "HI" },
+
+        ui: {
+            app_name:           "EasyDoc",
+            back:               "← वापस",
+            home_title:         "आप क्या बनाना चाहते हैं?",
+            home_subtitle:      "एक टेम्पलेट चुनें और मिनटों में पेशेवर दस्तावेज़ बनाएं",
+            featured:           "⭐ विशेष",
+            all_documents:      "सभी दस्तावेज़",
+            search_placeholder: "टेम्पलेट खोजें...",
+            template_count_one: "टेम्पलेट",
+            template_count_many:"टेम्पलेट",
+            no_results:         "कोई टेम्पलेट नहीं मिला",
+            live_preview:       "लाइव पूर्वावलोकन",
+            live:               "लाइव",
+            save_progress:      "💾 प्रगति सहेजें",
+            load_progress:      "📂 प्रगति लोड करें",
+            download_pdf:       "↓ PDF डाउनलोड करें",
+            generating:         "बन रहा है…",
+            pdf_generating:     "PDF बन रही है…",
+            pdf_subtitle:       "बस एक क्षण",
+            optional:           "वैकल्पिक",
+            present:            "वर्तमान",
+            add_block:          "जोड़ें",
+            remove:             "✕ हटाएं",
+            upload:             "अपलोड",
+            change:             "बदलें",
+            remove_image:       "✕ हटाएं",
+            image_hint:         "वैकल्पिक। अपलोड करने के लिए क्लिक करें।",
+            image_hint2:        "JPG, PNG या WebP। अधिकतम 5 MB।",
+            load_error_invalid: "यह फ़ाइल EasyDoc फ़ाइल नहीं लगती।",
+            load_error_missing: "इस फ़ाइल का टेम्पलेट उपलब्ध नहीं है।",
+            load_error_file:    "फ़ाइल लोड नहीं हो सकी।",
+            fill_form:          "अपना पूर्वावलोकन देखने के लिए फ़ॉर्म भरें",
+            fill_form2:         "",
+            thank_you:          "आपके व्यवसाय के लिए धन्यवाद।",
+            tax_rate:           "कर दर",
+            tax_hint:           "% (कर नहीं के लिए 0 छोड़ें)",
+        },
+
+        errors: {
+            required:           "यह फ़ील्ड आवश्यक है",
+            email:              "कृपया एक वैध ईमेल दर्ज करें (जैसे: naam@domain.com)",
+            phone:              "फ़ोन में केवल अंक, स्पेस, +, -, ( ) हो सकते हैं",
+            number_invalid:     "कृपया एक वैध संख्या दर्ज करें (जैसे: 150.00)",
+            number_negative:    "संख्या नकारात्मक नहीं हो सकती",
+            number_max:         "संख्या 1,000,000,000 से अधिक नहीं हो सकती",
+            date_format:        "DD/MM/YYYY, DD-MM-YYYY या जैसे: 23 फ़र 2026 उपयोग करें",
+            year_format:        "कृपया 4 अंकों का वर्ष दर्ज करें (जैसे: 2019)",
+            year_range:         "वर्ष 1900 और 2100 के बीच होना चाहिए",
+            url:                "कृपया एक वैध URL दर्ज करें",
+            address_short:      "पता बहुत छोटा है — सड़क का नाम और नंबर शामिल करें",
+            address_long:       "पता 200 वर्णों से अधिक नहीं हो सकता",
+            address_format:     "पते में सड़क का नाम और नंबर होना चाहिए",
+            skill_long:         "कौशल का नाम 60 वर्णों से अधिक नहीं हो सकता",
+            text_long:          "अधिकतम {max} वर्ण अनुमत हैं",
+            date_start_req:     "प्रारंभ तिथि आवश्यक है",
+            date_start_fmt:     "प्रारंभ तिथि: DD/MM/YYYY का उपयोग करें",
+            date_end_req:       "समाप्ति तिथि आवश्यक है, या वर्तमान चुनें",
+            date_end_fmt:       "समाप्ति तिथि: DD/MM/YYYY का उपयोग करें",
+            date_end_before:    "समाप्ति तिथि प्रारंभ तिथि के बाद होनी चाहिए",
+            date_after:         "{field} के बाद होनी चाहिए",
+        },
+
+        templates: {
+            resume: {
+                name:        "पेशेवर बायोडेटा",
+                description: "किसी भी उद्योग के लिए स्वच्छ, आधुनिक बायोडेटा",
+                category:    "व्यक्तिगत",
+                image_label: "प्रोफ़ाइल फ़ोटो",
+                sections: {
+                    header:     "व्यक्तिगत जानकारी",
+                    summary:    "पेशेवर सारांश",
+                    skills:     "कौशल",
+                    experience: "अनुभव",
+                    education:  "शिक्षा",
+                },
+                fields: {
+                    name:        { label: "पूरा नाम",            placeholder: "जैसे: अलेक्जेंड्रा रेयेस"  },
+                    title:       { label: "पेशेवर पदनाम",        placeholder: "जैसे: वरिष्ठ उत्पाद डिज़ाइनर" },
+                    email:       { label: "ईमेल पता",            placeholder: "जैसे: alex@email.com"       },
+                    phone:       { label: "फ़ोन नंबर",           placeholder: "जैसे: +91 98765 43210"       },
+                    address:     { label: "पता",                 placeholder: "जैसे: 12 MG रोड, मुंबई"     },
+                    linkedin:    { label: "LinkedIn / पोर्टफोलियो", placeholder: "जैसे: www.linkedin.com/in/aap" },
+                    website:     { label: "वेबसाइट / Behance",  placeholder: "जैसे: www.behance.net/aap"   },
+                    summary:     { label: "सारांश",              placeholder: "एक संक्षिप्त पेशेवर परिचय लिखें..." },
+                    skill:       { label: "कौशल",                placeholder: "जैसे: Figma, React, प्रबंधन" },
+                    role:        { label: "पद",                  placeholder: "जैसे: उत्पाद डिज़ाइनर"       },
+                    company:     { label: "कंपनी",               placeholder: "जैसे: Acme Corp"             },
+                    period:      { label: "अवधि",                placeholder: ""                             },
+                    description: { label: "विवरण",               placeholder: "अपनी जिम्मेदारियाँ बताएं..." },
+                    degree:      { label: "उपाधि / योग्यता",    placeholder: "जैसे: B.Tech कंप्यूटर साइंस" },
+                    school:      { label: "संस्थान",             placeholder: "जैसे: IIT दिल्ली"            },
+                    year:        { label: "वर्ष",                placeholder: "जैसे: 2019"                   },
+                },
+                preview: {
+                    summary:    "पेशेवर सारांश",
+                    skills:     "कौशल",
+                    experience: "अनुभव",
+                    education:  "शिक्षा",
+                    photo:      "फ़ोटो",
+                }
+            },
+
+            invoice: {
+                name:        "चालान",
+                description: "कुल और कर के साथ पेशेवर चालान",
+                category:    "व्यापार",
+                image_label: "कंपनी लोगो",
+                sections: {
+                    sender: "आपकी जानकारी",
+                    header: "चालान विवरण",
+                    client: "बिल प्राप्तकर्ता",
+                    items:  "लाइन आइटम",
+                },
+                fields: {
+                    senderName:    { label: "आपका नाम / व्यवसाय का नाम", placeholder: "जैसे: Studio Nova"   },
+                    senderAddress: { label: "पता",               placeholder: "जैसे: 12 MG रोड, मुंबई"      },
+                    senderEmail:   { label: "ईमेल",              placeholder: "जैसे: billing@studio.com"    },
+                    senderWebsite: { label: "वेबसाइट",           placeholder: "जैसे: www.studionova.com"    },
+                    invoiceNumber: { label: "चालान संख्या",      placeholder: "जैसे: INV-0042"              },
+                    date:          { label: "जारी करने की तिथि", placeholder: "DD/MM/YYYY"                  },
+                    dueDate:       { label: "देय तिथि",          placeholder: "DD/MM/YYYY"                  },
+                    clientName:    { label: "ग्राहक का नाम",     placeholder: "जैसे: Bright Ideas Ltd"      },
+                    clientAddress: { label: "ग्राहक का पता",     placeholder: "जैसे: 99 पार्क एवेन्यू"      },
+                    clientEmail:   { label: "ग्राहक का ईमेल",   placeholder: "जैसे: accounts@client.com"   },
+                    item:          { label: "विवरण",             placeholder: "जैसे: वेबसाइट डिज़ाइन"       },
+                    qty:           { label: "मात्रा",            placeholder: "1"                            },
+                    price:         { label: "इकाई मूल्य",        placeholder: "0.00"                         },
+                },
+                preview: {
+                    invoice:   "चालान",
+                    issued:    "जारी",
+                    due:       "देय",
+                    no:        "क्र.",
+                    from:      "प्रेषक",
+                    bill_to:   "प्राप्तकर्ता",
+                    desc:      "विवरण",
+                    qty:       "मात्रा",
+                    unit:      "इकाई मूल्य",
+                    total:     "कुल",
+                    subtotal:  "उप-योग",
+                    tax:       "कर",
+                    total_due: "देय राशि",
+                    logo:      "लोगो",
+                    thank_you: "आपके व्यवसाय के लिए धन्यवाद।",
+                }
+            }
         }
     },
 
-    year: {
-        validate: (v, required) => {
-            if (!v || !v.trim()) return required ? "This field is required" : null;
-            const trimmed = v.trim();
-            if (!/^\d{4}$/.test(trimmed)) return "Please enter a 4-digit year (e.g. 2019)";
-            const n = parseInt(trimmed, 10);
-            if (n < 1900 || n > 2100) return "Year must be between 1900 and 2100";
-            return null;
-        }
-    },
+    /* ── RUSSIAN ─────────────────────────────────────────── */
+    ru: {
+        meta: { name: "Русский", flag: "🇷🇺", code: "RU" },
 
-    url: {
-        validate: (v, required) => {
-            if (!v || !v.trim()) return required ? "This field is required" : null;
-            const ok = /^(https?:\/\/)?(www\.)?[\w\-]+(\.[\w\-]+)+(\/[\w\-._~:/?#[\]@!$&'()*+,;=%]*)?$/.test(v.trim());
-            return ok ? null : "Please enter a valid URL (e.g. www.behance.net/yourname)";
-        }
-    },
+        ui: {
+            app_name:           "EasyDoc",
+            back:               "← Назад",
+            home_title:         "Что вы хотите создать?",
+            home_subtitle:      "Выберите шаблон и создайте профессиональный документ за несколько минут",
+            featured:           "⭐ Популярные",
+            all_documents:      "Все документы",
+            search_placeholder: "Поиск шаблонов...",
+            template_count_one: "шаблон",
+            template_count_many:"шаблонов",
+            no_results:         "Шаблоны не найдены для",
+            live_preview:       "Предпросмотр",
+            live:               "Живой",
+            save_progress:      "💾 Сохранить",
+            load_progress:      "📂 Загрузить",
+            download_pdf:       "↓ Скачать PDF",
+            generating:         "Создание…",
+            pdf_generating:     "Создание PDF…",
+            pdf_subtitle:       "Это займёт секунду",
+            optional:           "необязательно",
+            present:            "По настоящее время",
+            add_block:          "Добавить",
+            remove:             "✕ Удалить",
+            upload:             "Загрузить",
+            change:             "Изменить",
+            remove_image:       "✕ Удалить",
+            image_hint:         "Необязательно. Нажмите для загрузки.",
+            image_hint2:        "JPG, PNG или WebP. Макс. 5 МБ.",
+            load_error_invalid: "Этот файл не является файлом EasyDoc.",
+            load_error_missing: "Шаблон из этого файла недоступен.",
+            load_error_file:    "Не удалось загрузить файл.",
+            fill_form:          "Заполните форму для предпросмотра вашего",
+            fill_form2:         "",
+            thank_you:          "Спасибо за ваш бизнес.",
+            tax_rate:           "Ставка НДС",
+            tax_hint:           "% (оставьте 0 без НДС)",
+        },
 
-    address: {
-        validate: (v, required) => {
-            if (!v || !v.trim()) return required ? "This field is required" : null;
-            const trimmed = v.trim();
-            if (trimmed.length < 5)   return "Address is too short — include street name and number";
-            if (trimmed.length > 200) return "Address cannot exceed 200 characters";
-            if (!/[a-zA-Z]/.test(trimmed) || !/\d/.test(trimmed))
-                return "Address must include a street name and number (e.g. 12 Oak Street)";
-            return null;
-        }
-    },
+        errors: {
+            required:           "Это поле обязательно",
+            email:              "Введите корректный e-mail (например: имя@домен.com)",
+            phone:              "Телефон может содержать только цифры, пробелы, +, -, ( )",
+            number_invalid:     "Введите корректное число (например: 150.00)",
+            number_negative:    "Число не может быть отрицательным",
+            number_max:         "Число не может превышать 1 000 000 000",
+            date_format:        "Используйте ДД/ММ/ГГГГ, ДД-ММ-ГГГГ или напр.: 23 Фев 2026",
+            year_format:        "Введите 4-значный год (например: 2019)",
+            year_range:         "Год должен быть между 1900 и 2100",
+            url:                "Введите корректный URL (например: www.behance.net/yourname)",
+            address_short:      "Адрес слишком короткий — укажите улицу и номер",
+            address_long:       "Адрес не может превышать 200 символов",
+            address_format:     "Адрес должен содержать название улицы и номер",
+            skill_long:         "Название навыка не может превышать 60 символов",
+            text_long:          "Максимум {max} символов",
+            date_start_req:     "Дата начала обязательна",
+            date_start_fmt:     "Дата начала: используйте ДД/ММ/ГГГГ",
+            date_end_req:       "Дата окончания обязательна, или выберите «По настоящее время»",
+            date_end_fmt:       "Дата окончания: используйте ДД/ММ/ГГГГ",
+            date_end_before:    "Дата окончания должна быть позже даты начала",
+            date_after:         "Должна быть позже чем {field}",
+        },
 
-    skill: {
-        validate: (v, required) => {
-            if (!v || !v.trim()) return required ? "This field is required" : null;
-            if (v.length > 60) return "Skill name cannot exceed 60 characters";
-            return null;
-        }
-    },
+        templates: {
+            resume: {
+                name:        "Профессиональное резюме",
+                description: "Чистое, современное резюме для любой отрасли",
+                category:    "Личное",
+                image_label: "Фото профиля",
+                sections: {
+                    header:     "Личная информация",
+                    summary:    "Профессиональное резюме",
+                    skills:     "Навыки",
+                    experience: "Опыт работы",
+                    education:  "Образование",
+                },
+                fields: {
+                    name:        { label: "Полное имя",            placeholder: "напр.: Александра Рейес"     },
+                    title:       { label: "Должность",             placeholder: "напр.: Старший дизайнер"     },
+                    email:       { label: "Электронная почта",     placeholder: "напр.: alex@email.com"       },
+                    phone:       { label: "Номер телефона",        placeholder: "напр.: +7 900 123 45 67"     },
+                    address:     { label: "Адрес",                 placeholder: "напр.: ул. Ленина 12, Москва"},
+                    linkedin:    { label: "LinkedIn / Портфолио",  placeholder: "напр.: www.linkedin.com/in/vy"},
+                    website:     { label: "Сайт / Behance",        placeholder: "напр.: www.behance.net/vy"   },
+                    summary:     { label: "Краткое описание",      placeholder: "Напишите краткое профессиональное резюме..." },
+                    skill:       { label: "Навык",                 placeholder: "напр.: Figma, React, управление" },
+                    role:        { label: "Должность",             placeholder: "напр.: Дизайнер продукта"    },
+                    company:     { label: "Компания",              placeholder: "напр.: Acme Corp"            },
+                    period:      { label: "Период",                placeholder: ""                             },
+                    description: { label: "Описание",              placeholder: "Опишите ваши обязанности..." },
+                    degree:      { label: "Степень / Квалификация", placeholder: "напр.: Бакалавр информатики"},
+                    school:      { label: "Учебное заведение",     placeholder: "напр.: МГУ им. Ломоносова"   },
+                    year:        { label: "Год",                   placeholder: "напр.: 2019"                  },
+                },
+                preview: {
+                    summary:    "Профессиональное резюме",
+                    skills:     "Навыки",
+                    experience: "Опыт работы",
+                    education:  "Образование",
+                    photo:      "Фото",
+                }
+            },
 
-    daterange: {
-        validate: (v, required) => {
-            if (!v || typeof v !== "object") return required ? "This field is required" : null;
-            const { start, end, present } = v;
-            if (!start || !start.trim()) return required ? "Start date is required" : null;
-            const patterns = [
-                /^\d{2}\/\d{2}\/\d{4}$/,
-                /^\d{2}-\d{2}-\d{4}$/,
-                /^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/
-            ];
-            if (!patterns.some(p => p.test(start.trim())))
-                return "Start date: use DD/MM/YYYY or e.g. 01 Jan 2022";
-            if (present) return null;
-            if (!end || !end.trim()) return "End date is required, or toggle Present";
-            if (!patterns.some(p => p.test(end.trim())))
-                return "End date: use DD/MM/YYYY or e.g. 01 Mar 2025";
-            const startDate = parseDisplayDate(start);
-            const endDate   = parseDisplayDate(end);
-            if (startDate && endDate && endDate <= startDate)
-                return "End date must be after the start date";
-            return null;
+            invoice: {
+                name:        "Счёт-фактура",
+                description: "Профессиональный счёт с итогами и НДС",
+                category:    "Бизнес",
+                image_label: "Логотип компании",
+                sections: {
+                    sender: "Ваши данные",
+                    header: "Данные счёта",
+                    client: "Плательщик",
+                    items:  "Позиции",
+                },
+                fields: {
+                    senderName:    { label: "Ваше имя / Название компании", placeholder: "напр.: Studio Nova"  },
+                    senderAddress: { label: "Адрес",               placeholder: "напр.: ул. Ленина 12, Москва" },
+                    senderEmail:   { label: "Электронная почта",   placeholder: "напр.: billing@studionova.com"},
+                    senderWebsite: { label: "Сайт",                placeholder: "напр.: www.studionova.com"    },
+                    invoiceNumber: { label: "Номер счёта",         placeholder: "напр.: СЧТ-0042"              },
+                    date:          { label: "Дата выставления",    placeholder: "ДД/ММ/ГГГГ"                   },
+                    dueDate:       { label: "Дата оплаты",         placeholder: "ДД/ММ/ГГГГ"                   },
+                    clientName:    { label: "Имя клиента",         placeholder: "напр.: ООО Клиент"            },
+                    clientAddress: { label: "Адрес клиента",       placeholder: "напр.: пр. Мира 99, СПб"     },
+                    clientEmail:   { label: "E-mail клиента",      placeholder: "напр.: buh@client.com"        },
+                    item:          { label: "Описание",            placeholder: "напр.: Разработка сайта"      },
+                    qty:           { label: "Кол-во",              placeholder: "1"                             },
+                    price:         { label: "Цена за единицу",     placeholder: "0.00"                         },
+                },
+                preview: {
+                    invoice:   "СЧЁТ",
+                    issued:    "Выставлен",
+                    due:       "Оплатить до",
+                    no:        "№",
+                    from:      "От",
+                    bill_to:   "Плательщик",
+                    desc:      "Описание",
+                    qty:       "Кол-во",
+                    unit:      "Цена за ед.",
+                    total:     "Сумма",
+                    subtotal:  "Итого без НДС",
+                    tax:       "НДС",
+                    total_due: "К оплате",
+                    logo:      "Логотип",
+                    thank_you: "Спасибо за ваш бизнес.",
+                }
+            }
         }
     }
 };
 
-function validateField(field, value) {
-    const key       = field.validate || field.type || "text";
-    const validator = VALIDATORS[key];
+/* ============================================================
+   i18n CONTEXT + HOOK
+   ─────────────────────────────────────────────────────────
+   Every component calls useLang() to get t().
+   t(key) resolves dot-notation: "ui.back" → LANGUAGES[lang].ui.back
+   t(key, vars) replaces {placeholder} tokens in the string.
+   Falls back to English if the key is missing in active lang.
+============================================================ */
+
+const LanguageContext = createContext(null);
+
+function LanguageProvider({ children }) {
+    const [lang, setLang] = useState("en");
+
+    function t(key, vars) {
+        const keys    = key.split(".");
+        let   value   = LANGUAGES[lang];
+        let   fallback = LANGUAGES["en"];
+
+        for (const k of keys) {
+            value    = value    && value[k];
+            fallback = fallback && fallback[k];
+        }
+
+        const result = (typeof value === "string" ? value : null)
+                    || (typeof fallback === "string" ? fallback : key);
+
+        if (vars && typeof result === "string") {
+            return Object.keys(vars).reduce(
+                (s, v) => s.replace(`{${v}}`, vars[v]),
+                result
+            );
+        }
+
+        return result;
+    }
+
+    /* Convenience: get template-scoped translation
+       tpl("resume", "fields.name.label") */
+    function tpl(templateId, key) {
+        return t(`templates.${templateId}.${key}`);
+    }
+
+    return (
+        <LanguageContext.Provider value={{ lang, setLang, t, tpl }}>
+            {children}
+        </LanguageContext.Provider>
+    );
+}
+
+function useLang() {
+    return useContext(LanguageContext);
+}
+
+/* ============================================================
+   LANGUAGE SWITCHER COMPONENT
+============================================================ */
+
+function LanguageSwitcher() {
+    const { lang, setLang, t } = useLang();
+    const [open, setOpen]      = useState(false);
+    const wrapperRef           = useRef(null);
+
+    /* Close dropdown when clicking outside */
+    useEffect(() => {
+        function handleClick(e) {
+            if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+                setOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClick);
+        return () => document.removeEventListener("mousedown", handleClick);
+    }, []);
+
+    const current = LANGUAGES[lang].meta;
+    const options = Object.entries(LANGUAGES);
+
+    return (
+        <div className="lang-switcher" ref={wrapperRef}>
+            <button
+                className="lang-trigger"
+                onClick={() => setOpen(o => !o)}
+                title="Change language"
+            >
+                <span className="lang-flag">{current.flag}</span>
+                <span className="lang-code">{current.code}</span>
+                <span className="lang-chevron">{open ? "▲" : "▼"}</span>
+            </button>
+
+            {open && (
+                <div className="lang-dropdown">
+                    {options.map(([code, data]) => (
+                        <button
+                            key={code}
+                            className={"lang-option" + (lang === code ? " is-active" : "")}
+                            onClick={() => { setLang(code); setOpen(false); }}
+                        >
+                            <span className="opt-flag">{data.meta.flag}</span>
+                            <span className="opt-name">{data.meta.name}</span>
+                            <span className="opt-check">✓</span>
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
+
+/* ============================================================
+   CONSTANTS
+============================================================ */
+
+const MAX_TEXT            = 3000;
+const MAX_NUMBER          = 1000000000;
+const MAX_IMAGE_PX        = 1200;
+const IMAGE_QUALITY       = 0.82;
+const PREVIEW_DEBOUNCE_MS = 120;
+
+/* ============================================================
+   DEBOUNCE HOOK
+============================================================ */
+
+function useDebounced(value, delay) {
+    const [debounced, setDebounced] = useState(value);
+    useEffect(() => {
+        const timer = setTimeout(() => setDebounced(value), delay);
+        return () => clearTimeout(timer);
+    }, [value, delay]);
+    return debounced;
+}
+
+/* ============================================================
+   VALIDATION ENGINE — uses t() for translated error messages
+============================================================ */
+
+function makeValidators(t) {
+    return {
+        text: {
+            validate: (v, required) => {
+                if (!v || !v.trim()) return required ? t("errors.required") : null;
+                if (v.length > MAX_TEXT) return t("errors.text_long", { max: MAX_TEXT.toLocaleString() });
+                return null;
+            }
+        },
+        textarea: {
+            validate: (v, required) => {
+                if (!v || !v.trim()) return required ? t("errors.required") : null;
+                if (v.length > MAX_TEXT) return t("errors.text_long", { max: MAX_TEXT.toLocaleString() });
+                return null;
+            }
+        },
+        email: {
+            validate: (v, required) => {
+                if (!v || !v.trim()) return required ? t("errors.required") : null;
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? null : t("errors.email");
+            }
+        },
+        phone: {
+            validate: (v, required) => {
+                if (!v || !v.trim()) return required ? t("errors.required") : null;
+                return /^[+\d][\d\s\-().]{3,24}$/.test(v.trim()) ? null : t("errors.phone");
+            }
+        },
+        number: {
+            validate: (v, required) => {
+                if (!v || !v.trim()) return required ? t("errors.required") : null;
+                const n = parseFloat(String(v).replace(/,/g, ""));
+                if (isNaN(n))       return t("errors.number_invalid");
+                if (n < 0)          return t("errors.number_negative");
+                if (n > MAX_NUMBER) return t("errors.number_max");
+                return null;
+            }
+        },
+        date: {
+            validate: (v, required) => {
+                if (!v || !v.trim()) return required ? t("errors.required") : null;
+                const patterns = [
+                    /^\d{2}\/\d{2}\/\d{4}$/,
+                    /^\d{2}-\d{2}-\d{4}$/,
+                    /^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/
+                ];
+                return patterns.some(p => p.test(v.trim())) ? null : t("errors.date_format");
+            }
+        },
+        year: {
+            validate: (v, required) => {
+                if (!v || !v.trim()) return required ? t("errors.required") : null;
+                const trimmed = v.trim();
+                if (!/^\d{4}$/.test(trimmed)) return t("errors.year_format");
+                const n = parseInt(trimmed, 10);
+                if (n < 1900 || n > 2100)     return t("errors.year_range");
+                return null;
+            }
+        },
+        url: {
+            validate: (v, required) => {
+                if (!v || !v.trim()) return required ? t("errors.required") : null;
+                const ok = /^(https?:\/\/)?(www\.)?[\w\-]+(\.[\w\-]+)+(\/[\w\-._~:/?#[\]@!$&'()*+,;=%]*)?$/.test(v.trim());
+                return ok ? null : t("errors.url");
+            }
+        },
+        address: {
+            validate: (v, required) => {
+                if (!v || !v.trim()) return required ? t("errors.required") : null;
+                const trimmed = v.trim();
+                if (trimmed.length < 5)   return t("errors.address_short");
+                if (trimmed.length > 200) return t("errors.address_long");
+                if (!/[a-zA-Z]/.test(trimmed) || !/\d/.test(trimmed)) return t("errors.address_format");
+                return null;
+            }
+        },
+        skill: {
+            validate: (v, required) => {
+                if (!v || !v.trim()) return required ? t("errors.required") : null;
+                if (v.length > 60) return t("errors.skill_long");
+                return null;
+            }
+        },
+        daterange: {
+            validate: (v, required) => {
+                if (!v || typeof v !== "object") return required ? t("errors.required") : null;
+                const { start, end, present } = v;
+                if (!start || !start.trim()) return required ? t("errors.date_start_req") : null;
+                const patterns = [
+                    /^\d{2}\/\d{2}\/\d{4}$/,
+                    /^\d{2}-\d{2}-\d{4}$/,
+                    /^\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4}$/
+                ];
+                if (!patterns.some(p => p.test(start.trim()))) return t("errors.date_start_fmt");
+                if (present) return null;
+                if (!end || !end.trim()) return t("errors.date_end_req");
+                if (!patterns.some(p => p.test(end.trim())))   return t("errors.date_end_fmt");
+                const startDate = parseDisplayDate(start);
+                const endDate   = parseDisplayDate(end);
+                if (startDate && endDate && endDate <= startDate) return t("errors.date_end_before");
+                return null;
+            }
+        }
+    };
+}
+
+function validateFieldWithT(field, value, t) {
+    const validators = makeValidators(t);
+    const key        = field.validate || field.type || "text";
+    const validator  = validators[key];
     if (!validator) return null;
     return validator.validate(value, !field.optional);
 }
 
-function nativeDateToDisplay(nativeVal) {
-    if (!nativeVal) return "";
-    const [y, m, d] = nativeVal.split("-");
-    return `${d}/${m}/${y}`;
-}
-
 /* ============================================================
-   UNIVERSAL CROSS-FIELD VALIDATION
+   CROSS-FIELD VALIDATION
 ============================================================ */
 
 function parseDisplayDate(str) {
@@ -1038,11 +1909,8 @@ function parseDisplayDate(str) {
     const s = str.trim();
     const dmy = s.match(/^(\d{1,2})[\/\-](\d{2})[\/\-](\d{4})$/);
     if (dmy) return new Date(+dmy[3], +dmy[2] - 1, +dmy[1]);
-    const months = {
-        jan:0, feb:1, mar:2, apr:3, may:4,  jun:5,
-        jul:6, aug:7, sep:8, oct:9, nov:10, dec:11
-    };
-    const named = s.match(/^(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})$/);
+    const months = { jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11 };
+    const named  = s.match(/^(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})$/);
     if (named) {
         const m = months[named[2].toLowerCase().slice(0, 3)];
         if (m !== undefined) return new Date(+named[3], m, +named[1]);
@@ -1050,27 +1918,30 @@ function parseDisplayDate(str) {
     return null;
 }
 
-function validateCrossFields(section, block) {
+function validateCrossFieldsWithT(section, block, t) {
     const errors = [];
     section.fields.forEach(field => {
         if (!field.afterField) return;
         const thisVal  = block[field.name]      || "";
         const otherVal = block[field.afterField] || "";
-        if (!thisVal || !thisVal.trim || !thisVal.trim()) return;
+        if (!thisVal || !thisVal.trim()) return;
         if (!otherVal || !otherVal.trim()) return;
         const thisDate  = parseDisplayDate(thisVal);
         const otherDate = parseDisplayDate(otherVal);
         if (!thisDate || !otherDate) return;
         if (thisDate <= otherDate) {
             const otherField = section.fields.find(f => f.name === field.afterField);
-            const otherLabel = otherField ? otherField.label : field.afterField;
-            errors.push({ fieldName: field.name, error: `Must be after the ${otherLabel}` });
+            const otherLabel = otherField ? otherField.tplLabel || otherField.name : field.afterField;
+            errors.push({
+                fieldName: field.name,
+                error:     t("errors.date_after", { field: otherLabel })
+            });
         }
     });
     return errors;
 }
 
-function getAllFieldErrors(template, documentData) {
+function getAllFieldErrors(template, documentData, t) {
     const errors = [];
     template.sections.forEach(section => {
         const blocks = Array.isArray(documentData[section.id])
@@ -1079,10 +1950,10 @@ function getAllFieldErrors(template, documentData) {
         blocks.forEach((block, idx) => {
             section.fields.forEach(field => {
                 const val = block[field.name] !== undefined ? block[field.name] : "";
-                const err = validateField(field, val);
+                const err = validateFieldWithT(field, val, t);
                 if (err) errors.push({ sectionId: section.id, blockIndex: idx, fieldName: field.name });
             });
-            validateCrossFields(section, block).forEach(({ fieldName }) => {
+            validateCrossFieldsWithT(section, block, t).forEach(({ fieldName }) => {
                 errors.push({ sectionId: section.id, blockIndex: idx, fieldName });
             });
         });
@@ -1094,22 +1965,492 @@ function getAllFieldErrors(template, documentData) {
    DATE RANGE DISPLAY HELPER
 ============================================================ */
 
-function formatDateRange(v) {
+function formatDateRange(v, presentLabel) {
     if (!v || typeof v !== "object") return "";
     const { start, end, present } = v;
     if (!start) return "";
-    if (present) return `${start} – Present`;
-    if (end) return `${start} – ${end}`;
+    if (present) return `${start} – ${presentLabel || "Present"}`;
+    if (end)     return `${start} – ${end}`;
     return start;
 }
 
 /* ============================================================
-   DESIGN SYSTEM — UNIVERSAL BUILDING BLOCKS
-   Change any component here → every template updates instantly.
-   Templates never set their own styles — only compose these.
+   INVOICE HELPERS
 ============================================================ */
 
-/* ── DocHeader ── */
+function parseNumber(val) {
+    const n = parseFloat(String(val).replace(/[^0-9.]/g, ""));
+    return isNaN(n) ? 0 : n;
+}
+
+function calcInvoiceTotals(items, taxRate) {
+    const subtotal  = items.reduce((s, r) => s + parseNumber(r.qty) * parseNumber(r.price), 0);
+    const taxAmount = subtotal * (parseNumber(taxRate) / 100);
+    return { subtotal, taxAmount, total: subtotal + taxAmount };
+}
+
+function formatMoney(num) {
+    return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+/* ============================================================
+   TEMPLATE REGISTRY
+   Fields no longer have hardcoded label/placeholder strings.
+   Instead they carry a tplKey that the form renderer resolves
+   through t() at render time — so labels switch language live.
+============================================================ */
+
+const TEMPLATES = [
+    {
+        id:          "resume",
+        icon:        "📄",
+        image:       { shape: "circle", icon: "👤" },
+
+        sections: [
+            {
+                id:    "header",
+                sectionKey: "header",
+                fields: [
+                    { name: "name",     tplKey: "name",     validate: "text"                   },
+                    { name: "title",    tplKey: "title",    validate: "text"                   },
+                    { name: "email",    tplKey: "email",    validate: "email"                  },
+                    { name: "phone",    tplKey: "phone",    validate: "phone"                  },
+                    { name: "address",  tplKey: "address",  validate: "address", optional: true },
+                    { name: "linkedin", tplKey: "linkedin", validate: "url",     optional: true },
+                    { name: "website",  tplKey: "website",  validate: "url",     optional: true }
+                ]
+            },
+            {
+                id: "summary", sectionKey: "summary",
+                fields: [
+                    { name: "summary", tplKey: "summary", type: "textarea", validate: "textarea" }
+                ]
+            },
+            {
+                id: "skills", sectionKey: "skills", repeatable: true,
+                fields: [
+                    { name: "skill", tplKey: "skill", validate: "skill", optional: true }
+                ]
+            },
+            {
+                id: "experience", sectionKey: "experience", repeatable: true,
+                fields: [
+                    { name: "role",        tplKey: "role",        validate: "text"                    },
+                    { name: "company",     tplKey: "company",     validate: "text"                    },
+                    { name: "period",      tplKey: "period",      validate: "daterange", optional: true },
+                    { name: "description", tplKey: "description", type: "textarea", validate: "textarea", optional: true }
+                ]
+            },
+            {
+                id: "education", sectionKey: "education", repeatable: true,
+                fields: [
+                    { name: "degree", tplKey: "degree", validate: "text"                 },
+                    { name: "school", tplKey: "school", validate: "text"                 },
+                    { name: "year",   tplKey: "year",   validate: "year", optional: true }
+                ]
+            }
+        ],
+
+        layoutFn({ documentData, uploadedImage, t }) {
+            const hdr    = documentData.header     || {};
+            const sum    = documentData.summary    || {};
+            const skills = documentData.skills     || [];
+            const exp    = documentData.experience || [];
+            const edu    = documentData.education  || [];
+            const p      = (k) => t(`templates.resume.preview.${k}`);
+            const presentLabel = t("ui.present");
+
+            const skillTags     = skills.map(s => s.skill).filter(Boolean);
+            const hasSkills     = skillTags.length > 0;
+            const hasExp        = exp.some(e => e.role || e.company);
+            const hasEdu        = edu.some(e => e.degree || e.school);
+            const hasAnyContent = hdr.name || hdr.title || hdr.email || hdr.phone ||
+                hdr.address || hdr.linkedin || hdr.website ||
+                sum.summary || hasSkills || hasExp || hasEdu;
+
+            if (!hasAnyContent) return [{ type: "empty", hasContent: false }];
+
+            const metaItems = [
+                hdr.email    && { value: hdr.email,    isLink: false },
+                hdr.phone    && { value: hdr.phone,    isLink: false },
+                hdr.address  && { value: hdr.address,  isLink: false },
+                hdr.linkedin && { value: hdr.linkedin, isLink: true  },
+                hdr.website  && { value: hdr.website,  isLink: true  }
+            ].filter(Boolean);
+
+            const blocks = [];
+
+            blocks.push({
+                type: "header", hasContent: true,
+                title:     hdr.name  || null,
+                subtitle:  hdr.title || null,
+                metaItems: metaItems.length > 0 ? metaItems : null,
+                image:     { shape: "circle", src: uploadedImage || null, icon: "👤", label: p("photo") }
+            });
+
+            if (sum.summary) {
+                blocks.push({ type: "textBlock", hasContent: true, title: p("summary"), text: sum.summary });
+            }
+
+            if (hasSkills) {
+                blocks.push({ type: "tagList", hasContent: true, title: p("skills"), tags: skillTags });
+            }
+
+            if (hasExp) {
+                blocks.push({
+                    type: "entryList", hasContent: true, title: p("experience"),
+                    entries: exp.filter(e => e.role || e.company).map(e => ({
+                        title:     e.role        || null,
+                        primary:   e.company     || null,
+                        secondary: formatDateRange(e.period, presentLabel) || null,
+                        body:      e.description || null
+                    }))
+                });
+            }
+
+            if (hasEdu) {
+                blocks.push({
+                    type: "entryList", hasContent: true, title: p("education"),
+                    entries: edu.filter(e => e.degree || e.school).map(e => ({
+                        title:     e.degree || null,
+                        primary:   e.school || null,
+                        secondary: e.year   || null
+                    }))
+                });
+            }
+
+            return blocks;
+        }
+    },
+
+    {
+        id:    "invoice",
+        icon:  "💰",
+        image: { shape: "square", icon: "🏢" },
+
+        sections: [
+            {
+                id: "sender", sectionKey: "sender",
+                fields: [
+                    { name: "senderName",    tplKey: "senderName",    validate: "text"                     },
+                    { name: "senderAddress", tplKey: "senderAddress", validate: "address", type: "textarea" },
+                    { name: "senderEmail",   tplKey: "senderEmail",   validate: "email"                    },
+                    { name: "senderWebsite", tplKey: "senderWebsite", validate: "url",     optional: true   }
+                ]
+            },
+            {
+                id: "header", sectionKey: "header",
+                fields: [
+                    { name: "invoiceNumber", tplKey: "invoiceNumber", validate: "text" },
+                    { name: "date",          tplKey: "date",          validate: "date" },
+                    { name: "dueDate",       tplKey: "dueDate",       validate: "date", afterField: "date", tplLabel: "date" }
+                ]
+            },
+            {
+                id: "client", sectionKey: "client",
+                fields: [
+                    { name: "clientName",    tplKey: "clientName",    validate: "text"                     },
+                    { name: "clientAddress", tplKey: "clientAddress", validate: "address", type: "textarea" },
+                    { name: "clientEmail",   tplKey: "clientEmail",   validate: "email"                    }
+                ]
+            },
+            {
+                id: "items", sectionKey: "items", repeatable: true,
+                fields: [
+                    { name: "item",  tplKey: "item",  validate: "text"   },
+                    { name: "qty",   tplKey: "qty",   validate: "number" },
+                    { name: "price", tplKey: "price", validate: "number" }
+                ]
+            }
+        ],
+
+        layoutFn({ documentData, extrasState, uploadedImage, t }) {
+            const taxRate    = (extrasState.invoice && extrasState.invoice.taxRate) || "0";
+            const sender     = documentData.sender || {};
+            const hdr        = documentData.header || {};
+            const client     = documentData.client || {};
+            const items      = documentData.items  || [];
+            const p          = (k) => t(`templates.invoice.preview.${k}`);
+
+            const { subtotal, taxAmount, total } = calcInvoiceTotals(items, taxRate);
+            const taxRateNum    = parseNumber(taxRate);
+            const hasItems      = items.some(i => i.item);
+            const hasAnyContent = sender.senderName || hdr.invoiceNumber || client.clientName || hasItems;
+
+            if (!hasAnyContent) return [{ type: "empty", hasContent: false }];
+
+            const rightRows = [
+                hdr.invoiceNumber && { label: p("no"),     value: hdr.invoiceNumber },
+                hdr.date          && { label: p("issued"), value: hdr.date          },
+                hdr.dueDate       && { label: p("due"),    value: hdr.dueDate       }
+            ].filter(Boolean);
+
+            const blocks = [];
+
+            blocks.push({
+                type: "header", hasContent: true,
+                title:     sender.senderName  || "Your Business",
+                subtitle:  sender.senderEmail || null,
+                metaItems: [
+                    sender.senderAddress && { value: sender.senderAddress, isLink: false },
+                    sender.senderWebsite && { value: sender.senderWebsite, isLink: true  }
+                ].filter(Boolean),
+                image:      { shape: "square", src: uploadedImage || null, icon: "🏢", label: p("logo") },
+                rightPanel: { title: p("invoice"), rows: rightRows }
+            });
+
+            if (sender.senderName || client.clientName) {
+                blocks.push({
+                    type: "twoColumn", hasContent: true,
+                    columns: [
+                        {
+                            label: p("from"),
+                            name:  sender.senderName || null,
+                            lines: [
+                                { value: sender.senderAddress || null, isLink: false },
+                                { value: sender.senderEmail   || null, isLink: true  },
+                                { value: sender.senderWebsite || null, isLink: true  }
+                            ]
+                        },
+                        {
+                            label: p("bill_to"),
+                            name:  client.clientName || null,
+                            lines: [
+                                { value: client.clientAddress || null, isLink: false },
+                                { value: client.clientEmail   || null, isLink: true  }
+                            ]
+                        }
+                    ]
+                });
+            }
+
+            if (hasItems) {
+                const tableRows = items.filter(row => row.item).map(row => {
+                    const qty   = parseNumber(row.qty);
+                    const price = parseNumber(row.price);
+                    const line  = qty * price;
+                    return {
+                        cells: [
+                            { value: row.item || "" },
+                            { value: row.qty  || "", mono: true, center: true },
+                            { value: row.price ? formatMoney(parseNumber(row.price)) : "", mono: true },
+                            { value: line > 0 ? formatMoney(line) : "", total: true }
+                        ]
+                    };
+                });
+
+                blocks.push({
+                    type: "table", hasContent: true, title: null,
+                    columns: [
+                        { label: p("desc"),  width: "50%"  },
+                        { label: p("qty"),   width: "12%", align: "center" },
+                        { label: p("unit"),  width: "18%", align: "right"  },
+                        { label: p("total"), width: "20%", align: "right"  }
+                    ],
+                    rows: tableRows
+                });
+            }
+
+            if (subtotal > 0) {
+                const totalRows = [
+                    { label: p("subtotal"),                             value: formatMoney(subtotal)  },
+                    taxRateNum > 0 ? { label: `${p("tax")} (${taxRateNum}%)`, value: formatMoney(taxAmount) } : null,
+                    { label: p("total_due"),                            value: formatMoney(total)     }
+                ].filter(Boolean);
+
+                blocks.push({ type: "totals", hasContent: true, rows: totalRows });
+            }
+
+            blocks.push({ type: "note", hasContent: true, text: p("thank_you") });
+
+            return blocks;
+        }
+    }
+];
+
+const FEATURED_IDS = ["resume", "invoice"];
+
+/* ============================================================
+   END OF PART 2
+   Type part3 to continue with: design system components,
+   UniversalPreview, UniversalForm, App, and mount.
+============================================================ */
+/* ============================================================
+   DOCUMENT INITIALIZATION
+============================================================ */
+
+function initSection(section) {
+    const obj = {};
+    section.fields.forEach(f => {
+        obj[f.name] = f.validate === "daterange"
+            ? { start: "", end: "", present: false }
+            : "";
+    });
+    return obj;
+}
+
+function initDocument(template) {
+    const data = {};
+    template.sections.forEach(section => {
+        data[section.id] = section.repeatable
+            ? [initSection(section)]
+            : initSection(section);
+    });
+    return data;
+}
+
+/* ============================================================
+   IMAGE HELPERS — compression on upload
+============================================================ */
+
+function compressImage(file) {
+    return new Promise((resolve, reject) => {
+        const reader   = new FileReader();
+        reader.onerror = () => reject(new Error("Could not read image"));
+        reader.onload  = e => {
+            const img   = new Image();
+            img.onerror = () => reject(new Error("Could not decode image"));
+            img.onload  = () => {
+                const { width, height } = img;
+                let targetW = width;
+                let targetH = height;
+
+                if (width > MAX_IMAGE_PX || height > MAX_IMAGE_PX) {
+                    if (width >= height) {
+                        targetW = MAX_IMAGE_PX;
+                        targetH = Math.round(height * (MAX_IMAGE_PX / width));
+                    } else {
+                        targetH = MAX_IMAGE_PX;
+                        targetW = Math.round(width  * (MAX_IMAGE_PX / height));
+                    }
+                }
+
+                const canvas    = document.createElement("canvas");
+                canvas.width    = targetW;
+                canvas.height   = targetH;
+                const ctx       = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, targetW, targetH);
+                resolve(canvas.toDataURL("image/jpeg", IMAGE_QUALITY));
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+/* ============================================================
+   PDF EXPORT — adaptive quality
+============================================================ */
+
+function getPDFScale() {
+    const isMobile = window.innerWidth <= 768 ||
+        (navigator.maxTouchPoints > 0 && window.innerWidth < 1024);
+    return isMobile ? 2 : 3;
+}
+
+async function exportPreviewToPDF(previewDocRef, filename) {
+    const node = previewDocRef.current;
+    if (!node) return;
+
+    const prevShadow = node.style.boxShadow;
+    const prevMargin = node.style.margin;
+    const prevRadius = node.style.borderRadius;
+    node.style.boxShadow    = "none";
+    node.style.margin       = "0";
+    node.style.borderRadius = "0";
+
+    const canvas = await window.html2canvas(node, {
+        scale:           getPDFScale(),
+        useCORS:         true,
+        allowTaint:      true,
+        backgroundColor: "#ffffff",
+        logging:         false,
+        removeContainer: true,
+        windowWidth:     1400,
+        imageTimeout:    0
+    });
+
+    node.style.boxShadow    = prevShadow;
+    node.style.margin       = prevMargin;
+    node.style.borderRadius = prevRadius;
+
+    const A4_W     = 210;
+    const A4_H     = 297;
+    const canvasW  = canvas.width;
+    const canvasH  = canvas.height;
+    const pxPerMm  = canvasW / A4_W;
+    const pageH_px = A4_H * pxPerMm;
+    const pages    = Math.ceil(canvasH / pageH_px);
+    const pdf      = new jsPDF("p", "mm", "a4");
+
+    for (let p = 0; p < pages; p++) {
+        if (p > 0) pdf.addPage();
+        const sliceY     = p * pageH_px;
+        const sliceH     = Math.min(pageH_px, canvasH - sliceY);
+        const pageCanvas = document.createElement("canvas");
+        pageCanvas.width  = canvasW;
+        pageCanvas.height = sliceH;
+        const ctx         = pageCanvas.getContext("2d");
+        ctx.drawImage(canvas, 0, sliceY, canvasW, sliceH, 0, 0, canvasW, sliceH);
+        const imgData   = pageCanvas.toDataURL("image/png");
+        const sliceH_mm = sliceH / pxPerMm;
+        pdf.addImage(imgData, "PNG", 0, 0, A4_W, sliceH_mm);
+    }
+
+    pdf.save(filename);
+}
+
+/* ============================================================
+   SAVE / LOAD
+============================================================ */
+
+function saveProgressToFile(template, documentData, extrasState, uploadedImage) {
+    const payload = {
+        easydocVersion: "2.1",
+        templateId:     template.id,
+        documentData,
+        extrasState,
+        uploadedImage:  uploadedImage || null
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href     = url;
+    a.download = "easydoc-" + template.id + "-progress.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function loadProgressFromFile() {
+    return new Promise((resolve, reject) => {
+        const input    = document.createElement("input");
+        input.type     = "file";
+        input.accept   = ".json,application/json";
+        input.onchange = e => {
+            const file = e.target.files[0];
+            if (!file) { reject(new Error("No file selected")); return; }
+            const reader   = new FileReader();
+            reader.onload  = evt => {
+                try { resolve(JSON.parse(evt.target.result)); }
+                catch { reject(new Error("parse_error")); }
+            };
+            reader.onerror = () => reject(new Error("read_error"));
+            reader.readAsText(file);
+        };
+        document.body.appendChild(input);
+        input.click();
+        document.body.removeChild(input);
+    });
+}
+
+/* ============================================================
+   DESIGN SYSTEM — UNIVERSAL BUILDING BLOCKS
+   All visual decisions live here.
+   Change one component → every template updates instantly.
+============================================================ */
+
 function DocHeader({ title, subtitle, metaItems, rightPanel, image }) {
     const hasLeft  = title || subtitle || (metaItems && metaItems.length > 0);
     const hasRight = rightPanel || image;
@@ -1141,8 +2482,6 @@ function DocHeader({ title, subtitle, metaItems, rightPanel, image }) {
                 <div className="ds-header-right">
                     {image && (
                         image.src ? (
-                            /* Background approach: natural proportions, centred,
-                               border-radius mask crops the excess — no scaling ever */
                             <div
                                 className={
                                     image.shape === "square"
@@ -1191,7 +2530,6 @@ function DocHeader({ title, subtitle, metaItems, rightPanel, image }) {
     );
 }
 
-/* ── DocSection ── */
 function DocSection({ title, children }) {
     if (!children) return null;
     return (
@@ -1202,7 +2540,6 @@ function DocSection({ title, children }) {
     );
 }
 
-/* ── DocTwoColumn ── */
 function DocTwoColumn({ columns }) {
     if (!columns || columns.length === 0) return null;
     return (
@@ -1230,16 +2567,13 @@ function DocTwoColumn({ columns }) {
     );
 }
 
-/* ── DocEntryList ── */
 function DocEntryList({ entries }) {
     if (!entries || entries.length === 0) return null;
     return (
         <div>
             {entries.map((entry, i) => (
                 <div key={i} className="ds-entry">
-                    {entry.title && (
-                        <div className="ds-entry-title">{entry.title}</div>
-                    )}
+                    {entry.title && <div className="ds-entry-title">{entry.title}</div>}
                     {(entry.primary || entry.secondary) && (
                         <div className="ds-entry-meta">
                             {entry.primary && (
@@ -1253,16 +2587,13 @@ function DocEntryList({ entries }) {
                             )}
                         </div>
                     )}
-                    {entry.body && (
-                        <div className="ds-entry-body">{entry.body}</div>
-                    )}
+                    {entry.body && <div className="ds-entry-body">{entry.body}</div>}
                 </div>
             ))}
         </div>
     );
 }
 
-/* ── DocTagList ── */
 function DocTagList({ tags }) {
     if (!tags || tags.length === 0) return null;
     return (
@@ -1274,7 +2605,6 @@ function DocTagList({ tags }) {
     );
 }
 
-/* ── DocTable ── */
 function DocTable({ columns, rows }) {
     if (!rows || rows.length === 0) return null;
     return (
@@ -1310,7 +2640,6 @@ function DocTable({ columns, rows }) {
     );
 }
 
-/* ── DocTotals ── */
 function DocTotals({ rows }) {
     if (!rows || rows.length === 0) return null;
     return (
@@ -1325,13 +2654,11 @@ function DocTotals({ rows }) {
     );
 }
 
-/* ── DocTextBlock ── */
 function DocTextBlock({ text }) {
     if (!text) return null;
     return <p className="ds-text-block">{text}</p>;
 }
 
-/* ── DocNote ── */
 function DocNote({ text }) {
     if (!text) return null;
     return <div className="ds-note">{text}</div>;
@@ -1339,24 +2666,37 @@ function DocNote({ text }) {
 
 /* ============================================================
    UNIVERSAL PREVIEW
-   One component for every template ever made.
-   Reads template.layoutFn, renders matching design system blocks.
+   Debounced + language-aware.
+   Passes t() into layoutFn so all preview text is translated.
 ============================================================ */
 
 function UniversalPreview({ template, documentData, extrasState, uploadedImage, previewDocRef }) {
+    const { t }               = useLang();
+    const debouncedData       = useDebounced(documentData, PREVIEW_DEBOUNCE_MS);
+    const debouncedExtras     = useDebounced(extrasState,  PREVIEW_DEBOUNCE_MS);
+
     if (!template) return null;
 
     const blocks = template.layoutFn
-        ? template.layoutFn({ documentData, extrasState, uploadedImage })
+        ? template.layoutFn({
+            documentData: debouncedData,
+            extrasState:  debouncedExtras,
+            uploadedImage,
+            t
+          })
         : [];
 
     const hasContent = blocks.some(b => b.hasContent !== false);
 
     if (!hasContent) {
+        const tplName = t(`templates.${template.id}.name`).toLowerCase();
         return (
             <div className="empty-preview" ref={previewDocRef}>
                 <div className="empty-icon">{template.icon}</div>
-                <p>Fill in the form to see your {template.name.toLowerCase()} preview</p>
+                <p>
+                    {t("ui.fill_form")} {tplName}
+                    {t("ui.fill_form2") ? ` ${t("ui.fill_form2")}` : ""}
+                </p>
             </div>
         );
     }
@@ -1426,512 +2766,11 @@ function UniversalPreview({ template, documentData, extrasState, uploadedImage, 
 }
 
 /* ============================================================
-   INVOICE CALCULATION HELPERS
-============================================================ */
-
-function parseNumber(val) {
-    const n = parseFloat(String(val).replace(/[^0-9.]/g, ""));
-    return isNaN(n) ? 0 : n;
-}
-
-function calcInvoiceTotals(items, taxRate) {
-    const subtotal  = items.reduce((s, r) => s + parseNumber(r.qty) * parseNumber(r.price), 0);
-    const taxAmount = subtotal * (parseNumber(taxRate) / 100);
-    return { subtotal, taxAmount, total: subtotal + taxAmount };
-}
-
-function formatMoney(num) {
-    return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-/* ============================================================
-   TEMPLATE REGISTRY
-============================================================ */
-
-const TEMPLATES = [
-
-    /* ── PROFESSIONAL RESUME ── */
-    {
-        id:          "resume",
-        name:        "Professional Resume",
-        icon:        "📄",
-        category:    "Personal",
-        description: "Clean, modern resume for any industry",
-        image:       { shape: "circle", label: "Profile Photo", icon: "👤" },
-
-        sections: [
-            {
-                id:    "header",
-                title: "Personal Info",
-                fields: [
-                    { name: "name",     label: "Full Name",            placeholder: "e.g. Alexandra Reyes",         validate: "text"                   },
-                    { name: "title",    label: "Professional Title",   placeholder: "e.g. Senior Product Designer", validate: "text"                   },
-                    { name: "email",    label: "Email Address",        placeholder: "e.g. alex@email.com",          validate: "email"                  },
-                    { name: "phone",    label: "Phone Number",         placeholder: "e.g. +1 555 000 1234",         validate: "phone"                  },
-                    { name: "address",  label: "Address",              placeholder: "e.g. 12 Oak Street, Lisbon",   validate: "address", optional: true },
-                    { name: "linkedin", label: "LinkedIn / Portfolio", placeholder: "e.g. www.linkedin.com/in/you", validate: "url",     optional: true },
-                    { name: "website",  label: "Website / Behance",   placeholder: "e.g. www.behance.net/you",     validate: "url",     optional: true }
-                ]
-            },
-            {
-                id:    "summary",
-                title: "Professional Summary",
-                fields: [
-                    { name: "summary", label: "Summary", type: "textarea", placeholder: "Write a short professional summary...", validate: "textarea" }
-                ]
-            },
-            {
-                id:         "skills",
-                title:      "Skills",
-                repeatable: true,
-                fields: [
-                    { name: "skill", label: "Skill", placeholder: "e.g. Figma, React, Project Management", validate: "skill", optional: true }
-                ]
-            },
-            {
-                id:         "experience",
-                title:      "Experience",
-                repeatable: true,
-                fields: [
-                    { name: "role",        label: "Job Title",   placeholder: "e.g. Product Designer",               validate: "text"                    },
-                    { name: "company",     label: "Company",     placeholder: "e.g. Acme Corp",                      validate: "text"                    },
-                    { name: "period",      label: "Period",      validate: "daterange",                              optional: true                      },
-                    { name: "description", label: "Description", type: "textarea", placeholder: "Describe your responsibilities...", validate: "textarea", optional: true }
-                ]
-            },
-            {
-                id:         "education",
-                title:      "Education",
-                repeatable: true,
-                fields: [
-                    { name: "degree", label: "Degree / Qualification", placeholder: "e.g. BSc Computer Science", validate: "text"                 },
-                    { name: "school", label: "Institution",            placeholder: "e.g. University of Lisbon", validate: "text"                 },
-                    { name: "year",   label: "Year",                   placeholder: "e.g. 2019",                 validate: "year", optional: true }
-                ]
-            }
-        ],
-
-        layoutFn({ documentData, uploadedImage }) {
-            const hdr    = documentData.header     || {};
-            const sum    = documentData.summary    || {};
-            const skills = documentData.skills     || [];
-            const exp    = documentData.experience || [];
-            const edu    = documentData.education  || [];
-
-            const skillTags     = skills.map(s => s.skill).filter(Boolean);
-            const hasSkills     = skillTags.length > 0;
-            const hasExp        = exp.some(e => e.role || e.company);
-            const hasEdu        = edu.some(e => e.degree || e.school);
-            const hasAnyContent = hdr.name || hdr.title || hdr.email || hdr.phone ||
-                hdr.address || hdr.linkedin || hdr.website ||
-                sum.summary || hasSkills || hasExp || hasEdu;
-
-            if (!hasAnyContent) return [{ type: "empty", hasContent: false }];
-
-            const metaItems = [
-                hdr.email    && { value: hdr.email,    isLink: false },
-                hdr.phone    && { value: hdr.phone,    isLink: false },
-                hdr.address  && { value: hdr.address,  isLink: false },
-                hdr.linkedin && { value: hdr.linkedin, isLink: true  },
-                hdr.website  && { value: hdr.website,  isLink: true  }
-            ].filter(Boolean);
-
-            const blocks = [];
-
-            blocks.push({
-                type:       "header",
-                hasContent: true,
-                title:      hdr.name  || null,
-                subtitle:   hdr.title || null,
-                metaItems:  metaItems.length > 0 ? metaItems : null,
-                image: {
-                    shape: "circle",
-                    src:   uploadedImage || null,
-                    icon:  "👤",
-                    label: "Photo"
-                }
-            });
-
-            if (sum.summary) {
-                blocks.push({
-                    type:       "textBlock",
-                    hasContent: true,
-                    title:      "Professional Summary",
-                    text:       sum.summary
-                });
-            }
-
-            if (hasSkills) {
-                blocks.push({
-                    type:       "tagList",
-                    hasContent: true,
-                    title:      "Skills",
-                    tags:       skillTags
-                });
-            }
-
-            if (hasExp) {
-                blocks.push({
-                    type:       "entryList",
-                    hasContent: true,
-                    title:      "Experience",
-                    entries:    exp
-                        .filter(e => e.role || e.company)
-                        .map(e => ({
-                            title:     e.role        || null,
-                            primary:   e.company     || null,
-                            secondary: formatDateRange(e.period) || null,
-                            body:      e.description || null
-                        }))
-                });
-            }
-
-            if (hasEdu) {
-                blocks.push({
-                    type:       "entryList",
-                    hasContent: true,
-                    title:      "Education",
-                    entries:    edu
-                        .filter(e => e.degree || e.school)
-                        .map(e => ({
-                            title:     e.degree || null,
-                            primary:   e.school || null,
-                            secondary: e.year   || null
-                        }))
-                });
-            }
-
-            return blocks;
-        }
-    },
-
-    /* ── INVOICE ── */
-    {
-        id:          "invoice",
-        name:        "Invoice",
-        icon:        "💰",
-        category:    "Business",
-        description: "Professional invoice with totals and tax",
-        image:       { shape: "square", label: "Company Logo", icon: "🏢" },
-
-        sections: [
-            {
-                id:    "sender",
-                title: "Your Details",
-                fields: [
-                    { name: "senderName",    label: "Your Name / Business Name", placeholder: "e.g. Studio Nova",            validate: "text"                     },
-                    { name: "senderAddress", label: "Address",                   placeholder: "e.g. 12 Oak Street, Lisbon",  validate: "address", type: "textarea" },
-                    { name: "senderEmail",   label: "Email",                     placeholder: "e.g. billing@studionova.com", validate: "email"                    },
-                    { name: "senderWebsite", label: "Website",                   placeholder: "e.g. www.studionova.com",     validate: "url",     optional: true   }
-                ]
-            },
-            {
-                id:    "header",
-                title: "Invoice Details",
-                fields: [
-                    { name: "invoiceNumber", label: "Invoice Number", placeholder: "e.g. INV-0042", validate: "text" },
-                    { name: "date",          label: "Issue Date",     placeholder: "DD/MM/YYYY",    validate: "date" },
-                    { name: "dueDate",       label: "Due Date",       placeholder: "DD/MM/YYYY",    validate: "date", afterField: "date" }
-                ]
-            },
-            {
-                id:    "client",
-                title: "Bill To",
-                fields: [
-                    { name: "clientName",    label: "Client Name",    placeholder: "e.g. Bright Ideas Ltd",          validate: "text"                     },
-                    { name: "clientAddress", label: "Client Address", placeholder: "e.g. 99 Park Ave, Porto",        validate: "address", type: "textarea" },
-                    { name: "clientEmail",   label: "Client Email",   placeholder: "e.g. accounts@brightideas.com", validate: "email"                    }
-                ]
-            },
-            {
-                id:         "items",
-                title:      "Line Items",
-                repeatable: true,
-                fields: [
-                    { name: "item",  label: "Description", placeholder: "e.g. Website Design", validate: "text"   },
-                    { name: "qty",   label: "Qty",         placeholder: "1",                   validate: "number" },
-                    { name: "price", label: "Unit Price",  placeholder: "0.00",                validate: "number" }
-                ]
-            }
-        ],
-
-        layoutFn({ documentData, extrasState, uploadedImage }) {
-            const taxRate    = (extrasState.invoice && extrasState.invoice.taxRate) || "0";
-            const sender     = documentData.sender || {};
-            const hdr        = documentData.header || {};
-            const client     = documentData.client || {};
-            const items      = documentData.items  || [];
-
-            const { subtotal, taxAmount, total } = calcInvoiceTotals(items, taxRate);
-            const taxRateNum    = parseNumber(taxRate);
-            const hasItems      = items.some(i => i.item);
-            const hasAnyContent = sender.senderName || hdr.invoiceNumber ||
-                client.clientName || hasItems;
-
-            if (!hasAnyContent) return [{ type: "empty", hasContent: false }];
-
-            const rightRows = [
-                hdr.invoiceNumber && { label: "No.",    value: hdr.invoiceNumber },
-                hdr.date          && { label: "Issued", value: hdr.date          },
-                hdr.dueDate       && { label: "Due",    value: hdr.dueDate       }
-            ].filter(Boolean);
-
-            const blocks = [];
-
-            blocks.push({
-                type:       "header",
-                hasContent: true,
-                title:      sender.senderName  || "Your Business",
-                subtitle:   sender.senderEmail || null,
-                metaItems: [
-                    sender.senderAddress && { value: sender.senderAddress, isLink: false },
-                    sender.senderWebsite && { value: sender.senderWebsite, isLink: true  }
-                ].filter(Boolean),
-                image: {
-                    shape: "square",
-                    src:   uploadedImage || null,
-                    icon:  "🏢",
-                    label: "Logo"
-                },
-                rightPanel: {
-                    title: "INVOICE",
-                    rows:  rightRows
-                }
-            });
-
-            if (sender.senderName || client.clientName) {
-                blocks.push({
-                    type:       "twoColumn",
-                    hasContent: true,
-                    columns: [
-                        {
-                            label: "From",
-                            name:  sender.senderName || null,
-                            lines: [
-                                { value: sender.senderAddress || null, isLink: false },
-                                { value: sender.senderEmail   || null, isLink: true  },
-                                { value: sender.senderWebsite || null, isLink: true  }
-                            ]
-                        },
-                        {
-                            label: "Bill To",
-                            name:  client.clientName || null,
-                            lines: [
-                                { value: client.clientAddress || null, isLink: false },
-                                { value: client.clientEmail   || null, isLink: true  }
-                            ]
-                        }
-                    ]
-                });
-            }
-
-            if (hasItems) {
-                const tableRows = items
-                    .filter(row => row.item)
-                    .map(row => {
-                        const qty   = parseNumber(row.qty);
-                        const price = parseNumber(row.price);
-                        const line  = qty * price;
-                        return {
-                            cells: [
-                                { value: row.item || "" },
-                                { value: row.qty  || "", mono: true, center: true },
-                                { value: row.price ? formatMoney(parseNumber(row.price)) : "", mono: true },
-                                { value: line > 0 ? formatMoney(line) : "", total: true }
-                            ]
-                        };
-                    });
-
-                blocks.push({
-                    type:       "table",
-                    hasContent: true,
-                    title:      null,
-                    columns: [
-                        { label: "Description", width: "50%"  },
-                        { label: "Qty",         width: "12%", align: "center" },
-                        { label: "Unit Price",  width: "18%", align: "right"  },
-                        { label: "Total",       width: "20%", align: "right"  }
-                    ],
-                    rows: tableRows
-                });
-            }
-
-            if (subtotal > 0) {
-                const totalRows = [
-                    { label: "Subtotal",                   value: formatMoney(subtotal)  },
-                    taxRateNum > 0
-                        ? { label: `Tax (${taxRateNum}%)`, value: formatMoney(taxAmount) }
-                        : null,
-                    { label: "Total Due",                  value: formatMoney(total)     }
-                ].filter(Boolean);
-
-                blocks.push({
-                    type:       "totals",
-                    hasContent: true,
-                    rows:       totalRows
-                });
-            }
-
-            blocks.push({
-                type:       "note",
-                hasContent: true,
-                text:       "Thank you for your business."
-            });
-
-            return blocks;
-        }
-    }
-];
-
-const FEATURED_IDS = ["resume", "invoice"];
-
-/* ============================================================
-   DOCUMENT INITIALIZATION
-============================================================ */
-
-function initSection(section) {
-    const obj = {};
-    section.fields.forEach(f => {
-        obj[f.name] = f.validate === "daterange"
-            ? { start: "", end: "", present: false }
-            : "";
-    });
-    return obj;
-}
-
-function initDocument(template) {
-    const data = {};
-    template.sections.forEach(section => {
-        data[section.id] = section.repeatable
-            ? [initSection(section)]
-            : initSection(section);
-    });
-    return data;
-}
-
-/* ============================================================
-   IMAGE HELPERS
-============================================================ */
-
-function readImageAsBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader   = new FileReader();
-        reader.onload  = e  => resolve(e.target.result);
-        reader.onerror = () => reject(new Error("Could not read image"));
-        reader.readAsDataURL(file);
-    });
-}
-
-/* ============================================================
-   PDF EXPORT — maximum quality
-   scale: 3, PNG lossless, imageTimeout: 0, windowWidth: 1400
-============================================================ */
-
-async function exportPreviewToPDF(previewDocRef, filename) {
-    const node = previewDocRef.current;
-    if (!node) return;
-
-    const prevShadow = node.style.boxShadow;
-    const prevMargin = node.style.margin;
-    const prevRadius = node.style.borderRadius;
-    node.style.boxShadow    = "none";
-    node.style.margin       = "0";
-    node.style.borderRadius = "0";
-
-    const canvas = await window.html2canvas(node, {
-        scale:           3,
-        useCORS:         true,
-        allowTaint:      true,
-        backgroundColor: "#ffffff",
-        logging:         false,
-        removeContainer: true,
-        windowWidth:     1400,
-        imageTimeout:    0
-    });
-
-    node.style.boxShadow    = prevShadow;
-    node.style.margin       = prevMargin;
-    node.style.borderRadius = prevRadius;
-
-    const A4_W     = 210;
-    const A4_H     = 297;
-    const canvasW  = canvas.width;
-    const canvasH  = canvas.height;
-    const pxPerMm  = canvasW / A4_W;
-    const pageH_px = A4_H * pxPerMm;
-    const pages    = Math.ceil(canvasH / pageH_px);
-    const pdf      = new jsPDF("p", "mm", "a4");
-
-    for (let p = 0; p < pages; p++) {
-        if (p > 0) pdf.addPage();
-        const sliceY     = p * pageH_px;
-        const sliceH     = Math.min(pageH_px, canvasH - sliceY);
-        const pageCanvas = document.createElement("canvas");
-        pageCanvas.width  = canvasW;
-        pageCanvas.height = sliceH;
-        const ctx         = pageCanvas.getContext("2d");
-        ctx.drawImage(canvas, 0, sliceY, canvasW, sliceH, 0, 0, canvasW, sliceH);
-        const imgData   = pageCanvas.toDataURL("image/png");
-        const sliceH_mm = sliceH / pxPerMm;
-        pdf.addImage(imgData, "PNG", 0, 0, A4_W, sliceH_mm);
-    }
-
-    pdf.save(filename);
-}
-
-/* ============================================================
-   SAVE / LOAD
-============================================================ */
-
-function saveProgressToFile(template, documentData, extrasState, uploadedImage) {
-    const payload = {
-        easydocVersion: "2.0",
-        templateId:     template.id,
-        documentData,
-        extrasState,
-        uploadedImage:  uploadedImage || null
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement("a");
-    a.href     = url;
-    a.download = "easydoc-" + template.id + "-progress.json";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-}
-
-function loadProgressFromFile() {
-    return new Promise((resolve, reject) => {
-        const input    = document.createElement("input");
-        input.type     = "file";
-        input.accept   = ".json,application/json";
-        input.onchange = e => {
-            const file = e.target.files[0];
-            if (!file) { reject(new Error("No file selected")); return; }
-            const reader   = new FileReader();
-            reader.onload  = evt => {
-                try { resolve(JSON.parse(evt.target.result)); }
-                catch { reject(new Error("Invalid file — could not read the saved progress.")); }
-            };
-            reader.onerror = () => reject(new Error("Could not read file."));
-            reader.readAsText(file);
-        };
-        document.body.appendChild(input);
-        input.click();
-        document.body.removeChild(input);
-    });
-}
-
-/* ============================================================
    UNIVERSAL IMAGE UPLOAD ZONE
-   Uses background-image approach so the upload trigger preview
-   matches exactly what the document preview shows — natural
-   proportions, centred, cropped by the shape mask.
 ============================================================ */
 
 function ImageUploadZone({ imageConfig, uploadedImage, onImageChange }) {
+    const { t }        = useLang();
     const fileInputRef = useRef(null);
     if (!imageConfig) return null;
     const isCircle = imageConfig.shape === "circle";
@@ -1940,8 +2779,8 @@ function ImageUploadZone({ imageConfig, uploadedImage, onImageChange }) {
         const file = e.target.files[0];
         if (!file || !file.type.startsWith("image/")) return;
         try {
-            const base64 = await readImageAsBase64(file);
-            onImageChange(base64);
+            const compressed = await compressImage(file);
+            onImageChange(compressed);
         } catch { /* silently ignore */ }
         e.target.value = "";
     }
@@ -1951,8 +2790,6 @@ function ImageUploadZone({ imageConfig, uploadedImage, onImageChange }) {
         onImageChange(null);
     }
 
-    /* When an image is uploaded, apply it as a background so the
-       trigger preview uses the same natural-proportions approach */
     const triggerStyle = uploadedImage
         ? {
             backgroundImage:    `url(${uploadedImage})`,
@@ -1970,26 +2807,25 @@ function ImageUploadZone({ imageConfig, uploadedImage, onImageChange }) {
                     className={isCircle ? "image-upload-trigger" : "image-upload-trigger square"}
                     style={triggerStyle}
                     onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                    title={uploadedImage ? "Click to change image" : "Click to upload image"}
+                    title={uploadedImage ? t("ui.change") : t("ui.upload")}
                 >
                     {uploadedImage ? (
-                        /* Overlay only — no img tag, background handles the image */
                         <div className="image-overlay">
                             <span className="overlay-icon">✏️</span>
-                            <span className="overlay-text">Change</span>
+                            <span className="overlay-text">{t("ui.change")}</span>
                         </div>
                     ) : (
                         <div className="image-upload-placeholder">
                             <span className="upload-icon">{imageConfig.icon}</span>
-                            <span className="upload-hint">Upload</span>
+                            <span className="upload-hint">{t("ui.upload")}</span>
                         </div>
                     )}
                 </div>
                 <div className="image-upload-info">
-                    <p>Optional. Click to upload.<br />JPG, PNG or WebP. Max 5 MB.</p>
+                    <p>{t("ui.image_hint")}<br />{t("ui.image_hint2")}</p>
                     {uploadedImage && (
                         <button className="btn-remove-image" onClick={handleRemove}>
-                            ✕ Remove
+                            {t("ui.remove_image")}
                         </button>
                     )}
                 </div>
@@ -2021,7 +2857,8 @@ function DatePicker({ value, onChange, onBlur, placeholder, inputClass, fieldNam
     }
 
     function handleNativeChange(e) {
-        onChange(nativeDateToDisplay(e.target.value));
+        const [y, m, d] = e.target.value.split("-");
+        onChange(`${d}/${m}/${y}`);
         if (onBlur) onBlur();
     }
 
@@ -2060,6 +2897,7 @@ function DatePicker({ value, onChange, onBlur, placeholder, inputClass, fieldNam
 ============================================================ */
 
 function DateRangeField({ field, value, onChange, forceShowError }) {
+    const { t }     = useLang();
     const [touched, setTouched] = useState(false);
 
     const safeValue = (value && typeof value === "object")
@@ -2068,8 +2906,10 @@ function DateRangeField({ field, value, onChange, forceShowError }) {
 
     const { start, end, present } = safeValue;
     const shouldShowError = touched || forceShowError;
-    const errorMsg        = shouldShowError ? validateField(field, safeValue) : null;
-    const isValid         = shouldShowError && !errorMsg && start.length > 0;
+    const errorMsg        = shouldShowError
+        ? validateFieldWithT(field, safeValue, t)
+        : null;
+    const isValid = shouldShowError && !errorMsg && start.length > 0;
 
     const startClass = ["field-input", isValid ? "is-valid" : "", errorMsg ? "is-invalid" : ""].filter(Boolean).join(" ");
     const endClass   = ["field-input", isValid ? "is-valid" : "", (errorMsg && !present) ? "is-invalid" : ""].filter(Boolean).join(" ");
@@ -2091,7 +2931,7 @@ function DateRangeField({ field, value, onChange, forceShowError }) {
                     value={start}
                     onChange={updateStart}
                     onBlur={handleBlur}
-                    placeholder="Start date"
+                    placeholder="DD/MM/YYYY"
                     inputClass={startClass}
                     fieldName={field.name + "_start"}
                 />
@@ -2101,9 +2941,8 @@ function DateRangeField({ field, value, onChange, forceShowError }) {
                         type="button"
                         className="btn-present is-active"
                         onClick={togglePresent}
-                        title="Click to set an end date"
                     >
-                        Present
+                        {t("ui.present")}
                     </button>
                 ) : (
                     <>
@@ -2111,7 +2950,7 @@ function DateRangeField({ field, value, onChange, forceShowError }) {
                             value={end}
                             onChange={updateEnd}
                             onBlur={handleBlur}
-                            placeholder="End date"
+                            placeholder="DD/MM/YYYY"
                             inputClass={endClass}
                             fieldName={field.name + "_end"}
                         />
@@ -2119,9 +2958,8 @@ function DateRangeField({ field, value, onChange, forceShowError }) {
                             type="button"
                             className="btn-present"
                             onClick={togglePresent}
-                            title="Currently working here"
                         >
-                            Present
+                            {t("ui.present")}
                         </button>
                     </>
                 )}
@@ -2140,6 +2978,7 @@ function DateRangeField({ field, value, onChange, forceShowError }) {
 ============================================================ */
 
 function SmartField({ field, value, onChange, forceShowError, crossFieldError }) {
+    const { t }     = useLang();
     const [touched, setTouched] = useState(false);
 
     const shouldShowError = touched || forceShowError;
@@ -2160,7 +2999,7 @@ function SmartField({ field, value, onChange, forceShowError, crossFieldError })
         );
     }
 
-    const fieldError = shouldShowError ? validateField(field, value) : null;
+    const fieldError = shouldShowError ? validateFieldWithT(field, value, t) : null;
     const errorMsg   = fieldError || (shouldShowError ? (crossFieldError || null) : null);
     const isValid    = shouldShowError && !fieldError && !crossFieldError && (value || "").length > 0;
 
@@ -2274,6 +3113,7 @@ function SmartField({ field, value, onChange, forceShowError, crossFieldError })
 ============================================================ */
 
 function InvoiceExtras({ extrasState, setExtrasState }) {
+    const { t }   = useLang();
     const taxRate = (extrasState.invoice && extrasState.invoice.taxRate) || "0";
 
     function setTaxRate(val) {
@@ -2286,14 +3126,14 @@ function InvoiceExtras({ extrasState, setExtrasState }) {
     return (
         <div className="template-extras">
             <div className="tax-row">
-                <label>Tax Rate</label>
+                <label>{t("ui.tax_rate")}</label>
                 <input
                     type="number" min="0" max="100" step="0.5"
                     value={taxRate}
                     onChange={e => setTaxRate(e.target.value)}
                     placeholder="0"
                 />
-                <span className="tax-hint">% (leave 0 for no tax)</span>
+                <span className="tax-hint">{t("ui.tax_hint")}</span>
             </div>
         </div>
     );
@@ -2305,9 +3145,27 @@ const EXTRAS_REGISTRY = {
 
 /* ============================================================
    UNIVERSAL FORM RENDERER
+   Resolves field labels and placeholders from the language
+   dictionary at render time via t().
 ============================================================ */
 
-function UniversalForm({ template, documentData, updateField, addBlock, removeBlock, forceShowErrors }) {
+function UniversalForm({
+    template, documentData, updateField,
+    addBlock, removeBlock, forceShowErrors
+}) {
+    const { t } = useLang();
+
+    /* Resolve label and placeholder for a field from the active language */
+    function fieldLabel(field) {
+        if (!field.tplKey) return field.name;
+        return t(`templates.${template.id}.fields.${field.tplKey}.label`);
+    }
+
+    function fieldPlaceholder(field) {
+        if (!field.tplKey) return field.placeholder || "";
+        return t(`templates.${template.id}.fields.${field.tplKey}.placeholder`);
+    }
+
     return (
         <>
             {template.sections.map(section => {
@@ -2315,14 +3173,20 @@ function UniversalForm({ template, documentData, updateField, addBlock, removeBl
                     ? documentData[section.id]
                     : [documentData[section.id]];
 
+                /* Section title from language dictionary */
+                const sectionTitle = section.sectionKey
+                    ? t(`templates.${template.id}.sections.${section.sectionKey}`)
+                    : section.id;
+
                 return (
                     <div key={section.id} className="section-block">
 
-                        <div className="section-label">{section.title}</div>
+                        <div className="section-label">{sectionTitle}</div>
 
                         {blocks.map((block, idx) => {
+                            /* Compute cross-field errors with translated messages */
                             const crossErrors = {};
-                            validateCrossFields(section, block).forEach(({ fieldName, error }) => {
+                            validateCrossFieldsWithT(section, block, t).forEach(({ fieldName, error }) => {
                                 crossErrors[fieldName] = error;
                             });
 
@@ -2338,38 +3202,49 @@ function UniversalForm({ template, documentData, updateField, addBlock, removeBl
                                                     className="btn-remove"
                                                     onClick={() => removeBlock(section, idx)}
                                                 >
-                                                    ✕ Remove
+                                                    {t("ui.remove")}
                                                 </button>
                                             )}
                                         </div>
                                     )}
 
-                                    {section.fields.map(field => (
-                                        <div key={field.name} className="field-group">
-                                            <label className="field-label">
-                                                {field.label}
-                                                {field.optional && (
-                                                    <span className="optional-badge">optional</span>
-                                                )}
-                                            </label>
-                                            <SmartField
-                                                field={field}
-                                                value={block[field.name]}
-                                                forceShowError={forceShowErrors}
-                                                crossFieldError={crossErrors[field.name] || null}
-                                                onChange={val =>
-                                                    updateField(section.id, idx, field.name, val)
-                                                }
-                                            />
-                                        </div>
-                                    ))}
+                                    {section.fields.map(field => {
+                                        /* Build a resolved field object with translated strings */
+                                        const resolvedField = {
+                                            ...field,
+                                            label:       fieldLabel(field),
+                                            placeholder: fieldPlaceholder(field)
+                                        };
+
+                                        return (
+                                            <div key={field.name} className="field-group">
+                                                <label className="field-label">
+                                                    {resolvedField.label}
+                                                    {field.optional && (
+                                                        <span className="optional-badge">
+                                                            {t("ui.optional")}
+                                                        </span>
+                                                    )}
+                                                </label>
+                                                <SmartField
+                                                    field={resolvedField}
+                                                    value={block[field.name]}
+                                                    forceShowError={forceShowErrors}
+                                                    crossFieldError={crossErrors[field.name] || null}
+                                                    onChange={val =>
+                                                        updateField(section.id, idx, field.name, val)
+                                                    }
+                                                />
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             );
                         })}
 
                         {section.repeatable && (
                             <button className="btn-add" onClick={() => addBlock(section)}>
-                                + Add {section.title}
+                                + {t("ui.add_block")} {sectionTitle}
                             </button>
                         )}
                     </div>
@@ -2384,6 +3259,7 @@ function UniversalForm({ template, documentData, updateField, addBlock, removeBl
 ============================================================ */
 
 function App() {
+    const { t, lang }           = useLang();
     const [stage,           setStage]           = useState("home");
     const [template,        setTemplate]        = useState(null);
     const [documentData,    setDocumentData]    = useState({});
@@ -2436,7 +3312,7 @@ function App() {
     }
 
     async function handleExportPDF() {
-        const errors = getAllFieldErrors(template, documentData);
+        const errors = getAllFieldErrors(template, documentData, t);
         if (errors.length > 0) {
             setForceShowErrors(true);
             requestAnimationFrame(() => {
@@ -2467,12 +3343,12 @@ function App() {
         try {
             const payload = await loadProgressFromFile();
             if (!payload.templateId || !payload.documentData) {
-                setLoadError("This file doesn't look like an EasyDoc save file.");
+                setLoadError(t("ui.load_error_invalid"));
                 return;
             }
-            const tpl = TEMPLATES.find(t => t.id === payload.templateId);
+            const tpl = TEMPLATES.find(tp => tp.id === payload.templateId);
             if (!tpl) {
-                setLoadError("The template in this save file is not available.");
+                setLoadError(t("ui.load_error_missing"));
                 return;
             }
             setTemplate(tpl);
@@ -2482,57 +3358,89 @@ function App() {
             setForceShowErrors(false);
             setLoadError("");
             setStage("edit");
-        } catch (err) {
-            setLoadError(err.message || "Could not load the file.");
+        } catch {
+            setLoadError(t("ui.load_error_file"));
         }
     }
 
-    const featuredTemplates = TEMPLATES.filter(tpl => FEATURED_IDS.includes(tpl.id));
-    const filteredTemplates = TEMPLATES.filter(tpl =>
+    /* Build template cards with translated names from active language */
+    const allTemplatesWithNames = TEMPLATES.map(tpl => ({
+        ...tpl,
+        name:        t(`templates.${tpl.id}.name`),
+        description: t(`templates.${tpl.id}.description`),
+        category:    t(`templates.${tpl.id}.category`),
+        image: {
+            ...tpl.image,
+            label: t(`templates.${tpl.id}.image_label`)
+        }
+    }));
+
+    const featuredTemplates = allTemplatesWithNames.filter(tpl => FEATURED_IDS.includes(tpl.id));
+    const filteredTemplates = allTemplatesWithNames.filter(tpl =>
         tpl.name.toLowerCase().includes(search.toLowerCase()) ||
         tpl.description.toLowerCase().includes(search.toLowerCase()) ||
         tpl.category.toLowerCase().includes(search.toLowerCase())
     );
 
+    /* Resolve the translated template for the active editor */
+    const activeTemplate = template
+        ? allTemplatesWithNames.find(tpl => tpl.id === template.id) || template
+        : null;
+
     const ExtrasComponent = template ? (EXTRAS_REGISTRY[template.id] || null) : null;
+
+    const templateCount = filteredTemplates.length;
+    const countLabel    = templateCount === 1
+        ? `1 ${t("ui.template_count_one")}`
+        : `${templateCount} ${t("ui.template_count_many")}`;
 
     return (
         <div style={{ minHeight: "100vh" }}>
 
+            {/* PDF export overlay */}
             {exporting && (
                 <div className="pdf-overlay">
                     <div className="pdf-overlay-card">
                         <div className="pdf-overlay-spinner"></div>
-                        <div className="pdf-overlay-title">Generating PDF…</div>
-                        <div className="pdf-overlay-sub">This takes just a moment</div>
+                        <div className="pdf-overlay-title">{t("ui.pdf_generating")}</div>
+                        <div className="pdf-overlay-sub">{t("ui.pdf_subtitle")}</div>
                     </div>
                 </div>
             )}
 
+            {/* ================================================
+                HEADER
+            ================================================ */}
             <header className="app-header">
                 <div className="header-inner">
                     <div className="app-logo">
                         <div className="logo-mark">E</div>
-                        <span className="logo-text">EasyDoc</span>
+                        <span className="logo-text">{t("ui.app_name")}</span>
                     </div>
-                    {stage === "edit" && (
-                        <button className="btn-back" onClick={() => setStage("home")}>
-                            ← Back
-                        </button>
-                    )}
+                    <div className="header-right">
+                        {stage === "edit" && (
+                            <button className="btn-back" onClick={() => setStage("home")}>
+                                {t("ui.back")}
+                            </button>
+                        )}
+                        <LanguageSwitcher />
+                    </div>
                 </div>
             </header>
 
+            {/* ================================================
+                HOME SCREEN
+            ================================================ */}
             {stage === "home" && (
                 <div className="home-wrapper">
 
                     <div className="home-heading">
-                        <h2>What would you like to create?</h2>
-                        <p>Choose a template and build a professional document in minutes</p>
+                        <h2>{t("ui.home_title")}</h2>
+                        <p>{t("ui.home_subtitle")}</p>
                     </div>
 
                     <div className="home-section-heading">
-                        <h3>⭐ Featured</h3>
+                        <h3>{t("ui.featured")}</h3>
                         <div className="section-rule"></div>
                     </div>
 
@@ -2542,7 +3450,9 @@ function App() {
                                 key={tpl.id}
                                 className="template-card animate-in"
                                 style={{ animationDelay: (i * 70) + "ms" }}
-                                onClick={() => selectTemplate(tpl)}
+                                onClick={() => selectTemplate(
+                                    TEMPLATES.find(tp => tp.id === tpl.id)
+                                )}
                             >
                                 <span className="card-icon">{tpl.icon}</span>
                                 <div className="card-category">{tpl.category}</div>
@@ -2559,7 +3469,7 @@ function App() {
                         <input
                             className="search-bar-input"
                             type="text"
-                            placeholder="Search all templates..."
+                            placeholder={t("ui.search_placeholder")}
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                         />
@@ -2567,12 +3477,10 @@ function App() {
 
                     <div className="all-docs-header">
                         <div className="home-section-heading" style={{ marginBottom: "0" }}>
-                            <h3>All Documents</h3>
+                            <h3>{t("ui.all_documents")}</h3>
                             <div className="section-rule"></div>
                         </div>
-                        <span className="all-docs-count">
-                            {filteredTemplates.length} template{filteredTemplates.length !== 1 ? "s" : ""}
-                        </span>
+                        <span className="all-docs-count">{countLabel}</span>
                     </div>
 
                     {filteredTemplates.length > 0 ? (
@@ -2582,7 +3490,9 @@ function App() {
                                     key={tpl.id}
                                     className="template-card animate-in"
                                     style={{ animationDelay: (i * 70) + "ms" }}
-                                    onClick={() => selectTemplate(tpl)}
+                                    onClick={() => selectTemplate(
+                                        TEMPLATES.find(tp => tp.id === tpl.id)
+                                    )}
                                 >
                                     <span className="card-icon">{tpl.icon}</span>
                                     <div className="card-category">{tpl.category}</div>
@@ -2594,28 +3504,32 @@ function App() {
                     ) : (
                         <div className="no-results">
                             <span className="no-results-icon">🔍</span>
-                            <p>No templates found for "<strong>{search}</strong>"</p>
+                            <p>{t("ui.no_results")} "<strong>{search}</strong>"</p>
                         </div>
                     )}
 
                 </div>
             )}
 
-            {stage === "edit" && template && (
+            {/* ================================================
+                EDITOR SCREEN
+            ================================================ */}
+            {stage === "edit" && template && activeTemplate && (
                 <div className="editor-wrapper">
                     <div className="editor-grid">
 
+                        {/* ---- FORM PANEL ---- */}
                         <div className="form-panel animate-in">
 
                             <div className="form-panel-header">
                                 <span className="panel-icon">{template.icon}</span>
-                                <h2 className="panel-title">{template.name}</h2>
+                                <h2 className="panel-title">{activeTemplate.name}</h2>
                             </div>
 
                             <div className="form-panel-body" ref={formPanelBodyRef}>
 
                                 <ImageUploadZone
-                                    imageConfig={template.image}
+                                    imageConfig={activeTemplate.image}
                                     uploadedImage={uploadedImage}
                                     onImageChange={setUploadedImage}
                                 />
@@ -2644,16 +3558,16 @@ function App() {
                                     <button
                                         className="btn-secondary"
                                         onClick={handleSave}
-                                        title="Download a save file of your current progress"
+                                        title={t("ui.save_progress")}
                                     >
-                                        💾 Save Progress
+                                        {t("ui.save_progress")}
                                     </button>
                                     <button
                                         className="btn-secondary"
                                         onClick={handleLoad}
-                                        title="Load a previously saved progress file"
+                                        title={t("ui.load_progress")}
                                     >
-                                        📂 Load Progress
+                                        {t("ui.load_progress")}
                                     </button>
                                 </div>
 
@@ -2669,18 +3583,19 @@ function App() {
                                     onClick={handleExportPDF}
                                     disabled={exporting}
                                 >
-                                    {exporting ? "Generating…" : "↓ Download PDF"}
+                                    {exporting ? t("ui.generating") : t("ui.download_pdf")}
                                 </button>
 
                             </div>
 
                         </div>
 
+                        {/* ---- PREVIEW PANEL ---- */}
                         <div className="preview-panel animate-in" style={{ animationDelay: "80ms" }}>
 
                             <div className="preview-panel-header">
-                                <span className="preview-label">Live Preview</span>
-                                <span className="preview-live-dot">Live</span>
+                                <span className="preview-label">{t("ui.live_preview")}</span>
+                                <span className="preview-live-dot">{t("ui.live")}</span>
                             </div>
 
                             <div className="preview-scroll-area">
@@ -2704,10 +3619,15 @@ function App() {
 }
 
 /* ============================================================
-   MOUNT
+   ROOT — wrap App in LanguageProvider so t() is available
+   everywhere in the component tree
 ============================================================ */
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+ReactDOM.createRoot(document.getElementById("root")).render(
+    <LanguageProvider>
+        <App />
+    </LanguageProvider>
+);
 
 </script>
 </body>
