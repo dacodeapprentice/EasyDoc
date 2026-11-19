@@ -204,16 +204,16 @@ export const ImageUploadCrop: React.FC<ImageUploadCropProps> = ({
   };
 
   return (
-    <div className="mb-4 pb-4 border-b border-slate-200">
+    <div className="mb-4 pb-4 border-b border-zinc-200">
       <div className="flex items-center justify-between mb-2">
-        <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+        <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-700">
           {label}
         </label>
         {currentImage && (
           <button
             type="button"
             onClick={() => onImageChange(null)}
-            className="text-[11px] text-rose-600 hover:text-rose-800 font-medium inline-flex items-center gap-1"
+            className="text-xs text-rose-600 hover:text-rose-700 font-medium inline-flex items-center gap-1"
           >
             <X className="w-3 h-3" />
             <span>{t('remove_photo')}</span>
@@ -225,12 +225,12 @@ export const ImageUploadCrop: React.FC<ImageUploadCropProps> = ({
         {/* Thumbnail Preview / Upload Trigger */}
         <div
           onClick={() => fileInputRef.current?.click()}
-          className={`relative group cursor-pointer border-2 transition-all flex items-center justify-center shrink-0 overflow-hidden ${
-            shape === 'circle' ? 'w-16 h-16 rounded-full' : 'w-16 h-16 rounded-lg'
+          className={`relative group cursor-pointer border-2 transition-colors flex items-center justify-center shrink-0 overflow-hidden ${
+            shape === 'circle' ? 'w-16 h-16 rounded-full' : 'w-16 h-16 rounded-xl'
           } ${
             currentImage
-              ? 'border-emerald-600 bg-white'
-              : 'border-dashed border-slate-300 bg-slate-50 hover:border-emerald-500 hover:bg-emerald-50/30'
+              ? 'border-blue-600 bg-white'
+              : 'border-dashed border-zinc-300 bg-zinc-50 hover:border-blue-600 hover:bg-blue-50/40'
           }`}
           style={
             currentImage
@@ -249,22 +249,22 @@ export const ImageUploadCrop: React.FC<ImageUploadCropProps> = ({
           }}
         >
           {currentImage ? (
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+            <div className="absolute inset-0 bg-zinc-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
               <Crop className="w-4 h-4" />
             </div>
           ) : (
-            <div className="text-center p-1 text-slate-400 group-hover:text-emerald-600">
+            <div className="text-center p-1 text-zinc-400 group-hover:text-blue-600 transition-colors">
               <Upload className="w-5 h-5 mx-auto mb-0.5" />
-              <span className="text-[9px] font-bold uppercase block">{t('upload_photo')}</span>
+              <span className="text-[9px] font-semibold uppercase block">{t('upload_photo')}</span>
             </div>
           )}
         </div>
 
-        <div className="text-xs text-slate-500 leading-snug">
-          <p className="font-medium text-slate-700">
+        <div className="text-xs text-zinc-500 leading-snug">
+          <p className="font-medium text-zinc-700">
             {currentImage ? t('change_photo') : (shape === 'circle' ? t('profile_photo') : t('company_logo'))}
           </p>
-          <p className="text-[11px] text-slate-400 mt-0.5">
+          <p className="text-[11px] text-zinc-400 mt-0.5">
             Lightweight, auto-compressed for fast PDF export and auto-saving.
           </p>
         </div>
@@ -281,25 +281,25 @@ export const ImageUploadCrop: React.FC<ImageUploadCropProps> = ({
       {/* Interactive Crop Modal */}
       {isModalOpen && rawSrc && (
         <div
-          className="fixed inset-0 z-50 bg-slate-900/85 backdrop-blur-xs flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-zinc-950/50 backdrop-blur-[2px] flex items-center justify-center p-4"
           role="dialog"
           aria-modal="true"
         >
-          <div className="bg-white rounded-xl shadow-2xl overflow-hidden max-w-sm w-full border border-slate-700 animate-in fade-in zoom-in-95">
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden max-w-sm w-full border border-zinc-200">
             {/* Modal Header */}
-            <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+            <div className="px-5 py-3.5 border-b border-zinc-200 flex items-center justify-between bg-zinc-50/70">
               <div>
-                <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                <h4 className="text-xs font-semibold text-zinc-900 uppercase tracking-wider">
                   {shape === 'circle' ? t('profile_photo') : t('company_logo')}
                 </h4>
-                <p className="text-[10px] text-slate-500">
+                <p className="text-[11px] text-zinc-500">
                   {t('crop_instruction')}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-slate-700 p-1 rounded"
+                className="h-8 w-8 inline-flex items-center justify-center rounded-lg text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-colors"
                 aria-label="Close modal"
               >
                 <X className="w-4 h-4" />
@@ -308,7 +308,7 @@ export const ImageUploadCrop: React.FC<ImageUploadCropProps> = ({
 
             {/* Stage */}
             <div
-              className="relative bg-slate-950 overflow-hidden cursor-grab active:cursor-grabbing mx-auto select-none touch-none"
+              className="relative bg-zinc-950 overflow-hidden cursor-grab active:cursor-grabbing mx-auto select-none touch-none"
               style={{ width: `${STAGE_W}px`, height: `${STAGE_H}px` }}
               onMouseDown={onMouseDown}
               onMouseMove={onMouseMove}
@@ -351,7 +351,7 @@ export const ImageUploadCrop: React.FC<ImageUploadCropProps> = ({
                 <rect
                   width="100%"
                   height="100%"
-                  fill="rgba(15, 23, 42, 0.72)"
+                  fill="rgba(9, 9, 11, 0.72)"
                   mask="url(#cropHole)"
                 />
                 {shape === 'circle' ? (
@@ -360,7 +360,7 @@ export const ImageUploadCrop: React.FC<ImageUploadCropProps> = ({
                     cy={STAGE_H / 2}
                     r={MASK_SIZE / 2}
                     fill="none"
-                    stroke="#10b981"
+                    stroke="#2563eb"
                     strokeWidth="2.5"
                   />
                 ) : (
@@ -371,7 +371,7 @@ export const ImageUploadCrop: React.FC<ImageUploadCropProps> = ({
                     height={MASK_SIZE}
                     rx="12"
                     fill="none"
-                    stroke="#10b981"
+                    stroke="#2563eb"
                     strokeWidth="2.5"
                   />
                 )}
@@ -379,8 +379,8 @@ export const ImageUploadCrop: React.FC<ImageUploadCropProps> = ({
             </div>
 
             {/* Zoom Slider Controls */}
-            <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex items-center gap-3">
-              <ZoomOut className="w-4 h-4 text-slate-400 shrink-0" />
+            <div className="px-5 py-3 bg-zinc-50/70 border-t border-zinc-200 flex items-center gap-3">
+              <ZoomOut className="w-4 h-4 text-zinc-400 shrink-0" />
               <input
                 type="range"
                 min="1.0"
@@ -388,28 +388,28 @@ export const ImageUploadCrop: React.FC<ImageUploadCropProps> = ({
                 step="0.02"
                 value={zoom}
                 onChange={(e) => handleZoomChange(parseFloat(e.target.value))}
-                className="w-full accent-emerald-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer"
+                className="w-full accent-blue-600 h-1.5 bg-zinc-200 rounded-lg cursor-pointer"
                 aria-label="Zoom level"
               />
-              <ZoomIn className="w-4 h-4 text-slate-400 shrink-0" />
-              <span className="text-[11px] font-mono text-slate-600 w-10 text-right">
+              <ZoomIn className="w-4 h-4 text-zinc-400 shrink-0" />
+              <span className="text-xs font-mono-tabular tabular-nums text-zinc-600 w-10 text-right">
                 {zoom.toFixed(1)}x
               </span>
             </div>
 
             {/* Footer Actions */}
-            <div className="px-4 py-3 border-t border-slate-200 flex items-center justify-end gap-2 bg-white">
+            <div className="px-5 py-3.5 border-t border-zinc-200 flex items-center justify-end gap-2 bg-white">
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors"
+                className="px-4 py-2 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 hover:bg-zinc-100 rounded-lg transition-colors"
               >
                 {t('cancel')}
               </button>
               <button
                 type="button"
                 onClick={handleApply}
-                className="px-4 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-md transition-colors inline-flex items-center gap-1 shadow-xs"
+                className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors inline-flex items-center gap-1.5"
               >
                 <Check className="w-3.5 h-3.5" />
                 <span>{t('apply_crop')}</span>

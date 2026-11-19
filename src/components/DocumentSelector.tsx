@@ -26,37 +26,37 @@ export const DocumentSelector: React.FC<DocumentSelectorProps> = ({
       type: 'cv',
       title: t('curriculum_vitae'),
       description: 'Professional resume with career history, education, skills, and optional portrait photo.',
-      icon: <FileText className="w-5 h-5 text-emerald-600" />,
+      icon: <FileText className="w-4 h-4" />,
     },
     {
       type: 'letter',
       title: t('presentation_letter'),
       description: 'Formal business correspondence and cover letter with executive letterhead and branding.',
-      icon: <Mail className="w-5 h-5 text-emerald-600" />,
+      icon: <Mail className="w-4 h-4" />,
     },
     {
       type: 'census',
       title: t('census_record'),
       description: 'Official household demographic survey with dwelling characteristics and resident roster.',
-      icon: <FileSpreadsheet className="w-5 h-5 text-emerald-600" />,
+      icon: <FileSpreadsheet className="w-4 h-4" />,
     },
     {
       type: 'receipt',
       title: t('payment_receipt'),
       description: 'Itemized commercial invoice and payment voucher with tax, discount, and balance totals.',
-      icon: <Receipt className="w-5 h-5 text-emerald-600" />,
+      icon: <Receipt className="w-4 h-4" />,
     },
     {
       type: 'certificate',
       title: t('certificate_award'),
       description: 'Distinguished certificate of achievement, completion, or honor with dual institutional signatories.',
-      icon: <Award className="w-5 h-5 text-emerald-600" />,
+      icon: <Award className="w-4 h-4" />,
     },
   ];
 
   return (
     <div className="space-y-3 font-sans-title">
-      <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+      <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-2">
         {t('templates')}
       </div>
       <div className="grid grid-cols-1 gap-2.5">
@@ -67,31 +67,31 @@ export const DocumentSelector: React.FC<DocumentSelectorProps> = ({
               key={option.type}
               type="button"
               onClick={() => onSelect(option.type)}
-              className={`p-3.5 rounded-lg border text-left transition-all flex items-start gap-3.5 ${
+              className={`p-3.5 rounded-xl border text-left transition-colors flex items-start gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                 isSelected
-                  ? 'border-emerald-600 bg-emerald-50/50 shadow-xs ring-1 ring-emerald-600'
-                  : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50/50 bg-white'
+                  ? 'border-blue-600 bg-blue-50/40'
+                  : 'border-zinc-200 hover:border-zinc-300 bg-white'
               }`}
             >
               <div
-                className={`p-2 rounded-md shrink-0 transition-colors ${
-                  isSelected ? 'bg-emerald-100/70 text-emerald-800' : 'bg-slate-100 text-slate-600'
+                className={`mt-0.5 shrink-0 transition-colors ${
+                  isSelected ? 'text-blue-600' : 'text-zinc-400'
                 }`}
               >
                 {option.icon}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-xs sm:text-sm text-slate-900 leading-tight">
+                <div className="flex items-center justify-between gap-2">
+                  <h4 className="font-semibold text-xs sm:text-sm text-zinc-900 leading-tight">
                     {option.title}
                   </h4>
                   {isSelected && (
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-full">
+                    <span className="text-xs font-medium text-blue-600 shrink-0">
                       {lang === 'pt' ? 'Ativo' : lang === 'es' ? 'Activo' : lang === 'fr' ? 'Actif' : 'Active'}
                     </span>
                   )}
                 </div>
-                <p className="text-[11px] text-slate-500 mt-1 leading-snug">
+                <p className="text-xs text-zinc-500 mt-1 leading-snug">
                   {option.description}
                 </p>
               </div>

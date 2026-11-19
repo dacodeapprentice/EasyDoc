@@ -94,10 +94,10 @@ class DocumentErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryS
   render() {
     if (this.state.hasError) {
       return (
-        <div className="p-8 text-center bg-white rounded-lg border border-rose-200 shadow-sm max-w-md mx-auto my-8">
+        <div className="p-8 text-center bg-white rounded-xl border border-rose-200 shadow-sm max-w-md mx-auto my-8">
           <AlertCircle className="w-10 h-10 text-rose-500 mx-auto mb-3" />
-          <h3 className="font-bold text-slate-900 text-sm mb-1">Preview Render Issue</h3>
-          <p className="text-xs text-slate-500 mb-4">
+          <h3 className="font-semibold text-zinc-900 text-sm mb-1">Preview Render Issue</h3>
+          <p className="text-xs text-zinc-500 mb-4">
             An unexpected error occurred while rendering the document preview.
           </p>
           <button
@@ -106,7 +106,7 @@ class DocumentErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryS
               this.setState({ hasError: false });
               this.props.onReset?.();
             }}
-            className="px-3 py-1.5 bg-slate-900 text-white text-xs font-semibold rounded-md hover:bg-slate-800 transition-colors inline-flex items-center gap-1.5"
+            className="px-3.5 py-2 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-1.5"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Reset to Example</span>
@@ -317,14 +317,14 @@ export default function App() {
   const currentTheme = COLOR_THEMES[style.themeId] || COLOR_THEMES['slate-emerald'];
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col font-sans-title w-full max-w-full overflow-x-hidden">
+    <div className="min-h-screen lg:h-screen bg-zinc-100 text-zinc-900 flex flex-col font-sans-title w-full max-w-full overflow-x-hidden lg:overflow-hidden">
       {/* PDF Export Overlay Modal */}
       {isGeneratingPdf && (
-        <div className="fixed inset-0 z-50 bg-slate-900/75 backdrop-blur-xs flex items-center justify-center">
-          <div className="bg-white rounded-xl shadow-2xl p-8 max-w-xs text-center border border-slate-200">
-            <Loader2 className="w-10 h-10 animate-spin text-emerald-600 mx-auto mb-4" />
-            <h3 className="font-bold text-slate-900 text-sm">{t('exporting')}</h3>
-            <p className="text-xs text-slate-500 mt-1">Generating high-resolution document...</p>
+        <div className="fixed inset-0 z-50 bg-zinc-950/50 backdrop-blur-[2px] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl p-8 max-w-xs w-full text-center border border-zinc-200">
+            <Loader2 className="w-9 h-9 animate-spin text-blue-600 mx-auto mb-4" />
+            <h3 className="font-semibold text-zinc-900 text-sm">{t('exporting')}</h3>
+            <p className="text-xs text-zinc-500 mt-1">Generating high-resolution document...</p>
           </div>
         </div>
       )}
@@ -348,22 +348,26 @@ export default function App() {
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 z-50 bg-slate-900 text-white text-xs py-2.5 px-4 rounded-lg shadow-lg flex items-center gap-2 border border-slate-700 animate-in fade-in slide-in-from-bottom-2">
-          <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-5 right-5 z-50 bg-zinc-900 text-white text-xs font-medium py-2.5 px-4 rounded-xl shadow-lg flex items-center gap-2 border border-zinc-800"
+        >
+          <CheckCircle className="w-4 h-4 text-blue-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>
       )}
 
       {/* Mobile View Toggle Bar */}
-      <div className="lg:hidden no-print bg-white border-b border-slate-200 px-4 py-2 flex items-center justify-between w-full max-w-full">
-        <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-md w-full">
+      <div className="lg:hidden no-print bg-white border-b border-zinc-200 px-4 py-2 flex items-center justify-between w-full max-w-full">
+        <div className="flex items-center gap-1 p-1 bg-zinc-200/70 rounded-lg w-full">
           <button
             type="button"
             onClick={() => setMobileView('editor')}
-            className={`flex-1 py-1.5 px-3 text-xs font-semibold rounded flex items-center justify-center gap-1.5 transition-colors ${
+            className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors ${
               mobileView === 'editor'
-                ? 'bg-white text-slate-900 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-white text-zinc-900 shadow-xs'
+                : 'text-zinc-600 hover:text-zinc-900'
             }`}
           >
             <PenLine className="w-3.5 h-3.5" />
@@ -372,10 +376,10 @@ export default function App() {
           <button
             type="button"
             onClick={() => setMobileView('preview')}
-            className={`flex-1 py-1.5 px-3 text-xs font-semibold rounded flex items-center justify-center gap-1.5 transition-colors ${
+            className={`flex-1 py-1.5 px-3 text-xs font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors ${
               mobileView === 'preview'
-                ? 'bg-white text-slate-900 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-white text-zinc-900 shadow-xs'
+                : 'text-zinc-600 hover:text-zinc-900'
             }`}
           >
             <Eye className="w-3.5 h-3.5" />
@@ -385,7 +389,7 @@ export default function App() {
       </div>
 
       {/* Mobile & Medium Screen Document Selector Bar (< xl) */}
-      <div className="xl:hidden no-print bg-slate-50 border-b border-slate-200 px-3 py-1.5 overflow-x-auto flex items-center gap-1.5 custom-scrollbar w-full max-w-full">
+      <div className="xl:hidden no-print bg-zinc-50/90 border-b border-zinc-200 px-3 sm:px-6 py-2 overflow-x-auto flex items-center gap-1.5 custom-scrollbar w-full max-w-full shrink-0">
         {(['cv', 'letter', 'census', 'receipt', 'certificate'] as DocumentType[]).map((type) => (
           <button
             key={type}
@@ -394,10 +398,10 @@ export default function App() {
               setDocType(type);
               setSidebarTab('inputs');
             }}
-            className={`whitespace-nowrap px-2.5 py-1 text-xs font-semibold rounded-md transition-colors ${
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg transition-colors shrink-0 ${
               docType === type
-                ? 'bg-emerald-700 text-white shadow-xs'
-                : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-zinc-700 border border-zinc-200 hover:bg-zinc-100'
             }`}
           >
             {t(
@@ -416,60 +420,59 @@ export default function App() {
       </div>
 
       {/* Main Workspace Layout */}
-      <main className="flex-1 flex overflow-hidden min-h-0 w-full max-w-full">
+      <main className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0 p-2.5 sm:p-4 lg:p-5 gap-4 w-full max-w-full">
         {/* LEFT PANEL: Form Editor & Controls */}
         <aside
-          className={`no-print w-full lg:w-[460px] xl:w-[500px] lg:flex-none bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-0 transition-all ${
+          className={`no-print w-full lg:w-[460px] xl:w-[500px] lg:flex-none bg-white border border-zinc-200 rounded-xl flex flex-col shrink-0 min-h-0 overflow-hidden transition-all ${
             mobileView === 'preview' ? 'max-lg:hidden lg:flex' : 'flex'
           }`}
         >
           {/* Sidebar Tab Header */}
-          <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
-            <div className="flex items-center gap-1">
+          <div className="px-3.5 py-2.5 border-b border-zinc-200 flex items-center justify-between gap-2 bg-zinc-50/70 shrink-0">
+            <div className="flex items-center gap-1 p-1 bg-zinc-200/70 rounded-lg">
               <button
                 type="button"
                 onClick={() => setSidebarTab('inputs')}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md flex items-center gap-1.5 transition-colors ${
+                className={`px-3 py-1.5 text-xs font-medium rounded-md flex items-center gap-1.5 transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                   sidebarTab === 'inputs'
-                    ? 'bg-white text-emerald-800 shadow-xs border border-slate-200'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white text-zinc-900 shadow-xs'
+                    : 'text-zinc-600 hover:text-zinc-900'
                 }`}
               >
-                <FileText className="w-3.5 h-3.5 text-emerald-700" />
+                <FileText className="w-3.5 h-3.5 text-blue-600" />
                 <span>{t('text_inputs')}</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setSidebarTab('style')}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md flex items-center gap-1.5 transition-colors ${
+                className={`px-3 py-1.5 text-xs font-medium rounded-md flex items-center gap-1.5 transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                   sidebarTab === 'style'
-                    ? 'bg-white text-emerald-800 shadow-xs border border-slate-200'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white text-zinc-900 shadow-xs'
+                    : 'text-zinc-600 hover:text-zinc-900'
                 }`}
               >
-                <SlidersHorizontal className="w-3.5 h-3.5 text-emerald-700" />
+                <SlidersHorizontal className="w-3.5 h-3.5 text-blue-600" />
                 <span>{t('colors_style')}</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setSidebarTab('templates')}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md flex items-center gap-1.5 transition-colors ${
+                className={`px-3 py-1.5 text-xs font-medium rounded-md flex items-center gap-1.5 transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                   sidebarTab === 'templates'
-                    ? 'bg-white text-emerald-800 shadow-xs border border-slate-200'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-white text-zinc-900 shadow-xs'
+                    : 'text-zinc-600 hover:text-zinc-900'
                 }`}
               >
                 <span>{t('templates')}</span>
               </button>
             </div>
 
-            {/* Auto-save Status Indicator */}
+            {/* Clean unboxed auto-save timestamp */}
             {autoSavedTime && (
-              <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                <span>{autoSavedTime}</span>
+              <span className="text-[11px] text-zinc-500 font-mono-tabular tabular-nums whitespace-nowrap shrink-0">
+                {autoSavedTime}
               </span>
             )}
           </div>
@@ -517,14 +520,14 @@ export default function App() {
           </div>
 
           {/* Sidebar Footer Bar */}
-          <div className="p-3 border-t border-slate-200 bg-slate-50/50 flex items-center justify-between text-xs text-slate-500">
+          <div className="px-4 py-2.5 border-t border-zinc-200 bg-zinc-50/70 flex items-center justify-between text-xs text-zinc-500 shrink-0">
             <span className="truncate">
-              Theme: <strong className="text-slate-800">{currentTheme.name}</strong>
+              Theme: <strong className="font-semibold text-zinc-900">{currentTheme.name}</strong>
             </span>
             <button
               type="button"
               onClick={handleDownloadPdf}
-              className="text-emerald-700 hover:text-emerald-900 font-bold transition-colors"
+              className="text-blue-600 hover:text-blue-700 font-semibold transition-colors whitespace-nowrap shrink-0"
             >
               {t('export_now')} &rarr;
             </button>
@@ -533,14 +536,14 @@ export default function App() {
 
         {/* RIGHT PANEL: Live Document Canvas & Zoom Controls */}
         <section
-          className={`flex-1 flex flex-col min-h-0 bg-slate-200/70 overflow-hidden ${
+          className={`flex-1 flex flex-col min-h-0 min-w-0 bg-zinc-50 border border-zinc-200 rounded-xl overflow-hidden ${
             mobileView === 'editor' ? 'hidden lg:flex' : 'flex'
           }`}
         >
           {/* Canvas Sub-Header & Zoom Bar */}
-          <div className="no-print bg-white/90 backdrop-blur-xs border-b border-slate-200 px-4 py-2 flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs text-slate-600">
-              <span className="font-semibold text-slate-900 capitalize">
+          <div className="no-print bg-white border-b border-zinc-200 px-4 py-2 flex items-center justify-between gap-3 shrink-0">
+            <div className="flex items-center gap-2 text-xs text-zinc-500 min-w-0 truncate">
+              <span className="font-semibold text-zinc-900 capitalize truncate">
                 {t(
                   docType === 'cv'
                     ? 'curriculum_vitae'
@@ -553,32 +556,32 @@ export default function App() {
                     : 'certificate_award'
                 )}
               </span>
-              <span className="text-slate-300">·</span>
-              <span className="text-[11px] text-slate-500">A4 Standard Format</span>
-              <span className="text-slate-300">·</span>
-              <span className="text-[11px] text-slate-500">
+              <span className="text-zinc-300 hidden sm:inline">·</span>
+              <span className="text-xs text-zinc-500 hidden sm:inline">A4 Standard Format</span>
+              <span className="text-zinc-300 hidden md:inline">·</span>
+              <span className="text-xs text-zinc-500 hidden md:inline">
                 Font: {style.fontFamily === 'source-serif' ? 'Source Serif 4' : 'Lora'}
               </span>
             </div>
 
             {/* Zoom Controls */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 shrink-0">
               <button
                 type="button"
                 onClick={() => setZoomLevel((z) => Math.max(0.35, Number((z - 0.1).toFixed(2))))}
-                className="p-1.5 text-slate-600 hover:text-slate-900 rounded hover:bg-slate-100"
+                className="h-8 w-8 inline-flex items-center justify-center text-zinc-600 hover:text-zinc-900 rounded-md hover:bg-zinc-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
                 title="Zoom Out"
                 aria-label="Zoom Out"
               >
                 <ZoomOut className="w-3.5 h-3.5" />
               </button>
-              <span className="text-[11px] font-mono-tabular w-12 text-center text-slate-600 font-medium">
+              <span className="text-xs font-mono-tabular tabular-nums w-11 text-center text-zinc-600 font-medium">
                 {Math.round(zoomLevel * 100)}%
               </span>
               <button
                 type="button"
                 onClick={() => setZoomLevel((z) => Math.min(1.3, Number((z + 0.1).toFixed(2))))}
-                className="p-1.5 text-slate-600 hover:text-slate-900 rounded hover:bg-slate-100"
+                className="h-8 w-8 inline-flex items-center justify-center text-zinc-600 hover:text-zinc-900 rounded-md hover:bg-zinc-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
                 title="Zoom In"
                 aria-label="Zoom In"
               >
@@ -587,7 +590,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setZoomLevel(1.0)}
-                className="text-[11px] px-2 py-1 text-slate-600 hover:text-slate-900 rounded hover:bg-slate-100 font-medium"
+                className="h-8 text-xs px-2.5 text-zinc-600 hover:text-zinc-900 rounded-md hover:bg-zinc-100 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
                 title="Reset to 100%"
               >
                 100%
@@ -595,7 +598,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={handleFitToScreen}
-                className="p-1.5 text-slate-600 hover:text-slate-900 rounded hover:bg-slate-100"
+                className="h-8 w-8 inline-flex items-center justify-center text-zinc-600 hover:text-zinc-900 rounded-md hover:bg-zinc-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
                 title={t('fit_screen')}
                 aria-label="Fit to Screen"
               >
@@ -628,7 +631,7 @@ export default function App() {
                   transformOrigin: 'top center',
                   transition: 'transform 0.15s ease-out',
                 }}
-                className="doc-page-shadow rounded-sm print-canvas bg-white shrink-0"
+                className="doc-page-shadow rounded-sm print-canvas bg-white shrink-0 border border-zinc-200"
               >
                 {/* Single dedicated DOM ID for PDF export and vector print */}
                 <div id="document-canvas" className="w-[794px] min-w-[794px] max-w-[794px] bg-white">

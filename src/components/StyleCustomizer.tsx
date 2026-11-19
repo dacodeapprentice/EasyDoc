@@ -19,10 +19,10 @@ export const StyleCustomizer: React.FC<StyleCustomizerProps> = ({ style, onChang
 
   return (
     <div className="space-y-5 text-xs font-sans-title">
-      {/* 1. Color Palette in Blues & Greens */}
+      {/* 1. Color Palette */}
       <div>
-        <div className="flex items-center gap-1.5 font-bold text-slate-800 uppercase tracking-wider mb-2.5">
-          <Palette className="w-3.5 h-3.5 text-emerald-700" />
+        <div className="flex items-center gap-1.5 font-semibold text-zinc-700 uppercase tracking-wider mb-2.5">
+          <Palette className="w-3.5 h-3.5 text-blue-600" />
           <span>{t('color_palette')}</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -33,10 +33,10 @@ export const StyleCustomizer: React.FC<StyleCustomizerProps> = ({ style, onChang
                 key={theme.id}
                 type="button"
                 onClick={() => updateStyle('themeId', theme.id as ColorThemeId)}
-                className={`flex items-center gap-2.5 p-2 rounded-lg border text-left transition-all ${
+                className={`flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                   isSelected
-                    ? 'border-emerald-600 bg-emerald-50/50 ring-1 ring-emerald-600 shadow-xs'
-                    : 'border-slate-200 hover:border-slate-300 bg-white'
+                    ? 'border-blue-600 bg-blue-50/50'
+                    : 'border-zinc-200 hover:border-zinc-300 bg-white'
                 }`}
               >
                 <div className="flex items-center -space-x-1 shrink-0">
@@ -50,7 +50,7 @@ export const StyleCustomizer: React.FC<StyleCustomizerProps> = ({ style, onChang
                   />
                 </div>
                 <div className="min-w-0">
-                  <div className="font-semibold text-slate-900 truncate text-[11px] leading-tight">
+                  <div className="font-semibold text-zinc-900 truncate text-[11px] leading-tight">
                     {theme.name}
                   </div>
                 </div>
@@ -60,24 +60,24 @@ export const StyleCustomizer: React.FC<StyleCustomizerProps> = ({ style, onChang
         </div>
       </div>
 
-      {/* 2. Reading Typography (Serif font pairings) */}
-      <div className="pt-3 border-t border-slate-200">
-        <div className="flex items-center gap-1.5 font-bold text-slate-800 uppercase tracking-wider mb-2.5">
-          <Type className="w-3.5 h-3.5 text-emerald-700" />
+      {/* 2. Reading Typography */}
+      <div className="pt-4 border-t border-zinc-200">
+        <div className="flex items-center gap-1.5 font-semibold text-zinc-700 uppercase tracking-wider mb-2.5">
+          <Type className="w-3.5 h-3.5 text-blue-600" />
           <span>{t('reading_typography')}</span>
         </div>
         <div className="grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={() => updateStyle('fontFamily', 'source-serif' as FontFamilyChoice)}
-            className={`p-2.5 rounded-lg border text-left transition-all ${
+            className={`p-3 rounded-xl border text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
               style.fontFamily === 'source-serif'
-                ? 'border-emerald-600 bg-emerald-50/60 ring-1 ring-emerald-600'
-                : 'border-slate-200 hover:border-slate-300 bg-white'
+                ? 'border-blue-600 bg-blue-50/50'
+                : 'border-zinc-200 hover:border-zinc-300 bg-white'
             }`}
           >
-            <div className="font-bold text-slate-900 text-xs">Source Serif 4</div>
-            <div className="font-serif-reading text-[11px] text-slate-600 mt-1 italic leading-snug">
+            <div className="font-semibold text-zinc-900 text-xs">Source Serif 4</div>
+            <div className="font-serif-reading text-[11px] text-zinc-500 mt-1 italic leading-snug">
               Crisp, balanced humanist serif for high legibility.
             </div>
           </button>
@@ -85,27 +85,27 @@ export const StyleCustomizer: React.FC<StyleCustomizerProps> = ({ style, onChang
           <button
             type="button"
             onClick={() => updateStyle('fontFamily', 'lora' as FontFamilyChoice)}
-            className={`p-2.5 rounded-lg border text-left transition-all ${
+            className={`p-3 rounded-xl border text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
               style.fontFamily === 'lora'
-                ? 'border-emerald-600 bg-emerald-50/60 ring-1 ring-emerald-600'
-                : 'border-slate-200 hover:border-slate-300 bg-white'
+                ? 'border-blue-600 bg-blue-50/50'
+                : 'border-zinc-200 hover:border-zinc-300 bg-white'
             }`}
           >
-            <div className="font-bold text-slate-900 text-xs">Lora</div>
-            <div className="font-serif-lora text-[11px] text-slate-600 mt-1 italic leading-snug">
+            <div className="font-semibold text-zinc-900 text-xs">Lora</div>
+            <div className="font-serif-lora text-[11px] text-zinc-500 mt-1 italic leading-snug">
               Literary contemporary serif with graceful curves.
             </div>
           </button>
         </div>
-        <p className="text-[10px] text-slate-500 mt-1.5">
+        <p className="text-[11px] text-zinc-500 mt-2">
           * Titles and headers use modern geometric sans-serif (Plus Jakarta Sans).
         </p>
       </div>
 
       {/* 3. Layout Density */}
-      <div className="pt-3 border-t border-slate-200">
-        <div className="flex items-center gap-1.5 font-bold text-slate-800 uppercase tracking-wider mb-2.5">
-          <LayoutTemplate className="w-3.5 h-3.5 text-emerald-700" />
+      <div className="pt-4 border-t border-zinc-200">
+        <div className="flex items-center gap-1.5 font-semibold text-zinc-700 uppercase tracking-wider mb-2.5">
+          <LayoutTemplate className="w-3.5 h-3.5 text-blue-600" />
           <span>{t('margins_density')}</span>
         </div>
         <div className="grid grid-cols-3 gap-2">
@@ -118,22 +118,22 @@ export const StyleCustomizer: React.FC<StyleCustomizerProps> = ({ style, onChang
               key={item.id}
               type="button"
               onClick={() => updateStyle('density', item.id as DensityChoice)}
-              className={`p-2 rounded-lg border text-center transition-all ${
+              className={`p-2.5 rounded-xl border text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                 style.density === item.id
-                  ? 'border-emerald-600 bg-emerald-50/60 font-semibold text-emerald-900 ring-1 ring-emerald-600'
-                  : 'border-slate-200 hover:border-slate-300 bg-white text-slate-700'
+                  ? 'border-blue-600 bg-blue-50/50 font-semibold text-blue-700'
+                  : 'border-zinc-200 hover:border-zinc-300 bg-white text-zinc-700'
               }`}
             >
               <div className="text-xs font-semibold">{item.label}</div>
-              <div className="text-[10px] text-slate-400 mt-0.5">{item.desc}</div>
+              <div className="text-[10px] text-zinc-500 mt-0.5">{item.desc}</div>
             </button>
           ))}
         </div>
       </div>
 
       {/* 4. Accent Header Bar */}
-      <div className="pt-3 border-t border-slate-200">
-        <div className="font-bold text-slate-800 uppercase tracking-wider mb-2 text-xs">
+      <div className="pt-4 border-t border-zinc-200">
+        <div className="font-semibold text-zinc-700 uppercase tracking-wider mb-2.5 text-xs">
           {t('header_accent')}
         </div>
         <div className="grid grid-cols-3 gap-2">
@@ -146,10 +146,10 @@ export const StyleCustomizer: React.FC<StyleCustomizerProps> = ({ style, onChang
               key={item.id}
               type="button"
               onClick={() => updateStyle('headerStyle', item.id as HeaderStyleChoice)}
-              className={`p-2 rounded-lg border text-center text-xs transition-all ${
+              className={`p-2.5 rounded-xl border text-center text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                 style.headerStyle === item.id
-                  ? 'border-emerald-600 bg-emerald-50/60 font-semibold text-emerald-900 ring-1 ring-emerald-600'
-                  : 'border-slate-200 hover:border-slate-300 bg-white text-slate-700'
+                  ? 'border-blue-600 bg-blue-50/50 font-semibold text-blue-700'
+                  : 'border-zinc-200 hover:border-zinc-300 bg-white text-zinc-700'
               }`}
             >
               {item.label}
