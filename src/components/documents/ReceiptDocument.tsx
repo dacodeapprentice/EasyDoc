@@ -2,7 +2,7 @@ import React from 'react';
 import { ReceiptData, DocumentStyle, ColorTheme, LanguageCode } from '../../types/document';
 import { Receipt, CheckCircle2 } from 'lucide-react';
 import { getTranslation } from '../../utils/i18n';
-import { PAPER_SIZES } from '../../data/defaultData';
+import { getPaperLayout } from '../../data/defaultData';
 
 interface ReceiptDocumentProps {
   data: ReceiptData;
@@ -18,28 +18,9 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
   lang = 'en',
 }) => {
   const t = (k: string) => getTranslation(lang, k);
-  const paper = PAPER_SIZES[style.paperSize || 'a4'];
-  const isCompactPaper = paper.id === 'a5';
-  const isLargePaper = paper.id === 'a3';
+  const layout = getPaperLayout(style.paperSize, style.density);
+  const { paper, isCompact, isTall, isLarge } = layout;
   const fontClass = style.fontFamily === 'lora' ? 'font-serif-lora' : 'font-serif-reading';
-
-  const densityPadding = isCompactPaper
-    ? style.density === 'compact'
-      ? 'p-5'
-      : style.density === 'generous'
-      ? 'p-8'
-      : 'p-6'
-    : isLargePaper
-    ? style.density === 'compact'
-      ? 'p-12'
-      : style.density === 'generous'
-      ? 'p-18'
-      : 'p-14'
-    : style.density === 'compact'
-    ? 'p-6 sm:p-8'
-    : style.density === 'generous'
-    ? 'p-10 sm:p-14'
-    : 'p-8 sm:p-12';
 
   const safeNum = (v: any, fallback = 0) => {
     const n = parseFloat(v);
@@ -64,75 +45,83 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
 
   return (
     <div
-      className={`bg-white text-slate-900 w-full transition-all relative ${densityPadding} ${fontClass}`}
+      className={`bg-white text-slate-900 w-full transition-all relative ${fontClass}`}
       style={{
         boxSizing: 'border-box',
         minHeight: `${paper.heightPx}px`,
+        padding: `${layout.paddingPx}px`,
+        overflowWrap: 'anywhere',
       }}
     >
       {/* Decorative Accents */}
       {style.headerStyle === 'left-bar' && (
         <div
-          className="absolute left-0 top-0 bottom-0 w-2.5"
+          className={`absolute left-0 top-0 bottom-0 ${layout.accentBarWidthClass}`}
           style={{ backgroundColor: theme.primary }}
         />
       )}
       {style.headerStyle === 'banner' && (
         <div
-          className="absolute left-0 top-0 right-0 h-3"
+          className={`absolute left-0 top-0 right-0 ${layout.accentBannerHeightClass}`}
           style={{ backgroundColor: theme.primary }}
         />
       )}
 
       {/* Header: Company & Receipt Details */}
-      <header className="border-b pb-6 mb-6 border-slate-200">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div className="flex items-start gap-4">
+      <header className={`border-b ${isCompact ? 'pb-4 mb-4' : isLarge ? 'pb-8 mb-8' : 'pb-6 mb-6'} border-slate-200`}>
+        <div
+          className={`flex ${
+            isCompact ? 'flex-col items-start gap-3' : 'flex-row items-start justify-between gap-4'
+          }`}
+        >
+          <div className="flex items-start gap-3.5">
             {data.logoUrl && (
               <img
                 src={data.logoUrl}
                 alt="Business Logo"
-                className={`${isCompactPaper ? 'w-12 h-12' : 'w-16 h-16'} object-contain rounded-md border border-slate-200 shrink-0 bg-white`}
+                className={`${
+                  isCompact ? 'w-11 h-11' : isLarge ? 'w-20 h-20' : 'w-16 h-16'
+                } object-contain rounded-md border border-slate-200 shrink-0 bg-white`}
               />
             )}
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
+              <div className="flex items-center gap-2 mb-1">
                 <span className="p-1 rounded bg-slate-100 text-slate-800">
-                  <Receipt className="w-5 h-5" style={{ color: theme.primary }} />
+                  <Receipt className={`${isCompact ? 'w-4 h-4' : 'w-5 h-5'}`} style={{ color: theme.primary }} />
                 </span>
-                <span className="font-sans-title text-xs font-bold uppercase tracking-widest text-slate-500">
+                <span className={`font-sans-title ${layout.metaSizeClass} font-bold uppercase tracking-widest text-slate-500`}>
                   {t('official_voucher')}
                 </span>
               </div>
               <h1
                 className={`font-sans-title ${
-                  isCompactPaper ? 'text-xl' : isLargePaper ? 'text-3xl' : 'text-2xl sm:text-3xl'
+                  isCompact ? 'text-lg' : isLarge ? 'text-3xl' : 'text-2xl'
                 } font-extrabold tracking-tight`}
                 style={{ color: theme.textHeader }}
               >
                 {data.businessName || 'Business Name'}
               </h1>
               {data.businessTaxId && (
-                <p className="font-mono-tabular text-xs text-slate-500 mt-1">
+                <p className={`font-mono-tabular ${layout.metaSizeClass} text-slate-500 mt-1`}>
                   {data.businessTaxId}
                 </p>
               )}
               {data.businessAddress && (
-                <p className="font-sans-title text-xs text-slate-600 mt-0.5">
+                <p className={`font-sans-title ${layout.metaSizeClass} text-slate-600 mt-0.5`}>
                   {data.businessAddress}
                 </p>
               )}
               {data.businessEmail && (
-                <p className="font-sans-title text-xs text-slate-500 mt-0.5">
+                <p className={`font-sans-title ${layout.metaSizeClass} text-slate-500 mt-0.5`}>
                   {data.businessEmail}
                 </p>
               )}
             </div>
           </div>
 
-          <div className="text-left sm:text-right shrink-0">
+          <div className={`${isCompact ? 'text-left' : 'text-right'} shrink-0`}>
             <div
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded text-xs font-bold uppercase tracking-wide mb-2"
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded ${layout.smallSizeClass} font-bold uppercase tracking-wide mb-2`}
               style={{
                 backgroundColor: theme.badgeBg,
                 color: theme.badgeText,
@@ -141,22 +130,22 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>{t('payment_received')}</span>
             </div>
-            <div className="text-xs text-slate-500 font-sans-title">
+            <div className={`${layout.metaSizeClass} text-slate-500 font-sans-title`}>
               {t('receipt_no')}:{' '}
               <strong className="font-mono-tabular font-bold text-slate-800">
                 {data.receiptNumber || 'RCP-0000'}
               </strong>
             </div>
-            <div className="text-xs text-slate-500 font-sans-title mt-0.5">
+            <div className={`${layout.metaSizeClass} text-slate-500 font-sans-title mt-0.5`}>
               {t('issue_date')}: {data.issueDate || '—'}
             </div>
             {data.paymentMethod && (
-              <div className="text-xs text-slate-500 font-sans-title mt-0.5">
+              <div className={`${layout.metaSizeClass} text-slate-500 font-sans-title mt-0.5`}>
                 {t('payment_method')}: {data.paymentMethod}
               </div>
             )}
             {data.transactionRef && (
-              <div className="text-[11px] font-mono-tabular text-slate-400 mt-0.5">
+              <div className={`${layout.smallSizeClass} font-mono-tabular text-slate-400 mt-0.5`}>
                 Ref: {data.transactionRef}
               </div>
             )}
@@ -165,20 +154,28 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
       </header>
 
       {/* Bill To Customer Information */}
-      <section className="mb-6 p-4 rounded-md border border-slate-200 bg-slate-50/60 font-sans-title print-avoid-break">
-        <h2 className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">
+      <section
+        className={`${layout.sectionMbClass} ${
+          isCompact ? 'p-3' : isLarge ? 'p-5' : 'p-4'
+        } rounded-md border border-slate-200 bg-slate-50/60 font-sans-title print-avoid-break`}
+      >
+        <h2 className={`${layout.smallSizeClass} font-bold uppercase tracking-wider text-slate-500 mb-2`}>
           {t('billed_to')}
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div
+          className={`grid ${
+            isCompact ? 'grid-cols-1 gap-1.5' : 'grid-cols-2 gap-3'
+          } ${layout.metaSizeClass}`}
+        >
           <div>
-            <div className="font-bold text-slate-900 text-sm">
+            <div className={`font-bold text-slate-900 ${isCompact ? 'text-xs' : isLarge ? 'text-base' : 'text-sm'}`}>
               {data.customerName || 'Customer Name'}
             </div>
             {data.customerCompany && (
               <div className="text-slate-700 font-medium">{data.customerCompany}</div>
             )}
           </div>
-          <div className="text-slate-600 sm:text-right">
+          <div className={`text-slate-600 ${isCompact ? 'text-left' : 'text-right'}`}>
             {data.customerEmail && <div>{data.customerEmail}</div>}
             {data.customerAddress && <div>{data.customerAddress}</div>}
           </div>
@@ -186,14 +183,14 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
       </section>
 
       {/* Line Items Table */}
-      <section className="mb-6 print-avoid-break">
-        <table className="w-full text-left border-collapse text-xs">
+      <section className={`${layout.sectionMbClass} print-avoid-break`}>
+        <table className={`w-full text-left border-collapse ${isCompact ? 'text-[10px]' : isLarge ? 'text-sm' : 'text-xs'}`}>
           <thead>
             <tr className="border-b-2 border-slate-300 font-sans-title text-slate-700 font-bold bg-slate-50/80">
-              <th className="py-2.5 px-3">{t('item_description')}</th>
-              <th className="py-2.5 px-3 text-center w-16">{t('quantity')}</th>
-              <th className="py-2.5 px-3 text-right w-28">{t('unit_price')}</th>
-              <th className="py-2.5 px-3 text-right w-28">{t('line_total')}</th>
+              <th className={isCompact ? 'py-2 px-2' : 'py-2.5 px-3'}>{t('item_description')}</th>
+              <th className={`${isCompact ? 'py-2 px-1.5 w-10' : 'py-2.5 px-3 w-16'} text-center`}>{t('quantity')}</th>
+              <th className={`${isCompact ? 'py-2 px-2 w-20' : isLarge ? 'py-2.5 px-3 w-36' : 'py-2.5 px-3 w-28'} text-right`}>{t('unit_price')}</th>
+              <th className={`${isCompact ? 'py-2 px-2 w-20' : isLarge ? 'py-2.5 px-3 w-36' : 'py-2.5 px-3 w-28'} text-right`}>{t('line_total')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200">
@@ -201,20 +198,21 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
               const qty = safeNum(item.quantity);
               const price = safeNum(item.unitPrice);
               const lineTot = qty * price;
+              const cellPy = isCompact ? 'py-2 px-2' : isTall || isLarge ? 'py-4 px-3' : 'py-3 px-3';
               return (
                 <tr key={item.id || idx} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="py-3 px-3">
+                  <td className={cellPy}>
                     <span className="font-semibold text-slate-900 block">
                       {item.description || 'Service or item description'}
                     </span>
                   </td>
-                  <td className="py-3 px-3 text-center font-mono-tabular text-slate-600">
+                  <td className={`${cellPy} text-center font-mono-tabular text-slate-600`}>
                     {qty}
                   </td>
-                  <td className="py-3 px-3 text-right font-mono-tabular text-slate-600">
+                  <td className={`${cellPy} text-right font-mono-tabular text-slate-600`}>
                     {formatCurrency(price)}
                   </td>
-                  <td className="py-3 px-3 text-right font-mono-tabular font-bold text-slate-900">
+                  <td className={`${cellPy} text-right font-mono-tabular font-bold text-slate-900`}>
                     {formatCurrency(lineTot)}
                   </td>
                 </tr>
@@ -225,8 +223,12 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
       </section>
 
       {/* Financial Totals Breakdown */}
-      <section className="flex justify-end mb-8 print-avoid-break">
-        <div className="w-72 font-sans-title text-xs space-y-2">
+      <section className={`flex justify-end ${layout.headerMbClass} print-avoid-break`}>
+        <div
+          className={`${
+            isCompact ? 'w-56' : isLarge ? 'w-96' : 'w-72'
+          } font-sans-title ${layout.metaSizeClass} space-y-2`}
+        >
           <div className="flex justify-between py-1 border-b border-slate-100 text-slate-600">
             <span>{t('subtotal')}:</span>
             <span className="font-mono-tabular font-semibold text-slate-900">
@@ -255,7 +257,9 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
           )}
 
           <div
-            className="flex justify-between pt-2 pb-1 border-t-2 text-sm font-extrabold"
+            className={`flex justify-between pt-2 pb-1 border-t-2 ${
+              isCompact ? 'text-xs' : isLarge ? 'text-base' : 'text-sm'
+            } font-extrabold`}
             style={{
               borderColor: theme.primary,
               color: theme.primaryDark,
@@ -269,7 +273,11 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
 
       {/* Additional Terms & Notes */}
       {data.notes && (
-        <section className="mb-8 p-3 rounded bg-slate-50 border-l-3 border-slate-400 font-sans-title text-xs text-slate-600 print-avoid-break">
+        <section
+          className={`${layout.sectionMbClass} ${
+            isCompact ? 'p-2.5' : 'p-3.5'
+          } rounded bg-slate-50 border-l-3 border-slate-400 font-sans-title ${layout.metaSizeClass} text-slate-600 print-avoid-break`}
+        >
           <span className="font-bold text-slate-700 block mb-0.5">
             {t('notes_terms')}:
           </span>
@@ -278,7 +286,11 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
       )}
 
       {/* Signatory & Security Footer */}
-      <footer className="pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4 font-sans-title text-xs text-slate-500 print-avoid-break">
+      <footer
+        className={`pt-5 border-t border-slate-200 flex ${
+          isCompact ? 'flex-col items-start gap-3' : 'flex-row items-center justify-between gap-4'
+        } font-sans-title ${layout.metaSizeClass} text-slate-500 print-avoid-break`}
+      >
         <div>
           {data.cashierOrAgent && (
             <div>
@@ -286,11 +298,11 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
               <strong className="text-slate-800">{data.cashierOrAgent}</strong>
             </div>
           )}
-          <div className="text-[11px] text-slate-400 mt-0.5">
+          <div className={`${layout.smallSizeClass} text-slate-400 mt-0.5`}>
             {t('electronic_record')}
           </div>
         </div>
-        <div className="text-right text-[11px] text-slate-400">
+        <div className={`${isCompact ? 'text-left' : 'text-right'} ${layout.smallSizeClass} text-slate-400`}>
           <div>Verified & Reconciled</div>
           <div className="font-mono-tabular">AUTH-ID: {data.receiptNumber || '000'}</div>
         </div>

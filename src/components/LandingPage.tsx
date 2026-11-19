@@ -1,6 +1,5 @@
 import React from 'react';
-import { DocumentType, LanguageCode, PaperSizeId } from '../types/document';
-import { PAPER_SIZES } from '../data/defaultData';
+import { DocumentType, LanguageCode } from '../types/document';
 import { LANGUAGES, getTranslation } from '../utils/i18n';
 import {
   FileText,
@@ -11,14 +10,11 @@ import {
   ArrowRight,
   ArrowDown,
   FolderOpen,
-  Check,
 } from 'lucide-react';
 
 interface LandingPageProps {
   currentLang: LanguageCode;
   onChangeLang: (lang: LanguageCode) => void;
-  selectedPaperSize: PaperSizeId;
-  onChangePaperSize: (size: PaperSizeId) => void;
   onSelectTemplate: (type: DocumentType) => void;
   onLoadProgress: () => void;
   keptDraftTypes: DocumentType[];
@@ -27,14 +23,11 @@ interface LandingPageProps {
 export const LandingPage: React.FC<LandingPageProps> = ({
   currentLang,
   onChangeLang,
-  selectedPaperSize,
-  onChangePaperSize,
   onSelectTemplate,
   onLoadProgress,
   keptDraftTypes,
 }) => {
   const t = (key: string) => getTranslation(currentLang, key);
-  const activePaper = PAPER_SIZES[selectedPaperSize] || PAPER_SIZES.a4;
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -42,19 +35,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
-
-  const paperOptions: Array<{
-    id: PaperSizeId;
-    useCase: string;
-    previewWidth: number;
-    previewHeight: number;
-  }> = [
-    { id: 'a4', useCase: t('paper_a4_use'), previewWidth: 20, previewHeight: 28 },
-    { id: 'letter', useCase: t('paper_letter_use'), previewWidth: 21, previewHeight: 27 },
-    { id: 'legal', useCase: t('paper_legal_use'), previewWidth: 20, previewHeight: 33 },
-    { id: 'a5', useCase: t('paper_a5_use'), previewWidth: 16, previewHeight: 22 },
-    { id: 'a3', useCase: t('paper_a3_use'), previewWidth: 25, previewHeight: 35 },
-  ];
 
   const templates: Array<{
     type: DocumentType;
@@ -162,162 +142,78 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
       {/* Main Content */}
       <main className="flex-1 w-full">
-        {/* Hero Section */}
+        {/* Hero Section: Balanced full-width editorial text placement */}
         <section
           id="how-it-works"
-          className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-10 sm:pb-12 scroll-mt-16"
+          className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-16 pb-10 sm:pb-12 scroll-mt-16"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            {/* Hero Copy & Explanation Steps */}
-            <div className="lg:col-span-7">
-              <p className="text-xs font-medium text-zinc-500">
-                {t('hero_kicker')}
-              </p>
+          <div className="max-w-3xl">
+            <p className="text-xs font-medium text-zinc-500">
+              {t('hero_kicker')}
+            </p>
 
-              <h1
-                style={{ fontSize: 'clamp(2rem, 3.6vw, 3.1rem)' }}
-                className="font-bold tracking-tight text-zinc-900 leading-[1.12] text-balance mt-2.5"
+            <h1
+              style={{ fontSize: 'clamp(2.1rem, 3.8vw, 3.25rem)' }}
+              className="font-bold tracking-tight text-zinc-900 leading-[1.1] text-balance mt-2.5"
+            >
+              {t('hero_headline')}
+            </h1>
+
+            <p className="text-base sm:text-lg text-zinc-600 leading-relaxed max-w-2xl mt-4">
+              {t('hero_subheadline')}
+            </p>
+
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => scrollToSection('template-picker')}
+                className="h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg inline-flex items-center gap-2 transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
               >
-                {t('hero_headline')}
-              </h1>
+                <span>{t('hero_cta_choose')}</span>
+                <ArrowDown className="w-4 h-4" />
+              </button>
 
-              <p className="text-base sm:text-lg text-zinc-600 leading-relaxed max-w-xl mt-4">
-                {t('hero_subheadline')}
-              </p>
-
-              <div className="mt-7 flex flex-wrap items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => scrollToSection('template-picker')}
-                  className="h-11 px-5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg inline-flex items-center gap-2 transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
-                >
-                  <span>{t('hero_cta_choose')}</span>
-                  <ArrowDown className="w-4 h-4" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={onLoadProgress}
-                  className="h-11 px-4 bg-white hover:bg-zinc-50 text-zinc-700 border border-zinc-200 text-sm font-medium rounded-lg inline-flex items-center gap-2 transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-                >
-                  <FolderOpen className="w-4 h-4 text-zinc-500" />
-                  <span>{t('hero_cta_load')}</span>
-                </button>
-              </div>
-
-              {/* 3 Incremental Steps */}
-              <div className="mt-8 pt-6 border-t border-zinc-200 grid grid-cols-1 sm:grid-cols-3 gap-5">
-                <div>
-                  <h3 className="text-xs font-semibold text-zinc-900">
-                    {t('hero_step_1_title')}
-                  </h3>
-                  <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
-                    {t('hero_step_1_desc')}
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-xs font-semibold text-zinc-900">
-                    {t('hero_step_2_title')}
-                  </h3>
-                  <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
-                    {t('hero_step_2_desc')}
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-xs font-semibold text-zinc-900">
-                    {t('hero_step_3_title')}
-                  </h3>
-                  <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
-                    {t('hero_step_3_desc')}
-                  </p>
-                </div>
-              </div>
+              <button
+                type="button"
+                onClick={onLoadProgress}
+                className="h-11 px-4 bg-white hover:bg-zinc-50 text-zinc-700 border border-zinc-200 text-sm font-medium rounded-lg inline-flex items-center gap-2 transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+              >
+                <FolderOpen className="w-4 h-4 text-zinc-500" />
+                <span>{t('hero_cta_load')}</span>
+              </button>
             </div>
+          </div>
 
-            {/* Paper Size Choosing Option (Replaced previous static preview card) */}
-            <div className="lg:col-span-5">
-              <div className="bg-white border border-zinc-200 rounded-2xl p-5 sm:p-6 shadow-xs">
-                <div className="flex items-start justify-between gap-3 pb-3.5 mb-4 border-b border-zinc-200">
-                  <div>
-                    <h2 className="text-sm font-semibold text-zinc-900">
-                      {t('paper_size_title')}
-                    </h2>
-                    <p className="text-xs text-zinc-500 mt-0.5">
-                      {t('paper_size_subtitle')}
-                    </p>
-                  </div>
-                  <span className="text-xs font-medium text-blue-600 font-mono-tabular tabular-nums whitespace-nowrap shrink-0">
-                    {activePaper.name} · {activePaper.dimensionsLabel}
-                  </span>
-                </div>
-
-                <div className="space-y-2" role="radiogroup" aria-label={t('paper_size_title')}>
-                  {paperOptions.map((option) => {
-                    const spec = PAPER_SIZES[option.id];
-                    const isSelected = selectedPaperSize === option.id;
-                    return (
-                      <button
-                        key={option.id}
-                        type="button"
-                        role="radio"
-                        aria-checked={isSelected}
-                        onClick={() => onChangePaperSize(option.id)}
-                        className={`w-full px-3.5 py-2.5 rounded-xl border text-left transition-colors flex items-center justify-between gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
-                          isSelected
-                            ? 'border-blue-600 bg-blue-50/50'
-                            : 'border-zinc-200 bg-white hover:border-zinc-300 hover:bg-zinc-50/60'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          {/* Proportional Sheet Miniature */}
-                          <div className="w-9 h-9 flex items-center justify-center shrink-0">
-                            <div
-                              style={{
-                                width: `${option.previewWidth}px`,
-                                height: `${option.previewHeight}px`,
-                              }}
-                              className={`rounded-[2px] border transition-colors ${
-                                isSelected
-                                  ? 'border-blue-600 bg-white shadow-xs'
-                                  : 'border-zinc-300 bg-zinc-50'
-                              }`}
-                            />
-                          </div>
-
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-semibold text-zinc-900">
-                                {spec.name}
-                              </span>
-                              <span className="text-xs text-zinc-500 truncate">
-                                {option.useCase}
-                              </span>
-                            </div>
-                            <div className="text-[11px] text-zinc-500 font-mono-tabular tabular-nums mt-0.5">
-                              {spec.dimensionsLabel}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div
-                          className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 transition-colors ${
-                            isSelected
-                              ? 'border-blue-600 bg-blue-600 text-white'
-                              : 'border-zinc-300 bg-white text-transparent'
-                          }`}
-                        >
-                          <Check className="w-3 h-3" />
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+          {/* 3 Incremental Steps */}
+          <div className="mt-10 pt-7 border-t border-zinc-200 grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div>
+              <h3 className="text-xs font-semibold text-zinc-900">
+                {t('hero_step_1_title')}
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-500 mt-1.5 leading-relaxed">
+                {t('hero_step_1_desc')}
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xs font-semibold text-zinc-900">
+                {t('hero_step_2_title')}
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-500 mt-1.5 leading-relaxed">
+                {t('hero_step_2_desc')}
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xs font-semibold text-zinc-900">
+                {t('hero_step_3_title')}
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-500 mt-1.5 leading-relaxed">
+                {t('hero_step_3_desc')}
+              </p>
             </div>
           </div>
         </section>
 
-        {/* Dividing hairline between explanation/paper-size and template chooser */}
+        {/* Dividing hairline between explanation and template chooser */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="border-t border-zinc-200" />
         </div>
@@ -339,7 +235,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 </p>
               </div>
               <span className="text-xs font-medium text-zinc-500 font-mono-tabular tabular-nums whitespace-nowrap shrink-0">
-                5 {t('nav_templates')} · {activePaper.name} ({activePaper.dimensionsLabel})
+                5 {t('nav_templates')} · {t('format_a4')}
               </span>
             </div>
 
@@ -367,7 +263,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                           {hasDraft ? (
                             <span className="text-blue-600 font-semibold">{t('draft_kept')}</span>
                           ) : (
-                            activePaper.name
+                            t('format_a4')
                           )}
                         </span>
                       </div>

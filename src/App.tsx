@@ -8,7 +8,6 @@ import {
   DocumentType,
   DocumentStyle,
   LanguageCode,
-  PaperSizeId,
   CvData,
   LetterData,
   CensusData,
@@ -217,6 +216,12 @@ export default function App() {
   // Incremental Flow Handlers
   const handleSelectTemplateFromHome = (selectedType: DocumentType) => {
     setDocType(selectedType);
+    if (!keptDraftTypes.includes(selectedType)) {
+      setStyle((prev) => ({
+        ...prev,
+        paperSize: DEFAULT_STYLE.paperSize,
+      }));
+    }
     setSidebarTab('inputs');
     setMobileView('editor');
     setView('editor');
@@ -416,15 +421,13 @@ export default function App() {
     </div>
   ) : null;
 
-  // STEP 1: Hero & Paper Size + Template Selection Window
+  // STEP 1: Hero & Template Selection Window
   if (view === 'home') {
     return (
       <>
         <LandingPage
           currentLang={lang}
           onChangeLang={handleLanguageChange}
-          selectedPaperSize={(style.paperSize || 'a4') as PaperSizeId}
-          onChangePaperSize={(paperSize) => setStyle((prev) => ({ ...prev, paperSize }))}
           onSelectTemplate={handleSelectTemplateFromHome}
           onLoadProgress={handleLoadProgress}
           keptDraftTypes={keptDraftTypes}
@@ -599,17 +602,10 @@ export default function App() {
           </div>
 
           {/* Sidebar Footer Bar */}
-          <div className="px-4 py-2.5 border-t border-zinc-200 bg-zinc-50/70 flex items-center justify-between text-xs text-zinc-500 shrink-0">
+          <div className="px-4 py-2.5 border-t border-zinc-200 bg-zinc-50/70 flex items-center text-xs text-zinc-500 shrink-0">
             <span className="truncate">
               Theme: <strong className="font-semibold text-zinc-900">{currentTheme.name}</strong>
             </span>
-            <button
-              type="button"
-              onClick={handleDownloadPdf}
-              className="text-blue-600 hover:text-blue-700 font-semibold transition-colors whitespace-nowrap shrink-0"
-            >
-              {t('export_now')} &rarr;
-            </button>
           </div>
         </aside>
 

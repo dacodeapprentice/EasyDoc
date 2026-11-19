@@ -9,7 +9,74 @@ import {
   LanguageCode,
   PaperSizeId,
   PaperSizeSpec,
+  DensityChoice,
 } from '../types/document';
+
+export interface PaperLayoutTokens {
+  paper: PaperSizeSpec;
+  isCompact: boolean; // a5
+  isShort: boolean;   // letter
+  isTall: boolean;    // legal
+  isLarge: boolean;   // a3
+  paddingPx: number;
+  headerMbClass: string;
+  sectionMbClass: string;
+  itemGapClass: string;
+  titleSizeClass: string;
+  subtitleSizeClass: string;
+  bodySizeClass: string;
+  metaSizeClass: string;
+  smallSizeClass: string;
+  accentBarWidthClass: string;
+  accentBannerHeightClass: string;
+}
+
+export function getPaperLayout(
+  paperSize: PaperSizeId = 'a4',
+  density: DensityChoice = 'standard'
+): PaperLayoutTokens {
+  const paper = PAPER_SIZES[paperSize] || PAPER_SIZES.a4;
+  const isCompact = paper.id === 'a5';
+  const isShort = paper.id === 'letter';
+  const isTall = paper.id === 'legal';
+  const isLarge = paper.id === 'a3';
+
+  const basePadding = isCompact
+    ? 28
+    : isLarge
+    ? 64
+    : isShort
+    ? 40
+    : isTall
+    ? 48
+    : 46;
+
+  const paddingPx =
+    density === 'compact'
+      ? Math.round(basePadding * 0.78)
+      : density === 'generous'
+      ? Math.round(basePadding * 1.25)
+      : basePadding;
+
+  return {
+    paper,
+    isCompact,
+    isShort,
+    isTall,
+    isLarge,
+    paddingPx,
+    headerMbClass: isCompact ? 'mb-4' : isShort ? 'mb-5' : isTall ? 'mb-8' : isLarge ? 'mb-10' : 'mb-7',
+    sectionMbClass: isCompact ? 'mb-4' : isShort ? 'mb-5' : isTall ? 'mb-8' : isLarge ? 'mb-9' : 'mb-6',
+    itemGapClass: isCompact ? 'space-y-3' : isShort ? 'space-y-3.5' : isTall ? 'space-y-6' : isLarge ? 'space-y-7' : 'space-y-5',
+    titleSizeClass: isCompact ? 'text-xl' : isLarge ? 'text-4xl' : 'text-3xl',
+    subtitleSizeClass: isCompact ? 'text-xs' : isLarge ? 'text-xl' : 'text-base',
+    bodySizeClass: isCompact ? 'text-[11px] leading-relaxed' : isTall ? 'text-sm leading-7' : isLarge ? 'text-base leading-relaxed' : 'text-sm leading-relaxed',
+    metaSizeClass: isCompact ? 'text-[10px]' : isLarge ? 'text-sm' : 'text-xs',
+    smallSizeClass: isCompact ? 'text-[9.5px]' : isLarge ? 'text-xs' : 'text-[11px]',
+    accentBarWidthClass: isCompact ? 'w-1.5' : isLarge ? 'w-3.5' : 'w-2.5',
+    accentBannerHeightClass: isCompact ? 'h-2' : isLarge ? 'h-4' : 'h-3',
+  };
+}
 
 export const PAPER_SIZES: Record<PaperSizeId, PaperSizeSpec> = {
   a4: {
