@@ -2,6 +2,7 @@ import React from 'react';
 import { ReceiptData, DocumentStyle, ColorTheme, LanguageCode } from '../../types/document';
 import { Receipt, CheckCircle2 } from 'lucide-react';
 import { getTranslation } from '../../utils/i18n';
+import { PAPER_SIZES } from '../../data/defaultData';
 
 interface ReceiptDocumentProps {
   data: ReceiptData;
@@ -17,13 +18,28 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
   lang = 'en',
 }) => {
   const t = (k: string) => getTranslation(lang, k);
+  const paper = PAPER_SIZES[style.paperSize || 'a4'];
+  const isCompactPaper = paper.id === 'a5';
+  const isLargePaper = paper.id === 'a3';
   const fontClass = style.fontFamily === 'lora' ? 'font-serif-lora' : 'font-serif-reading';
-  const densityPadding =
-    style.density === 'compact'
-      ? 'p-6 sm:p-8'
+
+  const densityPadding = isCompactPaper
+    ? style.density === 'compact'
+      ? 'p-5'
       : style.density === 'generous'
-      ? 'p-10 sm:p-14'
-      : 'p-8 sm:p-12';
+      ? 'p-8'
+      : 'p-6'
+    : isLargePaper
+    ? style.density === 'compact'
+      ? 'p-12'
+      : style.density === 'generous'
+      ? 'p-18'
+      : 'p-14'
+    : style.density === 'compact'
+    ? 'p-6 sm:p-8'
+    : style.density === 'generous'
+    ? 'p-10 sm:p-14'
+    : 'p-8 sm:p-12';
 
   const safeNum = (v: any, fallback = 0) => {
     const n = parseFloat(v);
@@ -48,9 +64,10 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
 
   return (
     <div
-      className={`bg-white text-slate-900 w-full min-h-[1050px] transition-all relative ${densityPadding} ${fontClass}`}
+      className={`bg-white text-slate-900 w-full transition-all relative ${densityPadding} ${fontClass}`}
       style={{
         boxSizing: 'border-box',
+        minHeight: `${paper.heightPx}px`,
       }}
     >
       {/* Decorative Accents */}
@@ -75,7 +92,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
               <img
                 src={data.logoUrl}
                 alt="Business Logo"
-                className="w-16 h-16 object-contain rounded-md border border-slate-200 shrink-0 bg-white"
+                className={`${isCompactPaper ? 'w-12 h-12' : 'w-16 h-16'} object-contain rounded-md border border-slate-200 shrink-0 bg-white`}
               />
             )}
             <div>
@@ -88,7 +105,9 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
                 </span>
               </div>
               <h1
-                className="font-sans-title text-2xl sm:text-3xl font-extrabold tracking-tight"
+                className={`font-sans-title ${
+                  isCompactPaper ? 'text-xl' : isLargePaper ? 'text-3xl' : 'text-2xl sm:text-3xl'
+                } font-extrabold tracking-tight`}
                 style={{ color: theme.textHeader }}
               >
                 {data.businessName || 'Business Name'}

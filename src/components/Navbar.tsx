@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { DocumentType, LanguageCode } from '../types/document';
-import { Download, Printer, Loader2, Sparkles, Save, FolderOpen, Globe } from 'lucide-react';
+import {
+  Download,
+  Printer,
+  Loader2,
+  Sparkles,
+  Save,
+  FolderOpen,
+  ArrowLeft,
+} from 'lucide-react';
 import { LANGUAGES, getTranslation } from '../utils/i18n';
 
 interface NavbarProps {
   currentType: DocumentType;
-  onSelectType: (type: DocumentType) => void;
+  paperSizeLabel: string;
+  onRequestChangeTemplate: () => void;
   onDownloadPdf: () => void;
   onPrint: () => void;
   isGeneratingPdf: boolean;
@@ -18,7 +27,8 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({
   currentType,
-  onSelectType,
+  paperSizeLabel,
+  onRequestChangeTemplate,
   onDownloadPdf,
   onPrint,
   isGeneratingPdf,
@@ -30,88 +40,64 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const t = (key: string) => getTranslation(currentLang, key);
 
+  const docTitle = t(
+    currentType === 'cv'
+      ? 'curriculum_vitae'
+      : currentType === 'letter'
+      ? 'presentation_letter'
+      : currentType === 'census'
+      ? 'census_record'
+      : currentType === 'receipt'
+      ? 'payment_receipt'
+      : 'certificate_award'
+  );
+
   return (
-    <header className="no-print h-14 px-3 sm:px-6 flex items-center justify-between gap-3 sm:gap-6 border-b border-zinc-200 bg-white sticky top-0 z-40 shrink-0 w-full max-w-full">
-      {/* Zone 1: Single-element Brand Wordmark */}
-      <div className="flex items-center shrink-0">
-        <a
-          href="/"
+    <header className="no-print h-14 px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-6 border-b border-zinc-200 bg-white sticky top-0 z-40 shrink-0 w-full max-w-full">
+      {/* Zone 1: Brand Wordmark + Document Context + Change Template Trigger */}
+      <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+        <button
+          type="button"
+          onClick={onRequestChangeTemplate}
           className="text-lg font-bold tracking-tight text-zinc-900 whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded"
         >
           EasyDoc
-        </a>
+        </button>
+
+        <span className="text-zinc-300 hidden md:inline shrink-0" aria-hidden="true">
+          /
+        </span>
+
+        <div className="hidden md:flex items-center gap-1.5 text-sm min-w-0">
+          <span className="font-medium text-zinc-900 truncate max-w-[170px]">
+            {docTitle}
+          </span>
+          <span className="text-zinc-300 shrink-0" aria-hidden="true">·</span>
+          <span className="text-xs font-mono-tabular tabular-nums text-zinc-500 whitespace-nowrap shrink-0">
+            {paperSizeLabel}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={onRequestChangeTemplate}
+          title={t('change_template')}
+          className="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs font-medium text-zinc-700 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 rounded-lg transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+        >
+          <ArrowLeft className="w-3.5 h-3.5 text-zinc-500" />
+          <span className="hidden sm:inline">{t('change_template')}</span>
+          <span className="sm:hidden">{t('templates')}</span>
+        </button>
       </div>
 
-      {/* Zone 2: Clean single-line text navigation links (visible on xl screens) */}
-      <nav
-        aria-label="Document types"
-        className="hidden xl:flex items-center gap-5 text-sm font-medium text-zinc-600 shrink min-w-0 overflow-x-auto py-1 custom-scrollbar"
-      >
-        <button
-          type="button"
-          onClick={() => onSelectType('cv')}
-          className={`py-1 transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded ${
-            currentType === 'cv'
-              ? 'text-zinc-900 font-semibold underline decoration-blue-600 decoration-2 underline-offset-4'
-              : 'hover:text-zinc-900 hover:underline underline-offset-4'
-          }`}
-        >
-          {t('curriculum_vitae')}
-        </button>
-        <button
-          type="button"
-          onClick={() => onSelectType('letter')}
-          className={`py-1 transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded ${
-            currentType === 'letter'
-              ? 'text-zinc-900 font-semibold underline decoration-blue-600 decoration-2 underline-offset-4'
-              : 'hover:text-zinc-900 hover:underline underline-offset-4'
-          }`}
-        >
-          {t('presentation_letter')}
-        </button>
-        <button
-          type="button"
-          onClick={() => onSelectType('census')}
-          className={`py-1 transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded ${
-            currentType === 'census'
-              ? 'text-zinc-900 font-semibold underline decoration-blue-600 decoration-2 underline-offset-4'
-              : 'hover:text-zinc-900 hover:underline underline-offset-4'
-          }`}
-        >
-          {t('census_record')}
-        </button>
-        <button
-          type="button"
-          onClick={() => onSelectType('receipt')}
-          className={`py-1 transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded ${
-            currentType === 'receipt'
-              ? 'text-zinc-900 font-semibold underline decoration-blue-600 decoration-2 underline-offset-4'
-              : 'hover:text-zinc-900 hover:underline underline-offset-4'
-          }`}
-        >
-          {t('payment_receipt')}
-        </button>
-        <button
-          type="button"
-          onClick={() => onSelectType('certificate')}
-          className={`py-1 transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded ${
-            currentType === 'certificate'
-              ? 'text-zinc-900 font-semibold underline decoration-blue-600 decoration-2 underline-offset-4'
-              : 'hover:text-zinc-900 hover:underline underline-offset-4'
-          }`}
-        >
-          {t('certificate_award')}
-        </button>
-      </nav>
-
-      {/* Zone 3: Actions & Language Switcher */}
+      {/* Zone 2: Actions & Language Switcher */}
       <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 max-w-full">
         {/* Language Switcher - Native selector */}
         <div className="relative shrink-0 flex items-center">
           <select
             value={currentLang}
             onChange={(e) => onChangeLang(e.target.value as LanguageCode)}
-            className="h-9 bg-white hover:bg-zinc-50 text-zinc-900 text-xs font-medium px-2.5 rounded-lg border border-zinc-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
+            className="h-9 bg-white hover:bg-zinc-50 text-zinc-900 text-xs font-medium px-2 sm:px-2.5 rounded-lg border border-zinc-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors max-w-[110px] sm:max-w-none"
             title="Change Language"
             aria-label="Change Language"
           >

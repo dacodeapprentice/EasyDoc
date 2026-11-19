@@ -25,31 +25,31 @@ export const DocumentSelector: React.FC<DocumentSelectorProps> = ({
     {
       type: 'cv',
       title: t('curriculum_vitae'),
-      description: 'Professional resume with career history, education, skills, and optional portrait photo.',
+      description: t('cv_desc'),
       icon: <FileText className="w-4 h-4" />,
     },
     {
       type: 'letter',
       title: t('presentation_letter'),
-      description: 'Formal business correspondence and cover letter with executive letterhead and branding.',
+      description: t('letter_desc'),
       icon: <Mail className="w-4 h-4" />,
     },
     {
       type: 'census',
       title: t('census_record'),
-      description: 'Official household demographic survey with dwelling characteristics and resident roster.',
+      description: t('census_desc'),
       icon: <FileSpreadsheet className="w-4 h-4" />,
     },
     {
       type: 'receipt',
       title: t('payment_receipt'),
-      description: 'Itemized commercial invoice and payment voucher with tax, discount, and balance totals.',
+      description: t('receipt_desc'),
       icon: <Receipt className="w-4 h-4" />,
     },
     {
       type: 'certificate',
       title: t('certificate_award'),
-      description: 'Distinguished certificate of achievement, completion, or honor with dual institutional signatories.',
+      description: t('certificate_desc'),
       icon: <Award className="w-4 h-4" />,
     },
   ];

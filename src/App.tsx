@@ -8,6 +8,7 @@ import {
   DocumentType,
   DocumentStyle,
   LanguageCode,
+  PaperSizeId,
   CvData,
   LetterData,
   CensusData,
@@ -16,6 +17,7 @@ import {
 } from './types/document';
 import {
   COLOR_THEMES,
+  PAPER_SIZES,
   DEFAULT_STYLE,
   DEFAULT_CV,
   DEFAULT_LETTER,
@@ -29,7 +31,8 @@ import {
   getLocalizedCertificate,
 } from './data/defaultData';
 import { Navbar } from './components/Navbar';
-import { DocumentSelector } from './components/DocumentSelector';
+import { LandingPage } from './components/LandingPage';
+import { ChangeTemplateModal } from './components/ChangeTemplateModal';
 import { StyleCustomizer } from './components/StyleCustomizer';
 import { CvForm } from './components/forms/CvForm';
 import { LetterForm } from './components/forms/LetterForm';
@@ -64,7 +67,8 @@ import {
   RefreshCw,
 } from 'lucide-react';
 
-type SidebarTab = 'inputs' | 'style' | 'templates';
+type SidebarTab = 'inputs' | 'style';
+type AppView = 'home' | 'editor';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -119,6 +123,11 @@ class DocumentErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryS
 }
 
 export default function App() {
+  // Incremental View Flow: Hero + Template Chooser ('home') -> Document Editor ('editor')
+  const [view, setView] = useState<AppView>('home');
+  const [showChangeTemplateModal, setShowChangeTemplateModal] = useState<boolean>(false);
+  const [keptDraftTypes, setKeptDraftTypes] = useState<DocumentType[]>([]);
+
   // Document Selection & Styling State
   const [docType, setDocType] = useState<DocumentType>('cv');
   const [style, setStyle] = useState<DocumentStyle>(DEFAULT_STYLE);
@@ -192,13 +201,58 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [docType, style, lang, cvData, letterData, censusData, receiptData, certificateData]);
 
+  const currentPaperSpec = PAPER_SIZES[style.paperSize || 'a4'] || PAPER_SIZES.a4;
+
   // 3. Dynamic Fit to Screen calculation
   const handleFitToScreen = useCallback(() => {
     if (!documentWrapperRef.current) return;
     const availableWidth = documentWrapperRef.current.clientWidth - 24;
-    const fitScale = Math.min(1.15, Math.max(0.32, Number((availableWidth / 794).toFixed(2))));
+    const fitScale = Math.min(
+      1.15,
+      Math.max(0.32, Number((availableWidth / currentPaperSpec.widthPx).toFixed(2)))
+    );
     setZoomLevel(fitScale);
-  }, []);
+  }, [currentPaperSpec.widthPx]);
+
+  // Incremental Flow Handlers
+  const handleSelectTemplateFromHome = (selectedType: DocumentType) => {
+    setDocType(selectedType);
+    setSidebarTab('inputs');
+    setMobileView('editor');
+    setView('editor');
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  };
+
+  const scrollToTemplatePicker = () => {
+    setTimeout(() => {
+      const pickerEl = document.getElementById('template-picker');
+      if (pickerEl) {
+        pickerEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 60);
+  };
+
+  const handleKeepChangesAndGoHome = () => {
+    setKeptDraftTypes((prev) => (prev.includes(docType) ? prev : [...prev, docType]));
+    setShowChangeTemplateModal(false);
+    setView('home');
+    scrollToTemplatePicker();
+    showToast(t('changes_kept_toast'));
+  };
+
+  const handleDiscardChangesAndGoHome = () => {
+    if (docType === 'cv') setCvData(getLocalizedCv(lang));
+    if (docType === 'letter') setLetterData(getLocalizedLetter(lang));
+    if (docType === 'census') setCensusData(getLocalizedCensus(lang));
+    if (docType === 'receipt') setReceiptData(getLocalizedReceipt(lang));
+    if (docType === 'certificate') setCertificateData(getLocalizedCertificate(lang));
+    setStyle((prev) => ({ ...DEFAULT_STYLE, paperSize: prev.paperSize || 'a4' }));
+    setKeptDraftTypes((prev) => prev.filter((item) => item !== docType));
+    setShowChangeTemplateModal(false);
+    setView('home');
+    scrollToTemplatePicker();
+    showToast(t('changes_discarded_toast'));
+  };
 
   // PDF Export
   const handleDownloadPdf = async () => {
@@ -217,7 +271,7 @@ export default function App() {
     }
 
     try {
-      const success = await exportToPdf('document-canvas', filename);
+      const success = await exportToPdf('document-canvas', filename, currentPaperSpec);
       if (success) {
         showToast(`Document downloaded: ${filename}`);
       } else {
@@ -232,7 +286,7 @@ export default function App() {
   };
 
   const handlePrint = () => {
-    printDocument();
+    printDocument(currentPaperSpec);
   };
 
   // Language switch handler: translates UI to guide users; does NOT alter entered content
@@ -279,43 +333,108 @@ export default function App() {
       if (data.censusData) setCensusData(data.censusData);
       if (data.receiptData) setReceiptData(data.receiptData);
       if (data.certificateData) setCertificateData(data.certificateData);
+      setView('editor');
+      setSidebarTab('inputs');
+      window.scrollTo({ top: 0, behavior: 'auto' });
       showToast('Project progress restored successfully!');
     } catch (err: any) {
-      showToast(err?.message || 'Could not load project file.');
+      if (err?.message !== 'No file selected') {
+        showToast(err?.message || 'Could not load project file.');
+      }
     }
   };
 
-  // Auto-fit zoom on mount, window resize, and when entering mobile preview
+  // Auto-fit zoom on mount, window resize, paper size change, and when entering mobile preview or editor view
   useEffect(() => {
     const updateFit = () => {
       if (typeof window !== 'undefined') {
         const screenW = window.innerWidth;
-        if (screenW < 900) {
+        if (screenW < 1024) {
           const available = screenW - 32;
-          const fitScale = Math.min(1.0, Math.max(0.32, Number((available / 794).toFixed(2))));
+          const fitScale = Math.min(
+            1.0,
+            Math.max(0.28, Number((available / currentPaperSpec.widthPx).toFixed(2)))
+          );
+          setZoomLevel(fitScale);
+        } else if (documentWrapperRef.current && documentWrapperRef.current.clientWidth > 0) {
+          const available = documentWrapperRef.current.clientWidth - 48;
+          const fitScale = Math.min(
+            0.95,
+            Math.max(0.32, Number((available / currentPaperSpec.widthPx).toFixed(2)))
+          );
           setZoomLevel(fitScale);
         } else {
-          setZoomLevel(0.95);
+          const approxPreviewW = Math.max(400, screenW - 560);
+          const fitScale = Math.min(
+            0.95,
+            Math.max(0.35, Number((approxPreviewW / currentPaperSpec.widthPx).toFixed(2)))
+          );
+          setZoomLevel(fitScale);
         }
       }
     };
     updateFit();
     window.addEventListener('resize', updateFit);
     return () => window.removeEventListener('resize', updateFit);
-  }, []);
+  }, [view, currentPaperSpec.widthPx]);
 
   useEffect(() => {
-    if (mobileView === 'preview' && typeof window !== 'undefined') {
+    if (view === 'editor' && mobileView === 'preview' && typeof window !== 'undefined') {
       const available = window.innerWidth - 32;
-      if (available < 794) {
-        const fit = Math.min(1.0, Math.max(0.32, Number((available / 794).toFixed(2))));
+      if (available < currentPaperSpec.widthPx) {
+        const fit = Math.min(
+          1.0,
+          Math.max(0.28, Number((available / currentPaperSpec.widthPx).toFixed(2)))
+        );
         setZoomLevel(fit);
       }
     }
-  }, [mobileView]);
+  }, [mobileView, view, currentPaperSpec.widthPx]);
 
   const currentTheme = COLOR_THEMES[style.themeId] || COLOR_THEMES['slate-emerald'];
+  const currentDocTitle = t(
+    docType === 'cv'
+      ? 'curriculum_vitae'
+      : docType === 'letter'
+      ? 'presentation_letter'
+      : docType === 'census'
+      ? 'census_record'
+      : docType === 'receipt'
+      ? 'payment_receipt'
+      : 'certificate_award'
+  );
 
+  // Toast shared across views
+  const toastNode = toastMessage ? (
+    <div
+      role="status"
+      aria-live="polite"
+      className="fixed bottom-5 right-5 z-50 bg-zinc-900 text-white text-xs font-medium py-2.5 px-4 rounded-xl shadow-lg flex items-center gap-2 border border-zinc-800"
+    >
+      <CheckCircle className="w-4 h-4 text-blue-400 shrink-0" />
+      <span>{toastMessage}</span>
+    </div>
+  ) : null;
+
+  // STEP 1: Hero & Paper Size + Template Selection Window
+  if (view === 'home') {
+    return (
+      <>
+        <LandingPage
+          currentLang={lang}
+          onChangeLang={handleLanguageChange}
+          selectedPaperSize={(style.paperSize || 'a4') as PaperSizeId}
+          onChangePaperSize={(paperSize) => setStyle((prev) => ({ ...prev, paperSize }))}
+          onSelectTemplate={handleSelectTemplateFromHome}
+          onLoadProgress={handleLoadProgress}
+          keptDraftTypes={keptDraftTypes}
+        />
+        {toastNode}
+      </>
+    );
+  }
+
+  // STEP 2: Full Document Editor & Live A4 Preview
   return (
     <div className="min-h-screen lg:h-screen bg-zinc-100 text-zinc-900 flex flex-col font-sans-title w-full max-w-full overflow-x-hidden lg:overflow-hidden">
       {/* PDF Export Overlay Modal */}
@@ -329,13 +448,21 @@ export default function App() {
         </div>
       )}
 
+      {/* Keep / Discard Changes Modal when leaving Editor for Template Selection */}
+      <ChangeTemplateModal
+        isOpen={showChangeTemplateModal}
+        currentDocTitle={currentDocTitle}
+        lang={lang}
+        onKeepChanges={handleKeepChangesAndGoHome}
+        onDiscardChanges={handleDiscardChangesAndGoHome}
+        onCancel={() => setShowChangeTemplateModal(false)}
+      />
+
       {/* Top Navigation Bar */}
       <Navbar
         currentType={docType}
-        onSelectType={(t) => {
-          setDocType(t);
-          setSidebarTab('inputs');
-        }}
+        paperSizeLabel={currentPaperSpec.name}
+        onRequestChangeTemplate={() => setShowChangeTemplateModal(true)}
         onDownloadPdf={handleDownloadPdf}
         onPrint={handlePrint}
         isGeneratingPdf={isGeneratingPdf}
@@ -346,17 +473,7 @@ export default function App() {
         onChangeLang={handleLanguageChange}
       />
 
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="fixed bottom-5 right-5 z-50 bg-zinc-900 text-white text-xs font-medium py-2.5 px-4 rounded-xl shadow-lg flex items-center gap-2 border border-zinc-800"
-        >
-          <CheckCircle className="w-4 h-4 text-blue-400 shrink-0" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
+      {toastNode}
 
       {/* Mobile View Toggle Bar */}
       <div className="lg:hidden no-print bg-white border-b border-zinc-200 px-4 py-2 flex items-center justify-between w-full max-w-full">
@@ -388,37 +505,6 @@ export default function App() {
         </div>
       </div>
 
-      {/* Mobile & Medium Screen Document Selector Bar (< xl) */}
-      <div className="xl:hidden no-print bg-zinc-50/90 border-b border-zinc-200 px-3 sm:px-6 py-2 overflow-x-auto flex items-center gap-1.5 custom-scrollbar w-full max-w-full shrink-0">
-        {(['cv', 'letter', 'census', 'receipt', 'certificate'] as DocumentType[]).map((type) => (
-          <button
-            key={type}
-            type="button"
-            onClick={() => {
-              setDocType(type);
-              setSidebarTab('inputs');
-            }}
-            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg transition-colors shrink-0 ${
-              docType === type
-                ? 'bg-blue-600 text-white'
-                : 'bg-white text-zinc-700 border border-zinc-200 hover:bg-zinc-100'
-            }`}
-          >
-            {t(
-              type === 'cv'
-                ? 'curriculum_vitae'
-                : type === 'letter'
-                ? 'presentation_letter'
-                : type === 'census'
-                ? 'census_record'
-                : type === 'receipt'
-                ? 'payment_receipt'
-                : 'certificate_award'
-            )}
-          </button>
-        ))}
-      </div>
-
       {/* Main Workspace Layout */}
       <main className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0 p-2.5 sm:p-4 lg:p-5 gap-4 w-full max-w-full">
         {/* LEFT PANEL: Form Editor & Controls */}
@@ -427,13 +513,36 @@ export default function App() {
             mobileView === 'preview' ? 'max-lg:hidden lg:flex' : 'flex'
           }`}
         >
+          {/* Active Document & Paper Size Context Bar */}
+          <div className="px-4 py-2.5 border-b border-zinc-200 bg-white flex items-center justify-between gap-3 shrink-0">
+            <div className="flex items-center gap-2 min-w-0 text-xs">
+              <span className="text-zinc-500 shrink-0">{t('editing_label')}:</span>
+              <span className="font-semibold text-zinc-900 truncate">{currentDocTitle}</span>
+              <span className="text-zinc-300 shrink-0" aria-hidden="true">·</span>
+              <button
+                type="button"
+                onClick={() => setSidebarTab('style')}
+                title={t('paper_size_title')}
+                className="font-mono-tabular tabular-nums text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded"
+              >
+                {currentPaperSpec.name} ({currentPaperSpec.dimensionsLabel})
+              </button>
+            </div>
+
+            {autoSavedTime && (
+              <span className="text-[11px] text-zinc-500 font-mono-tabular tabular-nums whitespace-nowrap shrink-0">
+                {autoSavedTime}
+              </span>
+            )}
+          </div>
+
           {/* Sidebar Tab Header */}
-          <div className="px-3.5 py-2.5 border-b border-zinc-200 flex items-center justify-between gap-2 bg-zinc-50/70 shrink-0">
-            <div className="flex items-center gap-1 p-1 bg-zinc-200/70 rounded-lg">
+          <div className="px-3.5 py-2 border-b border-zinc-200 flex items-center justify-between gap-2 bg-zinc-50/70 shrink-0">
+            <div className="flex items-center gap-1 p-1 bg-zinc-200/70 rounded-lg w-full">
               <button
                 type="button"
                 onClick={() => setSidebarTab('inputs')}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md flex items-center gap-1.5 transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
+                className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                   sidebarTab === 'inputs'
                     ? 'bg-white text-zinc-900 shadow-xs'
                     : 'text-zinc-600 hover:text-zinc-900'
@@ -446,7 +555,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setSidebarTab('style')}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md flex items-center gap-1.5 transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
+                className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md flex items-center justify-center gap-1.5 transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                   sidebarTab === 'style'
                     ? 'bg-white text-zinc-900 shadow-xs'
                     : 'text-zinc-600 hover:text-zinc-900'
@@ -455,26 +564,7 @@ export default function App() {
                 <SlidersHorizontal className="w-3.5 h-3.5 text-blue-600" />
                 <span>{t('colors_style')}</span>
               </button>
-
-              <button
-                type="button"
-                onClick={() => setSidebarTab('templates')}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md flex items-center gap-1.5 transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
-                  sidebarTab === 'templates'
-                    ? 'bg-white text-zinc-900 shadow-xs'
-                    : 'text-zinc-600 hover:text-zinc-900'
-                }`}
-              >
-                <span>{t('templates')}</span>
-              </button>
             </div>
-
-            {/* Clean unboxed auto-save timestamp */}
-            {autoSavedTime && (
-              <span className="text-[11px] text-zinc-500 font-mono-tabular tabular-nums whitespace-nowrap shrink-0">
-                {autoSavedTime}
-              </span>
-            )}
           </div>
 
           {/* Sidebar Tab Content */}
@@ -506,17 +596,6 @@ export default function App() {
             {sidebarTab === 'style' && (
               <StyleCustomizer style={style} onChange={setStyle} lang={lang} />
             )}
-
-            {sidebarTab === 'templates' && (
-              <DocumentSelector
-                currentType={docType}
-                onSelect={(t) => {
-                  setDocType(t);
-                  setSidebarTab('inputs');
-                }}
-                lang={lang}
-              />
-            )}
           </div>
 
           {/* Sidebar Footer Bar */}
@@ -544,20 +623,12 @@ export default function App() {
           <div className="no-print bg-white border-b border-zinc-200 px-4 py-2 flex items-center justify-between gap-3 shrink-0">
             <div className="flex items-center gap-2 text-xs text-zinc-500 min-w-0 truncate">
               <span className="font-semibold text-zinc-900 capitalize truncate">
-                {t(
-                  docType === 'cv'
-                    ? 'curriculum_vitae'
-                    : docType === 'letter'
-                    ? 'presentation_letter'
-                    : docType === 'census'
-                    ? 'census_record'
-                    : docType === 'receipt'
-                    ? 'payment_receipt'
-                    : 'certificate_award'
-                )}
+                {currentDocTitle}
               </span>
-              <span className="text-zinc-300 hidden sm:inline">·</span>
-              <span className="text-xs text-zinc-500 hidden sm:inline">A4 Standard Format</span>
+              <span className="text-zinc-300 shrink-0">·</span>
+              <span className="text-xs text-zinc-600 font-mono-tabular tabular-nums whitespace-nowrap shrink-0">
+                {currentPaperSpec.name} <span className="hidden sm:inline text-zinc-500">({currentPaperSpec.dimensionsLabel})</span>
+              </span>
               <span className="text-zinc-300 hidden md:inline">·</span>
               <span className="text-xs text-zinc-500 hidden md:inline">
                 Font: {style.fontFamily === 'source-serif' ? 'Source Serif 4' : 'Lora'}
@@ -568,7 +639,7 @@ export default function App() {
             <div className="flex items-center gap-1 shrink-0">
               <button
                 type="button"
-                onClick={() => setZoomLevel((z) => Math.max(0.35, Number((z - 0.1).toFixed(2))))}
+                onClick={() => setZoomLevel((z) => Math.max(0.28, Number((z - 0.1).toFixed(2))))}
                 className="h-8 w-8 inline-flex items-center justify-center text-zinc-600 hover:text-zinc-900 rounded-md hover:bg-zinc-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
                 title="Zoom Out"
                 aria-label="Zoom Out"
@@ -615,7 +686,7 @@ export default function App() {
             {/* Outer container matching exact scaled width so it NEVER overflows the device screen */}
             <div
               style={{
-                width: `${Math.round(794 * zoomLevel)}px`,
+                width: `${Math.round(currentPaperSpec.widthPx * zoomLevel)}px`,
                 maxWidth: '100%',
                 overflow: 'visible',
               }}
@@ -624,9 +695,9 @@ export default function App() {
               <div
                 id="document-scale-wrapper"
                 style={{
-                  width: '794px',
-                  minWidth: '794px',
-                  maxWidth: '794px',
+                  width: `${currentPaperSpec.widthPx}px`,
+                  minWidth: `${currentPaperSpec.widthPx}px`,
+                  maxWidth: `${currentPaperSpec.widthPx}px`,
                   transform: `scale(${zoomLevel})`,
                   transformOrigin: 'top center',
                   transition: 'transform 0.15s ease-out',
@@ -634,7 +705,15 @@ export default function App() {
                 className="doc-page-shadow rounded-sm print-canvas bg-white shrink-0 border border-zinc-200"
               >
                 {/* Single dedicated DOM ID for PDF export and vector print */}
-                <div id="document-canvas" className="w-[794px] min-w-[794px] max-w-[794px] bg-white">
+                <div
+                  id="document-canvas"
+                  style={{
+                    width: `${currentPaperSpec.widthPx}px`,
+                    minWidth: `${currentPaperSpec.widthPx}px`,
+                    maxWidth: `${currentPaperSpec.widthPx}px`,
+                  }}
+                  className="bg-white"
+                >
                   <DocumentErrorBoundary onReset={handleResetData}>
                     {docType === 'cv' && (
                       <CvDocument data={cvData} style={style} theme={currentTheme} lang={lang} />

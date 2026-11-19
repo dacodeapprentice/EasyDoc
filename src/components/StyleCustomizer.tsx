@@ -1,7 +1,7 @@
 import React from 'react';
-import { DocumentStyle, ColorThemeId, FontFamilyChoice, DensityChoice, HeaderStyleChoice, LanguageCode } from '../types/document';
-import { COLOR_THEMES } from '../data/defaultData';
-import { Palette, Type, LayoutTemplate, Sparkles } from 'lucide-react';
+import { DocumentStyle, ColorThemeId, FontFamilyChoice, DensityChoice, HeaderStyleChoice, LanguageCode, PaperSizeId } from '../types/document';
+import { COLOR_THEMES, PAPER_SIZES } from '../data/defaultData';
+import { Palette, Type, LayoutTemplate, Maximize } from 'lucide-react';
 import { getTranslation } from '../utils/i18n';
 
 interface StyleCustomizerProps {
@@ -17,10 +17,43 @@ export const StyleCustomizer: React.FC<StyleCustomizerProps> = ({ style, onChang
     onChange({ ...style, [field]: value });
   };
 
+  const activePaperSize = style.paperSize || 'a4';
+
   return (
     <div className="space-y-5 text-xs font-sans-title">
-      {/* 1. Color Palette */}
+      {/* 0. Paper Size */}
       <div>
+        <div className="flex items-center gap-1.5 font-semibold text-zinc-700 uppercase tracking-wider mb-2.5">
+          <Maximize className="w-3.5 h-3.5 text-blue-600" />
+          <span>{t('paper_size_title')}</span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {(Object.keys(PAPER_SIZES) as PaperSizeId[]).map((sizeId) => {
+            const spec = PAPER_SIZES[sizeId];
+            const isSelected = activePaperSize === sizeId;
+            return (
+              <button
+                key={sizeId}
+                type="button"
+                onClick={() => updateStyle('paperSize', sizeId)}
+                className={`p-2.5 rounded-xl border text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
+                  isSelected
+                    ? 'border-blue-600 bg-blue-50/50 text-blue-700'
+                    : 'border-zinc-200 hover:border-zinc-300 bg-white text-zinc-700'
+                }`}
+              >
+                <div className="text-xs font-semibold text-zinc-900">{spec.name}</div>
+                <div className="text-[10px] text-zinc-500 font-mono-tabular tabular-nums mt-0.5">
+                  {spec.dimensionsLabel}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 1. Color Palette */}
+      <div className="pt-4 border-t border-zinc-200">
         <div className="flex items-center gap-1.5 font-semibold text-zinc-700 uppercase tracking-wider mb-2.5">
           <Palette className="w-3.5 h-3.5 text-blue-600" />
           <span>{t('color_palette')}</span>
@@ -111,7 +144,7 @@ export const StyleCustomizer: React.FC<StyleCustomizerProps> = ({ style, onChang
         <div className="grid grid-cols-3 gap-2">
           {[
             { id: 'compact', label: t('compact'), desc: 'Tight margins' },
-            { id: 'standard', label: t('standard'), desc: 'Standard A4' },
+            { id: 'standard', label: t('standard'), desc: 'Balanced' },
             { id: 'generous', label: t('generous'), desc: 'Airy spacing' },
           ].map((item) => (
             <button

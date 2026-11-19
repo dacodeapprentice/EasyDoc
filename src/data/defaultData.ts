@@ -7,7 +7,67 @@ import {
   CertificateData,
   DocumentStyle,
   LanguageCode,
+  PaperSizeId,
+  PaperSizeSpec,
 } from '../types/document';
+
+export const PAPER_SIZES: Record<PaperSizeId, PaperSizeSpec> = {
+  a4: {
+    id: 'a4',
+    name: 'A4',
+    widthMm: 210,
+    heightMm: 297,
+    widthPx: 794,
+    heightPx: 1123,
+    dimensionsLabel: '210 × 297 mm',
+    jsPdfFormat: 'a4',
+    cssPageSize: 'A4 portrait',
+  },
+  letter: {
+    id: 'letter',
+    name: 'US Letter',
+    widthMm: 215.9,
+    heightMm: 279.4,
+    widthPx: 816,
+    heightPx: 1056,
+    dimensionsLabel: '216 × 279 mm',
+    jsPdfFormat: 'letter',
+    cssPageSize: 'letter portrait',
+  },
+  legal: {
+    id: 'legal',
+    name: 'US Legal',
+    widthMm: 215.9,
+    heightMm: 355.6,
+    widthPx: 816,
+    heightPx: 1344,
+    dimensionsLabel: '216 × 356 mm',
+    jsPdfFormat: 'legal',
+    cssPageSize: 'legal portrait',
+  },
+  a5: {
+    id: 'a5',
+    name: 'A5',
+    widthMm: 148,
+    heightMm: 210,
+    widthPx: 559,
+    heightPx: 794,
+    dimensionsLabel: '148 × 210 mm',
+    jsPdfFormat: 'a5',
+    cssPageSize: 'A5 portrait',
+  },
+  a3: {
+    id: 'a3',
+    name: 'A3',
+    widthMm: 297,
+    heightMm: 420,
+    widthPx: 1123,
+    heightPx: 1587,
+    dimensionsLabel: '297 × 420 mm',
+    jsPdfFormat: 'a3',
+    cssPageSize: 'A3 portrait',
+  },
+};
 
 export const COLOR_THEMES: Record<string, ColorTheme> = {
   'slate-emerald': {
@@ -88,6 +148,7 @@ export const DEFAULT_STYLE: DocumentStyle = {
   density: 'standard',
   headerStyle: 'left-bar',
   showWatermarkOrSeal: true,
+  paperSize: 'a4',
 };
 
 export function getLocalizedCv(lang: LanguageCode): CvData {

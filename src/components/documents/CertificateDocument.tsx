@@ -2,6 +2,7 @@ import React from 'react';
 import { CertificateData, DocumentStyle, ColorTheme, LanguageCode } from '../../types/document';
 import { Award, CheckCircle } from 'lucide-react';
 import { getTranslation } from '../../utils/i18n';
+import { PAPER_SIZES } from '../../data/defaultData';
 
 interface CertificateDocumentProps {
   data: CertificateData;
@@ -17,22 +18,28 @@ export const CertificateDocument: React.FC<CertificateDocumentProps> = ({
   lang = 'en',
 }) => {
   const t = (k: string) => getTranslation(lang, k);
+  const paper = PAPER_SIZES[style.paperSize || 'a4'];
+  const isCompactPaper = paper.id === 'a5';
+  const isLargePaper = paper.id === 'a3';
   const fontClass = style.fontFamily === 'lora' ? 'font-serif-lora' : 'font-serif-reading';
 
   return (
     <div
-      className={`bg-white text-slate-900 w-full min-h-[1050px] transition-all relative p-10 sm:p-14 ${fontClass} flex flex-col justify-between`}
+      className={`bg-white text-slate-900 w-full transition-all relative ${
+        isCompactPaper ? 'p-8' : isLargePaper ? 'p-16' : 'p-10 sm:p-14'
+      } ${fontClass} flex flex-col justify-between`}
       style={{
         boxSizing: 'border-box',
+        minHeight: `${paper.heightPx}px`,
       }}
     >
       {/* Ornate Double Border */}
       <div
-        className="absolute inset-4 sm:inset-6 pointer-events-none border-2"
+        className={`absolute ${isCompactPaper ? 'inset-3' : 'inset-4 sm:inset-6'} pointer-events-none border-2`}
         style={{ borderColor: theme.primary }}
       />
       <div
-        className="absolute inset-5 sm:inset-7 pointer-events-none border"
+        className={`absolute ${isCompactPaper ? 'inset-4' : 'inset-5 sm:inset-7'} pointer-events-none border`}
         style={{ borderColor: theme.border }}
       />
 
@@ -51,7 +58,9 @@ export const CertificateDocument: React.FC<CertificateDocumentProps> = ({
           {data.issuingOrganization || 'Academy of Professional Excellence'}
         </p>
         <h1
-          className="font-sans-title text-2xl sm:text-4xl font-extrabold tracking-tight"
+          className={`font-sans-title ${
+            isCompactPaper ? 'text-xl' : isLargePaper ? 'text-4xl' : 'text-2xl sm:text-4xl'
+          } font-extrabold tracking-tight`}
           style={{ color: theme.textHeader }}
         >
           {data.title || 'Certificate of Achievement'}
@@ -66,7 +75,9 @@ export const CertificateDocument: React.FC<CertificateDocumentProps> = ({
         </p>
 
         <h2
-          className="font-sans-title text-3xl sm:text-4xl font-extrabold"
+          className={`font-sans-title ${
+            isCompactPaper ? 'text-2xl' : isLargePaper ? 'text-5xl' : 'text-3xl sm:text-4xl'
+          } font-extrabold`}
           style={{ color: theme.primaryDark }}
         >
           {data.recipientName || 'Recipient Name'}

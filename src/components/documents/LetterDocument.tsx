@@ -2,6 +2,7 @@ import React from 'react';
 import { LetterData, DocumentStyle, ColorTheme, LanguageCode } from '../../types/document';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { getTranslation } from '../../utils/i18n';
+import { PAPER_SIZES } from '../../data/defaultData';
 
 interface LetterDocumentProps {
   data: LetterData;
@@ -17,19 +18,35 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
   lang = 'en',
 }) => {
   const t = (k: string) => getTranslation(lang, k);
+  const paper = PAPER_SIZES[style.paperSize || 'a4'];
+  const isCompactPaper = paper.id === 'a5';
+  const isLargePaper = paper.id === 'a3';
   const fontClass = style.fontFamily === 'lora' ? 'font-serif-lora' : 'font-serif-reading';
-  const densityPadding =
-    style.density === 'compact'
-      ? 'p-8 sm:p-10'
+
+  const densityPadding = isCompactPaper
+    ? style.density === 'compact'
+      ? 'p-6'
       : style.density === 'generous'
-      ? 'p-12 sm:p-16'
-      : 'p-10 sm:p-14';
+      ? 'p-9'
+      : 'p-7'
+    : isLargePaper
+    ? style.density === 'compact'
+      ? 'p-12'
+      : style.density === 'generous'
+      ? 'p-20'
+      : 'p-16'
+    : style.density === 'compact'
+    ? 'p-8 sm:p-10'
+    : style.density === 'generous'
+    ? 'p-12 sm:p-16'
+    : 'p-10 sm:p-14';
 
   return (
     <div
-      className={`bg-white text-slate-900 w-full min-h-[1050px] transition-all relative ${densityPadding} ${fontClass}`}
+      className={`bg-white text-slate-900 w-full transition-all relative ${densityPadding} ${fontClass}`}
       style={{
         boxSizing: 'border-box',
+        minHeight: `${paper.heightPx}px`,
       }}
     >
       {/* Decorative Accents */}
@@ -47,19 +64,21 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
       )}
 
       {/* Header: Sender Letterhead */}
-      <header className="border-b pb-6 mb-8 border-slate-200">
+      <header className={`border-b ${isCompactPaper ? 'pb-4 mb-5' : 'pb-6 mb-8'} border-slate-200`}>
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div className="flex items-center gap-4">
             {data.logoUrl && (
               <img
                 src={data.logoUrl}
                 alt="Logo"
-                className="w-14 h-14 object-contain rounded-md border border-slate-200 shrink-0"
+                className={`${isCompactPaper ? 'w-11 h-11' : 'w-14 h-14'} object-contain rounded-md border border-slate-200 shrink-0`}
               />
             )}
             <div>
               <h1
-                className="font-sans-title text-2xl sm:text-3xl font-extrabold tracking-tight"
+                className={`font-sans-title ${
+                  isCompactPaper ? 'text-xl' : isLargePaper ? 'text-3xl' : 'text-2xl sm:text-3xl'
+                } font-extrabold tracking-tight`}
                 style={{ color: theme.textHeader }}
               >
                 {data.senderName || t('sender_name')}

@@ -22,6 +22,19 @@ export interface ColorTheme {
 export type FontFamilyChoice = 'source-serif' | 'lora';
 export type DensityChoice = 'compact' | 'standard' | 'generous';
 export type HeaderStyleChoice = 'minimal' | 'left-bar' | 'banner' | 'classic';
+export type PaperSizeId = 'a4' | 'letter' | 'legal' | 'a5' | 'a3';
+
+export interface PaperSizeSpec {
+  id: PaperSizeId;
+  name: string;
+  widthMm: number;
+  heightMm: number;
+  widthPx: number;
+  heightPx: number;
+  dimensionsLabel: string;
+  jsPdfFormat: 'a4' | 'letter' | 'legal' | 'a5' | 'a3';
+  cssPageSize: string;
+}
 
 export interface DocumentStyle {
   themeId: ColorThemeId;
@@ -29,6 +42,7 @@ export interface DocumentStyle {
   density: DensityChoice;
   headerStyle: HeaderStyleChoice;
   showWatermarkOrSeal: boolean;
+  paperSize: PaperSizeId;
 }
 
 // 1. CV Data Types

@@ -2,6 +2,7 @@ import React from 'react';
 import { CvData, DocumentStyle, ColorTheme, LanguageCode } from '../../types/document';
 import { Mail, Phone, MapPin, Globe } from 'lucide-react';
 import { getTranslation } from '../../utils/i18n';
+import { PAPER_SIZES } from '../../data/defaultData';
 
 interface CvDocumentProps {
   data: CvData;
@@ -17,19 +18,35 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
   lang = 'en',
 }) => {
   const t = (k: string) => getTranslation(lang, k);
+  const paper = PAPER_SIZES[style.paperSize || 'a4'];
+  const isCompactPaper = paper.id === 'a5';
+  const isLargePaper = paper.id === 'a3';
   const fontClass = style.fontFamily === 'lora' ? 'font-serif-lora' : 'font-serif-reading';
-  const densityPadding =
-    style.density === 'compact'
-      ? 'p-8 sm:p-10'
+
+  const densityPadding = isCompactPaper
+    ? style.density === 'compact'
+      ? 'p-6'
       : style.density === 'generous'
-      ? 'p-12 sm:p-16'
-      : 'p-10 sm:p-12';
+      ? 'p-9'
+      : 'p-7'
+    : isLargePaper
+    ? style.density === 'compact'
+      ? 'p-12'
+      : style.density === 'generous'
+      ? 'p-20'
+      : 'p-16'
+    : style.density === 'compact'
+    ? 'p-8 sm:p-10'
+    : style.density === 'generous'
+    ? 'p-12 sm:p-16'
+    : 'p-10 sm:p-12';
 
   return (
     <div
-      className={`bg-white text-slate-900 w-full min-h-[1050px] transition-all relative ${densityPadding} ${fontClass}`}
+      className={`bg-white text-slate-900 w-full transition-all relative ${densityPadding} ${fontClass}`}
       style={{
         boxSizing: 'border-box',
+        minHeight: `${paper.heightPx}px`,
       }}
     >
       {/* Decorative Header Accent */}
@@ -47,16 +64,20 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
       )}
 
       {/* Header Section */}
-      <header className="mb-8 flex items-start justify-between gap-4">
+      <header className={`${isCompactPaper ? 'mb-5' : 'mb-8'} flex items-start justify-between gap-4`}>
         <div className="flex-1 min-w-0">
           <h1
-            className="font-sans-title text-3xl sm:text-4xl font-extrabold tracking-tight"
+            className={`font-sans-title ${
+              isCompactPaper ? 'text-2xl' : isLargePaper ? 'text-4xl' : 'text-3xl sm:text-4xl'
+            } font-extrabold tracking-tight`}
             style={{ color: theme.textHeader }}
           >
             {data.fullName || 'Candidate Full Name'}
           </h1>
           <p
-            className="font-sans-title text-lg sm:text-xl font-semibold mt-1"
+            className={`font-sans-title ${
+              isCompactPaper ? 'text-sm' : 'text-lg sm:text-xl'
+            } font-semibold mt-1`}
             style={{ color: theme.primary }}
           >
             {data.professionalTitle || 'Professional Title'}

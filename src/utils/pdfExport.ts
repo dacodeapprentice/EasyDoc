@@ -1,5 +1,7 @@
 import jsPDFImport, { jsPDF as jsPDFNamed } from 'jspdf';
 import html2canvas from 'html2canvas';
+import { PaperSizeSpec } from '../types/document';
+import { PAPER_SIZES } from '../data/defaultData';
 
 // Robust constructor resolution for jsPDF across both ESM and CommonJS bundles
 const JsPdfConstructor: any =
@@ -11,9 +13,18 @@ const JsPdfConstructor: any =
     ? (jsPDFImport as any).default
     : (jsPDFImport as any)?.jsPDF;
 
-export function printDocument(): void {
+export function printDocument(paperSpec: PaperSizeSpec = PAPER_SIZES.a4): void {
   const scaleWrapper = document.getElementById('document-scale-wrapper');
   const previousTransform = scaleWrapper ? scaleWrapper.style.transform : '';
+
+  // Dynamically apply the selected paper size to @page before invoking browser print
+  let pageStyle = document.getElementById('easydoc-print-page-style') as HTMLStyleElement | null;
+  if (!pageStyle) {
+    pageStyle = document.createElement('style');
+    pageStyle.id = 'easydoc-print-page-style';
+    document.head.appendChild(pageStyle);
+  }
+  pageStyle.textContent = `@media print { @page { size: ${paperSpec.cssPageSize}; margin: 10mm; } }`;
 
   if (scaleWrapper) {
     scaleWrapper.style.transform = 'none';
@@ -28,16 +39,22 @@ export function printDocument(): void {
 
 /**
  * Converts the vector DOM document into a high-resolution pixelated raster PDF file
- * and triggers immediate download to the user's device.
+ * matching the selected paper dimensions and triggers immediate download.
  */
-export async function exportToPdf(elementId: string, filename: string): Promise<boolean> {
+export async function exportToPdf(
+  elementId: string,
+  filename: string,
+  paperSpec: PaperSizeSpec = PAPER_SIZES.a4
+): Promise<boolean> {
   const source = document.getElementById(elementId);
   if (!source) {
     console.error(`Target document element #${elementId} not found.`);
     return false;
   }
 
-  // 1. Temporarily unscale the wrapper so the element is rendered at 100% natural resolution (794px width)
+  const targetWidthPx = paperSpec.widthPx;
+
+  // 1. Temporarily unscale the wrapper so the element is rendered at 100% natural paper resolution
   const scaleWrapper = document.getElementById('document-scale-wrapper');
   const prevTransform = scaleWrapper ? scaleWrapper.style.transform : '';
   const prevTransition = scaleWrapper ? scaleWrapper.style.transition : '';
@@ -60,16 +77,16 @@ export async function exportToPdf(elementId: string, filename: string): Promise<
       position: fixed !important;
       left: 0 !important;
       top: 0 !important;
-      width: 794px !important;
+      width: ${targetWidthPx}px !important;
       z-index: -99999 !important;
       background-color: #ffffff !important;
       pointer-events: none !important;
       overflow: visible !important;
     `;
     const clone = source.cloneNode(true) as HTMLElement;
-    clone.style.width = '794px';
-    clone.style.minWidth = '794px';
-    clone.style.maxWidth = '794px';
+    clone.style.width = `${targetWidthPx}px`;
+    clone.style.minWidth = `${targetWidthPx}px`;
+    clone.style.maxWidth = `${targetWidthPx}px`;
     clone.style.transform = 'none';
     clone.style.backgroundColor = '#ffffff';
     clone.style.display = 'block';
@@ -111,7 +128,7 @@ export async function exportToPdf(elementId: string, filename: string): Promise<
 
     // 2. High-resolution pixelated rasterization (2x scale for sharp, high-DPI graphics)
     const canvas = await html2canvas(targetElement, {
-      scale: 2.0, // High-resolution pixel density (1588px wide for 794px A4)
+      scale: 2.0,
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',
@@ -158,16 +175,16 @@ export async function exportToPdf(elementId: string, filename: string): Promise<
     // 3. Convert high-resolution pixelated canvas into JPEG image data
     const imgData = canvas.toDataURL('image/jpeg', 0.98);
 
-    // 4. Instantiate jsPDF using robust constructor
+    // 4. Instantiate jsPDF using exact selected paper format
     const pdf = new JsPdfConstructor({
       orientation: 'portrait',
       unit: 'mm',
-      format: 'a4',
+      format: paperSpec.jsPdfFormat,
       compress: true,
     });
 
-    const pdfWidth = pdf.internal.pageSize.getWidth(); // 210 mm
-    const pdfHeight = pdf.internal.pageSize.getHeight(); // 297 mm
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
     const imgHeight = (canvas.height * pdfWidth) / canvas.width;
 
     let heightLeft = imgHeight;
