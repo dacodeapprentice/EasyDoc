@@ -1,91 +1,124 @@
 import React from 'react';
-import { CvData, DocumentStyle, ColorTheme, LanguageCode } from '../../types/document';
+import {
+  CvData,
+  DocumentAssetBundle,
+  DocumentStyle,
+  ColorTheme,
+  LanguageCode,
+} from '../../types/document';
 import { Mail, Phone, MapPin, Globe } from 'lucide-react';
 import { getTranslation } from '../../utils/i18n';
-import { getPaperLayout } from '../../data/defaultData';
+import { resolveDocumentAssets } from '../../assets/documentAssets';
+import {
+  DocumentHeaderBand,
+  DocumentLogo,
+  DocumentSectionHeading,
+  DocumentSheet,
+  DocumentTagList,
+  PlaceholderText,
+  hasText,
+} from './TemplatePrimitives';
 
 interface CvDocumentProps {
   data: CvData;
   style: DocumentStyle;
-  theme: ColorTheme;
+  theme?: ColorTheme;
+  assets?: DocumentAssetBundle;
   lang?: LanguageCode;
 }
 
 export const CvDocument: React.FC<CvDocumentProps> = ({
   data,
   style,
-  theme,
+  assets,
   lang = 'en',
 }) => {
   const t = (k: string) => getTranslation(lang, k);
-  const layout = getPaperLayout(style.paperSize, style.density);
-  const { paper, isCompact, isShort, isTall, isLarge } = layout;
-  const fontClass = style.fontFamily === 'lora' ? 'font-serif-lora' : 'font-serif-reading';
+  const mounted = assets || resolveDocumentAssets(style);
+  const { theme, layout } = mounted;
+  const { isCompact, isShort, isTall, isLarge } = layout;
 
-  const sectionTitleClass = `font-sans-title ${layout.metaSizeClass} font-bold uppercase tracking-wider pb-1.5 ${
-    isCompact ? 'mb-2' : isLarge ? 'mb-4' : 'mb-3'
-  } border-b`;
+  const hasAnyContact =
+    hasText(data.email) || hasText(data.phone) || hasText(data.location) || hasText(data.website);
 
-  const renderExperience = () =>
-    data.experience &&
-    data.experience.length > 0 && (
+  const renderExperience = () => {
+    const entries = data.experience && data.experience.length > 0 ? data.experience : [];
+    if (entries.length === 0) return null;
+
+    return (
       <section className={`${layout.sectionMbClass} print-avoid-break`}>
-        <h2
-          className={sectionTitleClass}
-          style={{ borderColor: theme.border, color: theme.primaryDark }}
-        >
-          {t('work_experience')}
-        </h2>
+        <DocumentSectionHeading assets={mounted} title={t('work_experience')} />
 
         <div className={layout.itemGapClass}>
-          {data.experience.map((exp) => (
-            <div key={exp.id} className="print-avoid-break">
-              <div
-                className={`flex ${
-                  isCompact ? 'flex-col gap-0.5' : 'flex-row items-baseline justify-between gap-3'
-                } font-sans-title`}
-              >
-                <div className={`font-bold text-slate-900 ${isCompact ? 'text-xs' : isLarge ? 'text-base' : 'text-sm'}`}>
-                  {exp.role}{' '}
-                  <span className="font-normal text-slate-600">at</span>{' '}
-                  <span className="font-semibold text-slate-800">{exp.company}</span>
-                </div>
-                <div className={`${layout.smallSizeClass} font-medium text-slate-500 font-mono-tabular shrink-0`}>
-                  {exp.period}
-                  {exp.location && ` · ${exp.location}`}
-                </div>
-              </div>
+          {entries.map((exp) => {
+            const visibleHighlights =
+              exp.highlights && exp.highlights.some(hasText)
+                ? exp.highlights.filter(hasText)
+                : exp.highlights && exp.highlights.length > 0
+                ? exp.highlights
+                : [];
 
-              {exp.highlights && exp.highlights.length > 0 && (
-                <ul
-                  className={`mt-1.5 list-disc list-outside pl-4 ${
-                    isCompact ? 'space-y-0.5 text-[10.5px]' : isLarge ? 'space-y-1.5 text-sm' : 'space-y-1 text-xs'
-                  } text-slate-700 leading-normal`}
+            return (
+              <div key={exp.id} className="print-avoid-break">
+                <div
+                  className={`flex ${
+                    isCompact ? 'flex-col gap-0.5' : 'flex-row items-baseline justify-between gap-3'
+                  } font-sans-title`}
                 >
-                  {exp.highlights.map((h, i) => (
-                    <li key={i}>{h}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
+                  <div className={`font-bold text-slate-900 ${isCompact ? 'text-xs' : isLarge ? 'text-base' : 'text-sm'}`}>
+                    <PlaceholderText value={exp.role} placeholder="Role or Position Title" />
+                    <span className="font-normal text-slate-500"> · </span>
+                    <PlaceholderText
+                      value={exp.company}
+                      placeholder="Organization Name"
+                      className="font-semibold text-slate-800"
+                    />
+                  </div>
+                  <div className={`${layout.smallSizeClass} font-medium text-slate-500 font-mono-tabular shrink-0`}>
+                    <PlaceholderText value={exp.period} placeholder="Start – End" />
+                    {(hasText(exp.location) || (!hasText(exp.period) && !hasText(exp.role))) && (
+                      <>
+                        {' · '}
+                        <PlaceholderText value={exp.location} placeholder="Location" />
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {visibleHighlights.length > 0 && (
+                  <ul
+                    className={`mt-1.5 list-disc list-outside pl-4 ${
+                      isCompact ? 'space-y-0.5 text-[10.5px]' : isLarge ? 'space-y-1.5 text-sm' : 'space-y-1 text-xs'
+                    } text-slate-700 leading-normal`}
+                  >
+                    {visibleHighlights.map((h, i) => (
+                      <li key={i}>
+                        <PlaceholderText
+                          value={h}
+                          placeholder="Describe a key responsibility, task, or outcome here."
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
         </div>
       </section>
     );
+  };
 
-  const renderEducation = () =>
-    data.education &&
-    data.education.length > 0 && (
+  const renderEducation = () => {
+    const entries = data.education && data.education.length > 0 ? data.education : [];
+    if (entries.length === 0) return null;
+
+    return (
       <section className={`${layout.sectionMbClass} print-avoid-break`}>
-        <h2
-          className={sectionTitleClass}
-          style={{ borderColor: theme.border, color: theme.primaryDark }}
-        >
-          {t('education')}
-        </h2>
+        <DocumentSectionHeading assets={mounted} title={t('education')} />
 
         <div className={isCompact ? 'space-y-2' : isLarge ? 'space-y-4' : 'space-y-3'}>
-          {data.education.map((edu) => (
+          {entries.map((edu) => (
             <div
               key={edu.id}
               className={`flex ${
@@ -94,76 +127,61 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
             >
               <div>
                 <div className={`font-bold text-slate-900 ${isCompact ? 'text-xs' : isLarge ? 'text-base' : 'text-sm'}`}>
-                  {edu.degree}
+                  <PlaceholderText value={edu.degree} placeholder="Degree or Certification Title" />
                 </div>
                 <div className={`${layout.metaSizeClass} text-slate-600 font-medium`}>
-                  {edu.institution}
-                  {edu.details && (
+                  <PlaceholderText value={edu.institution} placeholder="Institution Name" />
+                  {(hasText(edu.details) || !hasText(edu.degree)) && (
                     <span className="italic text-slate-500 font-normal">
                       {' '}
-                      — {edu.details}
+                      — <PlaceholderText value={edu.details} placeholder="Field of study or notes" />
                     </span>
                   )}
                 </div>
               </div>
               <div className={`${layout.smallSizeClass} font-medium text-slate-500 font-mono-tabular shrink-0`}>
-                {edu.year}
+                <PlaceholderText value={edu.year} placeholder="Year" />
               </div>
             </div>
           ))}
         </div>
       </section>
     );
+  };
 
-  const renderSkills = () =>
-    data.skills &&
-    data.skills.length > 0 && (
+  const renderSkills = () => {
+    const hasSkills = data.skills && data.skills.length > 0;
+    const displaySkills = hasSkills ? data.skills : ['Skill Placeholder 1', 'Skill Placeholder 2', 'Skill Placeholder 3'];
+
+    return (
       <div>
-        <h2
-          className={`font-sans-title ${layout.metaSizeClass} font-bold uppercase tracking-wider pb-1.5 mb-2 border-b`}
-          style={{ borderColor: theme.border, color: theme.primaryDark }}
-        >
-          {t('key_competencies')}
-        </h2>
-        <div className="flex flex-wrap gap-1.5 pt-1">
-          {data.skills.map((skill, index) => (
-            <span
-              key={index}
-              className={`${
-                isCompact ? 'px-2 py-0.5 text-[10px]' : isLarge ? 'px-3 py-1.5 text-sm' : 'px-2.5 py-1 text-xs'
-              } rounded font-medium border font-sans-title`}
-              style={{
-                backgroundColor: theme.primaryLight,
-                color: theme.primaryDark,
-                borderColor: `${theme.primary}20`,
-              }}
-            >
-              {skill}
-            </span>
-          ))}
-        </div>
+        <DocumentSectionHeading assets={mounted} title={t('key_competencies')} className="mb-2" />
+        <DocumentTagList assets={mounted} items={displaySkills} isPlaceholder={!hasSkills} />
       </div>
     );
+  };
 
-  const renderLanguages = () =>
-    data.languages &&
-    data.languages.length > 0 && (
+  const renderLanguages = () => {
+    const hasLangs = data.languages && data.languages.length > 0;
+    const displayLangs = hasLangs ? data.languages : ['Language 1 (Level)', 'Language 2 (Level)'];
+
+    return (
       <div>
-        <h2
-          className={`font-sans-title ${layout.metaSizeClass} font-bold uppercase tracking-wider pb-1.5 mb-2 border-b`}
-          style={{ borderColor: theme.border, color: theme.primaryDark }}
-        >
-          {t('languages')}
-        </h2>
+        <DocumentSectionHeading assets={mounted} title={t('languages')} className="mb-2" />
         <div className={`flex flex-wrap gap-2 ${layout.metaSizeClass} text-slate-700 pt-1 font-sans-title`}>
-          {data.languages.map((langItem, index) => (
-            <span key={index} className="inline-flex items-center gap-1 font-medium">
+          {displayLangs.map((langItem, index) => (
+            <span
+              key={index}
+              className={`inline-flex items-center gap-1 font-medium ${
+                hasLangs ? '' : 'text-slate-400 italic font-normal'
+              }`}
+            >
               <span
                 className="w-1.5 h-1.5 rounded-full"
                 style={{ backgroundColor: theme.primary }}
               />
               <span>{langItem}</span>
-              {index < data.languages.length - 1 && (
+              {index < displayLangs.length - 1 && (
                 <span className="text-slate-300 ml-1">·</span>
               )}
             </span>
@@ -171,111 +189,93 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
         </div>
       </div>
     );
+  };
 
   return (
-    <div
-      className={`bg-white text-slate-900 w-full transition-all relative ${fontClass}`}
-      style={{
-        boxSizing: 'border-box',
-        minHeight: `${paper.heightPx}px`,
-        padding: `${layout.paddingPx}px`,
-        overflowWrap: 'anywhere',
-      }}
-    >
-      {/* Decorative Header Accent */}
-      {style.headerStyle === 'left-bar' && (
-        <div
-          className={`absolute left-0 top-0 bottom-0 ${layout.accentBarWidthClass}`}
-          style={{ backgroundColor: theme.primary }}
-        />
-      )}
-      {style.headerStyle === 'banner' && (
-        <div
-          className={`absolute left-0 top-0 right-0 ${layout.accentBannerHeightClass}`}
-          style={{ backgroundColor: theme.primary }}
-        />
-      )}
+    <DocumentSheet assets={mounted}>
+      {/* CV Header Structure */}
+      <DocumentHeaderBand
+        assets={mounted}
+        divided={false}
+        left={
+          <div>
+            <h1
+              className={`font-sans-title ${layout.titleSizeClass} font-extrabold tracking-tight`}
+              style={hasText(data.fullName) ? { color: theme.textHeader } : undefined}
+            >
+              <PlaceholderText value={data.fullName} placeholder="Full Name Here" />
+            </h1>
+            <p
+              className={`font-sans-title ${
+                isCompact ? 'text-xs' : isLarge ? 'text-xl' : 'text-lg'
+              } font-semibold mt-1`}
+              style={hasText(data.professionalTitle) ? { color: theme.primary } : undefined}
+            >
+              <PlaceholderText value={data.professionalTitle} placeholder="Professional Title Here" />
+            </p>
 
-      {/* Header Section */}
-      <header className={`${layout.headerMbClass} flex items-start justify-between gap-4`}>
-        <div className="flex-1 min-w-0">
-          <h1
-            className={`font-sans-title ${layout.titleSizeClass} font-extrabold tracking-tight`}
-            style={{ color: theme.textHeader }}
-          >
-            {data.fullName || 'Candidate Full Name'}
-          </h1>
-          <p
-            className={`font-sans-title ${
-              isCompact ? 'text-xs' : isLarge ? 'text-xl' : 'text-lg'
-            } font-semibold mt-1`}
-            style={{ color: theme.primary }}
-          >
-            {data.professionalTitle || 'Professional Title'}
-          </p>
-
-          {/* Contact Details Bar */}
-          <div
-            className={`flex flex-wrap items-center ${
-              isCompact ? 'gap-x-3 gap-y-1 text-[10px] mt-2 pt-2' : isLarge ? 'gap-x-6 gap-y-2 text-sm mt-4 pt-4' : 'gap-x-4 gap-y-1.5 text-xs mt-3 pt-3'
-            } text-slate-600 border-t border-slate-200 font-sans-title`}
-          >
-            {data.email && (
-              <span className="inline-flex items-center gap-1.5">
-                <Mail className={`${isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'}`} style={{ color: theme.primary }} />
-                <span>{data.email}</span>
-              </span>
-            )}
-            {data.phone && (
-              <span className="inline-flex items-center gap-1.5">
-                <Phone className={`${isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'}`} style={{ color: theme.primary }} />
-                <span>{data.phone}</span>
-              </span>
-            )}
-            {data.location && (
-              <span className="inline-flex items-center gap-1.5">
-                <MapPin className={`${isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'}`} style={{ color: theme.primary }} />
-                <span>{data.location}</span>
-              </span>
-            )}
-            {data.website && (
-              <span className="inline-flex items-center gap-1.5">
-                <Globe className={`${isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'}`} style={{ color: theme.primary }} />
-                <span>{data.website}</span>
-              </span>
-            )}
+            <div
+              className={`flex flex-wrap items-center ${
+                isCompact
+                  ? 'gap-x-3 gap-y-1 text-[10px] mt-2 pt-2'
+                  : isLarge
+                  ? 'gap-x-6 gap-y-2 text-sm mt-4 pt-4'
+                  : 'gap-x-4 gap-y-1.5 text-xs mt-3 pt-3'
+              } text-slate-600 border-t border-slate-200 font-sans-title`}
+            >
+              {(!hasAnyContact || hasText(data.email)) && (
+                <span className="inline-flex items-center gap-1.5">
+                  <Mail className={`${isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'}`} style={{ color: theme.primary }} />
+                  <PlaceholderText value={data.email} placeholder="email@example.com" />
+                </span>
+              )}
+              {(!hasAnyContact || hasText(data.phone)) && (
+                <span className="inline-flex items-center gap-1.5">
+                  <Phone className={`${isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'}`} style={{ color: theme.primary }} />
+                  <PlaceholderText value={data.phone} placeholder="Phone number here" />
+                </span>
+              )}
+              {(!hasAnyContact || hasText(data.location)) && (
+                <span className="inline-flex items-center gap-1.5">
+                  <MapPin className={`${isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'}`} style={{ color: theme.primary }} />
+                  <PlaceholderText value={data.location} placeholder="City, Country" />
+                </span>
+              )}
+              {(!hasAnyContact || hasText(data.website)) && (
+                <span className="inline-flex items-center gap-1.5">
+                  <Globe className={`${isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'}`} style={{ color: theme.primary }} />
+                  <PlaceholderText value={data.website} placeholder="website.example.com" />
+                </span>
+              )}
+            </div>
           </div>
-        </div>
-
-        {/* User Photo */}
-        {data.photoUrl && (
-          <div className="shrink-0 ml-2">
-            <img
-              src={data.photoUrl}
-              alt={data.fullName || 'Profile'}
-              className={`${
-                isCompact ? 'w-16 h-16' : isLarge ? 'w-28 h-28' : 'w-24 h-24'
-              } rounded-full object-cover border-2 shadow-sm`}
-              style={{ borderColor: theme.primary }}
-            />
-          </div>
-        )}
-      </header>
+        }
+        right={
+          data.photoUrl ? (
+            <div className="ml-2">
+              <DocumentLogo
+                src={data.photoUrl}
+                alt={data.fullName || 'Profile'}
+                assets={mounted}
+                variant="circle"
+              />
+            </div>
+          ) : undefined
+        }
+      />
 
       {/* Profile Summary */}
-      {data.summary && (
-        <section className={`${layout.sectionMbClass} print-avoid-break`}>
-          <h2
-            className={sectionTitleClass}
-            style={{ borderColor: theme.border, color: theme.primaryDark }}
-          >
-            {t('profile_summary')}
-          </h2>
-          <p className={`${layout.bodySizeClass} text-slate-700`}>{data.summary}</p>
-        </section>
-      )}
+      <section className={`${layout.sectionMbClass} print-avoid-break`}>
+        <DocumentSectionHeading assets={mounted} title={t('profile_summary')} />
+        <p className={`${layout.bodySizeClass} text-slate-700`}>
+          <PlaceholderText
+            value={data.summary}
+            placeholder="Write a brief overview of your background, skills, and core focus areas here."
+          />
+        </p>
+      </section>
 
-      {/* A3 Large Format uses a 2-column broadsheet composition; smaller sheets use crisp vertical flow */}
+      {/* Paper-aware CV Structural Grid */}
       {isLarge ? (
         <div className="grid grid-cols-12 gap-10 items-start">
           <div className="col-span-8">{renderExperience()}</div>
@@ -299,6 +299,6 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
           </div>
         </>
       )}
-    </div>
+    </DocumentSheet>
   );
 };

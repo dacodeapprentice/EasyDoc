@@ -10,6 +10,7 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import { LANGUAGES, getTranslation } from '../utils/i18n';
+import { TEMPLATE_REGISTRY } from '../data/templateRegistry';
 
 interface NavbarProps {
   currentType: DocumentType;
@@ -40,17 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const t = (key: string) => getTranslation(currentLang, key);
 
-  const docTitle = t(
-    currentType === 'cv'
-      ? 'curriculum_vitae'
-      : currentType === 'letter'
-      ? 'presentation_letter'
-      : currentType === 'census'
-      ? 'census_record'
-      : currentType === 'receipt'
-      ? 'payment_receipt'
-      : 'certificate_award'
-  );
+  const docTitle = t(TEMPLATE_REGISTRY[currentType].titleKey);
 
   return (
     <header className="no-print h-14 px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-6 border-b border-zinc-200 bg-white sticky top-0 z-40 shrink-0 w-full max-w-full">
@@ -133,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <button
           type="button"
           onClick={onResetData}
-          title="Reload preset realistic example data"
+          title={t('reset_template_tooltip')}
           className="hidden md:inline-flex h-9 items-center gap-1.5 px-2.5 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 hover:bg-zinc-100 rounded-lg transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
         >
           <Sparkles className="w-3.5 h-3.5 text-blue-600" />

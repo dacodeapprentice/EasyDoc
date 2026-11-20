@@ -30,12 +30,12 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
   const addMember = () => {
     const newMember: HouseholdMember = {
       id: `mem-${Date.now()}`,
-      fullName: 'New Occupant',
-      relationship: 'Child / Relative / Resident',
-      age: 18,
-      gender: 'Other',
-      educationLevel: 'Secondary Education',
-      occupation: 'Student / Employed',
+      fullName: '',
+      relationship: '',
+      age: '',
+      gender: '',
+      educationLevel: '',
+      occupation: '',
     };
     updateField('householdMembers', [...data.householdMembers, newMember]);
   };
@@ -85,7 +85,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                 value={data.censusCode}
                 onChange={(e) => updateField('censusCode', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="CENSUS-2026-0921"
+                placeholder="Record ID here"
               />
             </div>
 
@@ -110,7 +110,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                 value={data.districtRegion}
                 onChange={(e) => updateField('districtRegion', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Pacific Northwest Metropolitan"
+                placeholder="District or region here"
               />
             </div>
 
@@ -123,7 +123,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                 value={data.enumerationArea}
                 onChange={(e) => updateField('enumerationArea', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="ENUM-DIST-4402"
+                placeholder="Area code here"
               />
             </div>
           </div>
@@ -159,7 +159,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                 value={data.headOfHousehold}
                 onChange={(e) => updateField('headOfHousehold', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Gabriel Montgomery Vance"
+                placeholder="Head of household name"
               />
             </div>
 
@@ -172,7 +172,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                 value={data.residentialAddress}
                 onChange={(e) => updateField('residentialAddress', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="742 Evergreen Terrace, Unit 4B"
+                placeholder="Street address, unit, city"
               />
             </div>
 
@@ -185,7 +185,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                 value={data.dwellingType}
                 onChange={(e) => updateField('dwellingType', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Single-Family Detached Residence"
+                placeholder="Dwelling type here"
               />
             </div>
 
@@ -198,7 +198,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                 value={data.tenureStatus}
                 onChange={(e) => updateField('tenureStatus', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Owner-Occupied (Mortgaged)"
+                placeholder="Tenure status here"
               />
             </div>
 
@@ -210,8 +210,11 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                 type="number"
                 min="1"
                 value={data.totalRooms}
-                onChange={(e) => updateField('totalRooms', Number(e.target.value) || 1)}
+                onChange={(e) =>
+                  updateField('totalRooms', e.target.value === '' ? '' : Number(e.target.value))
+                }
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
+                placeholder="0"
               />
             </div>
 
@@ -224,7 +227,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                 value={data.primaryWaterSource}
                 onChange={(e) => updateField('primaryWaterSource', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Municipal Piped Supply"
+                placeholder="Water source here"
               />
             </div>
 
@@ -237,7 +240,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                 value={data.electricityAccess}
                 onChange={(e) => updateField('electricityAccess', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Grid Connected + Solar Array"
+                placeholder="Electricity access here"
               />
             </div>
           </div>
@@ -306,7 +309,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                       value={member.fullName}
                       onChange={(e) => updateMember(member.id, 'fullName', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Full legal occupant name"
+                      placeholder="Resident full name"
                     />
                   </div>
 
@@ -319,7 +322,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                       value={member.relationship}
                       onChange={(e) => updateMember(member.id, 'relationship', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Head of Household, Spouse, Son, etc."
+                      placeholder="Relationship to head"
                     />
                   </div>
 
@@ -331,8 +334,15 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                         min="0"
                         max="125"
                         value={member.age}
-                        onChange={(e) => updateMember(member.id, 'age', Number(e.target.value) || 0)}
+                        onChange={(e) =>
+                          updateMember(
+                            member.id,
+                            'age',
+                            e.target.value === '' ? '' : Number(e.target.value)
+                          )
+                        }
                         className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        placeholder="0"
                       />
                     </div>
                     <div>
@@ -342,7 +352,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                         value={member.gender}
                         onChange={(e) => updateMember(member.id, 'gender', e.target.value)}
                         className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                        placeholder="Female / Male"
+                        placeholder="Gender"
                       />
                     </div>
                   </div>
@@ -354,7 +364,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                       value={member.educationLevel}
                       onChange={(e) => updateMember(member.id, 'educationLevel', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Higher Degree / Secondary"
+                      placeholder="Education level"
                     />
                   </div>
 
@@ -365,7 +375,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                       value={member.occupation}
                       onChange={(e) => updateMember(member.id, 'occupation', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Infrastructure Analyst / Student"
+                      placeholder="Occupation"
                     />
                   </div>
                 </div>
@@ -404,7 +414,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                 value={data.officialNotes}
                 onChange={(e) => updateField('officialNotes', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Occupants verified in-person. Code compliant..."
+                placeholder="Add general observations or verification notes here..."
               />
             </div>
 
@@ -418,7 +428,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                   value={data.enumeratorName}
                   onChange={(e) => updateField('enumeratorName', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="Sarah Jenkins (ENUM-9021)"
+                  placeholder="Enumerator name here"
                 />
               </div>
 
@@ -431,7 +441,7 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
                   value={data.supervisorSignatureRef}
                   onChange={(e) => updateField('supervisorSignatureRef', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="District Supervisor: Marcus Aurelius Thorne (VERIFIED)"
+                  placeholder="Supervisor verification reference here"
                 />
               </div>
             </div>

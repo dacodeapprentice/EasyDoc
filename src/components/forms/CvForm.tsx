@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CvData, WorkExperienceItem, EducationItem, LanguageCode } from '../../types/document';
 import { Plus, Trash2, ChevronDown, ChevronUp, User, Briefcase, GraduationCap, Wrench } from 'lucide-react';
 import { ImageUploadCrop } from '../ImageUploadCrop';
@@ -29,15 +29,38 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
     onChange({ ...data, [field]: value });
   };
 
+  const [skillsDraft, setSkillsDraft] = useState(() => data.skills.join(', '));
+  const [languagesDraft, setLanguagesDraft] = useState(() => data.languages.join(', '));
+
+  useEffect(() => {
+    const parsed = skillsDraft
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    if (parsed.join('|') !== data.skills.join('|')) {
+      setSkillsDraft(data.skills.join(', '));
+    }
+  }, [data.skills]);
+
+  useEffect(() => {
+    const parsed = languagesDraft
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    if (parsed.join('|') !== data.languages.join('|')) {
+      setLanguagesDraft(data.languages.join(', '));
+    }
+  }, [data.languages]);
+
   // Experience Handlers
   const addExperience = () => {
     const newItem: WorkExperienceItem = {
       id: `exp-${Date.now()}`,
-      role: 'Senior Position',
-      company: 'Company / Organization',
-      location: 'City, Country',
-      period: '2024 – Present',
-      highlights: ['Key responsibility or project accomplishment.'],
+      role: '',
+      company: '',
+      location: '',
+      period: '',
+      highlights: [''],
     };
     updateField('experience', [newItem, ...data.experience]);
   };
@@ -89,10 +112,10 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
   const addEducation = () => {
     const newItem: EducationItem = {
       id: `edu-${Date.now()}`,
-      degree: 'Master of Science / Bachelor Degree',
-      institution: 'University / Institute',
-      year: '2024',
-      details: 'Honors or specialization focus',
+      degree: '',
+      institution: '',
+      year: '',
+      details: '',
     };
     updateField('education', [newItem, ...data.education]);
   };
@@ -149,7 +172,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                   value={data.fullName}
                   onChange={(e) => updateField('fullName', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs text-zinc-900 bg-zinc-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="Eleanor Vance"
+                  placeholder="Full name here"
                 />
               </div>
 
@@ -162,7 +185,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                   value={data.professionalTitle}
                   onChange={(e) => updateField('professionalTitle', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs text-zinc-900 bg-zinc-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="Senior Architectural Project Lead"
+                  placeholder="Job title here"
                 />
               </div>
 
@@ -175,7 +198,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                   value={data.email}
                   onChange={(e) => updateField('email', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs text-zinc-900 bg-zinc-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="e.vance@studio.org"
+                  placeholder="email@example.com"
                 />
               </div>
 
@@ -188,7 +211,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                   value={data.phone}
                   onChange={(e) => updateField('phone', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs text-zinc-900 bg-zinc-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="+1 (555) 019-2834"
+                  placeholder="Phone number here"
                 />
               </div>
 
@@ -201,7 +224,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                   value={data.location}
                   onChange={(e) => updateField('location', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs text-zinc-900 bg-zinc-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="Seattle, WA"
+                  placeholder="City, Country"
                 />
               </div>
 
@@ -214,7 +237,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                   value={data.website}
                   onChange={(e) => updateField('website', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs text-zinc-900 bg-zinc-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="eleanorvance.design"
+                  placeholder="website.example.com"
                 />
               </div>
             </div>
@@ -247,7 +270,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
               value={data.summary}
               onChange={(e) => updateField('summary', e.target.value)}
               className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs text-zinc-900 bg-zinc-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 leading-relaxed transition-colors"
-              placeholder="Dedicated architectural project director with over eleven years of experience leading multi-disciplinary sustainable civic and commercial developments..."
+              placeholder="Write a brief overview of your background and key strengths..."
             />
           </div>
         )}
@@ -316,7 +339,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       value={exp.role}
                       onChange={(e) => updateExperience(exp.id, 'role', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Principal Architectural Lead"
+                      placeholder="Role or position title"
                     />
                   </div>
                   <div>
@@ -328,7 +351,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       value={exp.company}
                       onChange={(e) => updateExperience(exp.id, 'company', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Cascadia Urban Design Studio"
+                      placeholder="Organization name"
                     />
                   </div>
                   <div>
@@ -340,7 +363,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       value={exp.period}
                       onChange={(e) => updateExperience(exp.id, 'period', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="2021 – Present"
+                      placeholder="Start – End"
                     />
                   </div>
                   <div>
@@ -352,7 +375,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       value={exp.location}
                       onChange={(e) => updateExperience(exp.id, 'location', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Seattle, WA"
+                      placeholder="City, Country"
                     />
                   </div>
                 </div>
@@ -380,7 +403,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                           value={h}
                           onChange={(e) => updateHighlight(exp.id, hIdx, e.target.value)}
                           className="flex-1 px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                          placeholder="Accomplishment or project outcome..."
+                          placeholder="Describe a key responsibility or outcome..."
                         />
                         <button
                           type="button"
@@ -462,7 +485,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       value={edu.degree}
                       onChange={(e) => updateEducation(edu.id, 'degree', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Master of Architecture (M.Arch), Honors"
+                      placeholder="Degree or certification title"
                     />
                   </div>
                   <div>
@@ -474,7 +497,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       value={edu.institution}
                       onChange={(e) => updateEducation(edu.id, 'institution', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="University of Washington"
+                      placeholder="Institution name"
                     />
                   </div>
                   <div>
@@ -486,7 +509,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       value={edu.year}
                       onChange={(e) => updateEducation(edu.id, 'year', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="2013"
+                      placeholder="Year or period"
                     />
                   </div>
                   <div className="sm:col-span-2">
@@ -498,7 +521,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       value={edu.details}
                       onChange={(e) => updateEducation(edu.id, 'details', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Focus on Sustainable Structural Systems & Adaptive Reuse."
+                      placeholder="Specialization or additional details"
                     />
                   </div>
                 </div>
@@ -536,15 +559,17 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
               </label>
               <input
                 type="text"
-                value={data.skills.join(', ')}
-                onChange={(e) =>
+                value={skillsDraft}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  setSkillsDraft(raw);
                   updateField(
                     'skills',
-                    e.target.value.split(',').map((s) => s.trim()).filter(Boolean)
-                  )
-                }
+                    raw.split(',').map((s) => s.trim()).filter(Boolean)
+                  );
+                }}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Sustainable Civic Architecture, LEED AP, Mass Timber, Revit..."
+                placeholder="Skill 1, Skill 2, Skill 3"
               />
             </div>
 
@@ -554,15 +579,17 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
               </label>
               <input
                 type="text"
-                value={data.languages.join(', ')}
-                onChange={(e) =>
+                value={languagesDraft}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  setLanguagesDraft(raw);
                   updateField(
                     'languages',
-                    e.target.value.split(',').map((s) => s.trim()).filter(Boolean)
-                  )
-                }
+                    raw.split(',').map((s) => s.trim()).filter(Boolean)
+                  );
+                }}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="English (Native), French (Professional), Spanish (Conversational)"
+                placeholder="Language 1, Language 2"
               />
             </div>
           </div>

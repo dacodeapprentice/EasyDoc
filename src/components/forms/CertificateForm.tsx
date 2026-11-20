@@ -63,7 +63,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.recipientName}
                 onChange={(e) => updateField('recipientName', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 font-semibold transition-colors"
-                placeholder="Genevieve Moreau"
+                placeholder="Recipient name here"
               />
             </div>
 
@@ -76,7 +76,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.title}
                 onChange={(e) => updateField('title', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Certificate of Professional Excellence"
+                placeholder="Certificate title here"
               />
             </div>
 
@@ -89,7 +89,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.issuingOrganization}
                 onChange={(e) => updateField('issuingOrganization', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="The Green Heritage Engineering Institute"
+                placeholder="Organization or institution name"
               />
             </div>
 
@@ -102,7 +102,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.courseOrAchievement}
                 onChange={(e) => updateField('courseOrAchievement', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Advanced Sustainable Infrastructure & Carbon Lifecycle Assessment"
+                placeholder="Course, program, or distinction name"
               />
             </div>
 
@@ -115,7 +115,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.dateOfAward}
                 onChange={(e) => updateField('dateOfAward', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="October 1, 2026"
+                placeholder="Date here"
               />
             </div>
 
@@ -128,7 +128,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.certificateId}
                 onChange={(e) => updateField('certificateId', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="CERT-2026-ENV-4921"
+                placeholder="Certificate ID here"
               />
             </div>
 
@@ -141,7 +141,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.description}
                 onChange={(e) => updateField('description', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="In formal recognition of exceptional dedication, rigorous technical analysis..."
+                placeholder="Write a generalized citation or commendation statement here..."
               />
             </div>
           </div>
@@ -177,7 +177,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.primarySignatoryName}
                 onChange={(e) => updateField('primarySignatoryName', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Dr. Henrik Lindqvist"
+                placeholder="Primary signatory name"
               />
             </div>
 
@@ -190,7 +190,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.primarySignatoryTitle}
                 onChange={(e) => updateField('primarySignatoryTitle', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Dean of Engineering & Sustainable Systems"
+                placeholder="Primary signatory title"
               />
             </div>
 
@@ -203,7 +203,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.secondarySignatoryName}
                 onChange={(e) => updateField('secondarySignatoryName', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Margaret O’Connor, PE"
+                placeholder="Secondary signatory name"
               />
             </div>
 
@@ -216,7 +216,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.secondarySignatoryTitle}
                 onChange={(e) => updateField('secondarySignatoryTitle', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Executive Director of Institutional Accreditation"
+                placeholder="Secondary signatory title"
               />
             </div>
           </div>

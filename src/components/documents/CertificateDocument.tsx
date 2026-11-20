@@ -1,50 +1,59 @@
 import React from 'react';
-import { CertificateData, DocumentStyle, ColorTheme, LanguageCode } from '../../types/document';
+import {
+  CertificateData,
+  DocumentAssetBundle,
+  DocumentStyle,
+  ColorTheme,
+  LanguageCode,
+} from '../../types/document';
 import { Award, CheckCircle } from 'lucide-react';
 import { getTranslation } from '../../utils/i18n';
-import { getPaperLayout } from '../../data/defaultData';
+import { resolveDocumentAssets } from '../../assets/documentAssets';
+import {
+  DocumentOrnateFrame,
+  DocumentSheet,
+  PlaceholderText,
+  hasText,
+} from './TemplatePrimitives';
 
 interface CertificateDocumentProps {
   data: CertificateData;
   style: DocumentStyle;
-  theme: ColorTheme;
+  theme?: ColorTheme;
+  assets?: DocumentAssetBundle;
   lang?: LanguageCode;
 }
 
 export const CertificateDocument: React.FC<CertificateDocumentProps> = ({
   data,
   style,
-  theme,
+  assets,
   lang = 'en',
 }) => {
   const t = (k: string) => getTranslation(lang, k);
-  const layout = getPaperLayout(style.paperSize, style.density);
-  const { paper, isCompact, isLarge } = layout;
-  const fontClass = style.fontFamily === 'lora' ? 'font-serif-lora' : 'font-serif-reading';
+  const mounted = assets || resolveDocumentAssets(style);
+  const { theme, layout } = mounted;
+  const { isCompact, isLarge } = layout;
+
+  const framedPadding = Math.round(
+    (isCompact ? 32 : isLarge ? 72 : 52) * mounted.density.paddingScale
+  );
+
+  const hasAwardFields =
+    hasText(data.recipientName) ||
+    hasText(data.title) ||
+    hasText(data.issuingOrganization) ||
+    hasText(data.courseOrAchievement);
 
   return (
-    <div
-      className={`bg-white text-slate-900 w-full transition-all relative ${fontClass} flex flex-col justify-between`}
-      style={{
-        boxSizing: 'border-box',
-        minHeight: `${paper.heightPx}px`,
-        padding: `${isCompact ? 32 : isLarge ? 72 : 52}px`,
-        overflowWrap: 'anywhere',
-      }}
+    <DocumentSheet
+      assets={mounted}
+      className="flex flex-col justify-between"
+      paddingPxOverride={framedPadding}
+      showHeaderAccent={false}
     >
-      {/* Ornate Double Border */}
-      <div
-        className={`absolute ${
-          isCompact ? 'inset-3' : isLarge ? 'inset-8' : 'inset-5'
-        } pointer-events-none border-2`}
-        style={{ borderColor: theme.primary }}
-      />
-      <div
-        className={`absolute ${
-          isCompact ? 'inset-4' : isLarge ? 'inset-10' : 'inset-6'
-        } pointer-events-none border`}
-        style={{ borderColor: theme.border }}
-      />
+      {/* Ornate Double Border Frame */}
+      <DocumentOrnateFrame assets={mounted} />
 
       {/* Top Header & Emblem */}
       <div className="relative text-center pt-4">
@@ -63,20 +72,23 @@ export const CertificateDocument: React.FC<CertificateDocumentProps> = ({
         </div>
 
         <p className={`font-sans-title ${layout.metaSizeClass} font-bold uppercase tracking-widest text-slate-500 mb-1`}>
-          {data.issuingOrganization || 'Academy of Professional Excellence'}
+          <PlaceholderText
+            value={data.issuingOrganization}
+            placeholder="Organization or Institution Name"
+          />
         </p>
         <h1
           className={`font-sans-title ${
             isCompact ? 'text-xl' : isLarge ? 'text-4xl' : 'text-3xl'
           } font-extrabold tracking-tight`}
-          style={{ color: theme.textHeader }}
+          style={hasText(data.title) ? { color: theme.textHeader } : undefined}
         >
-          {data.title || 'Certificate of Achievement'}
+          <PlaceholderText value={data.title} placeholder="Certificate Title Here" />
         </h1>
         <div className="w-16 h-1 mx-auto mt-3 rounded-full" style={{ backgroundColor: theme.primary }} />
       </div>
 
-      {/* Main Body */}
+      {/* Main Centered Award Body */}
       <div
         className={`relative text-center my-8 ${
           isCompact ? 'max-w-sm space-y-2.5' : isLarge ? 'max-w-3xl space-y-6' : 'max-w-xl space-y-4'
@@ -90,9 +102,9 @@ export const CertificateDocument: React.FC<CertificateDocumentProps> = ({
           className={`font-sans-title ${
             isCompact ? 'text-2xl' : isLarge ? 'text-5xl' : 'text-4xl'
           } font-extrabold`}
-          style={{ color: theme.primaryDark }}
+          style={hasText(data.recipientName) ? { color: theme.primaryDark } : undefined}
         >
-          {data.recipientName || 'Recipient Name'}
+          <PlaceholderText value={data.recipientName} placeholder="Recipient Name Here" />
         </h2>
 
         <p
@@ -100,11 +112,13 @@ export const CertificateDocument: React.FC<CertificateDocumentProps> = ({
             isCompact ? 'text-xs' : isLarge ? 'text-lg' : 'text-base'
           } leading-relaxed text-slate-700 italic pt-2`}
         >
-          {data.description ||
-            'For demonstrated mastery, rigorous academic scholarship, and distinguished technical leadership.'}
+          <PlaceholderText
+            value={data.description}
+            placeholder="Write a generalized commendation or citation statement describing the achievement here."
+          />
         </p>
 
-        {data.courseOrAchievement && (
+        {(!hasAwardFields || hasText(data.courseOrAchievement)) && (
           <div
             className={`font-sans-title ${
               isCompact ? 'text-xs py-1.5 px-3' : isLarge ? 'text-lg py-3 px-6' : 'text-base py-2 px-4'
@@ -115,13 +129,18 @@ export const CertificateDocument: React.FC<CertificateDocumentProps> = ({
               borderColor: `${theme.primary}30`,
             }}
           >
-            {data.courseOrAchievement}
+            <PlaceholderText
+              value={data.courseOrAchievement}
+              placeholder="Program, Course, or Distinction Name"
+            />
           </div>
         )}
 
         <div className={`font-sans-title ${layout.metaSizeClass} text-slate-500 pt-3`}>
           {t('awarded_on')}:{' '}
-          <strong className="text-slate-800">{data.dateOfAward || 'October 1, 2026'}</strong>
+          <strong className="text-slate-800">
+            <PlaceholderText value={data.dateOfAward} placeholder="Date Here" />
+          </strong>
         </div>
       </div>
 
@@ -131,14 +150,16 @@ export const CertificateDocument: React.FC<CertificateDocumentProps> = ({
           isCompact ? 'gap-3' : 'gap-6'
         } font-sans-title ${layout.metaSizeClass}`}
       >
-        {/* Primary Signatory */}
         <div className="text-left min-w-0">
           <div className={`${isCompact ? 'w-24' : isLarge ? 'w-48' : 'w-36'} h-0.5 bg-slate-400 mb-2`} />
-          <div className="font-bold text-slate-900">{data.primarySignatoryName}</div>
-          <div className={`${layout.smallSizeClass} text-slate-500`}>{data.primarySignatoryTitle}</div>
+          <div className="font-bold text-slate-900">
+            <PlaceholderText value={data.primarySignatoryName} placeholder="Primary Signatory Name" />
+          </div>
+          <div className={`${layout.smallSizeClass} text-slate-500`}>
+            <PlaceholderText value={data.primarySignatoryTitle} placeholder="Signatory Title" />
+          </div>
         </div>
 
-        {/* Center Seal */}
         <div className="text-center shrink-0">
           <div
             className={`${
@@ -155,17 +176,20 @@ export const CertificateDocument: React.FC<CertificateDocumentProps> = ({
             </span>
           </div>
           <div className={`${isCompact ? 'text-[8px]' : 'text-[9px]'} font-mono-tabular text-slate-400 mt-1`}>
-            {data.certificateId || 'CERT-0000'}
+            <PlaceholderText value={data.certificateId} placeholder="CERT-0000" />
           </div>
         </div>
 
-        {/* Secondary Signatory */}
         <div className="text-right min-w-0">
           <div className={`${isCompact ? 'w-24' : isLarge ? 'w-48' : 'w-36'} h-0.5 bg-slate-400 mb-2 ml-auto`} />
-          <div className="font-bold text-slate-900">{data.secondarySignatoryName}</div>
-          <div className={`${layout.smallSizeClass} text-slate-500`}>{data.secondarySignatoryTitle}</div>
+          <div className="font-bold text-slate-900">
+            <PlaceholderText value={data.secondarySignatoryName} placeholder="Secondary Signatory Name" />
+          </div>
+          <div className={`${layout.smallSizeClass} text-slate-500`}>
+            <PlaceholderText value={data.secondarySignatoryTitle} placeholder="Signatory Title" />
+          </div>
         </div>
       </div>
-    </div>
+    </DocumentSheet>
   );
 };

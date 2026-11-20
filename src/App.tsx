@@ -8,41 +8,25 @@ import {
   DocumentType,
   DocumentStyle,
   LanguageCode,
-  CvData,
-  LetterData,
-  CensusData,
-  ReceiptData,
-  CertificateData,
 } from './types/document';
 import {
-  COLOR_THEMES,
-  PAPER_SIZES,
   DEFAULT_STYLE,
-  DEFAULT_CV,
-  DEFAULT_LETTER,
-  DEFAULT_CENSUS,
-  DEFAULT_RECEIPT,
-  DEFAULT_CERTIFICATE,
-  getLocalizedCv,
-  getLocalizedLetter,
-  getLocalizedCensus,
-  getLocalizedReceipt,
-  getLocalizedCertificate,
+  resolveDocumentAssets,
+} from './assets/documentAssets';
+import {
+  DEFAULT_TEMPLATE_CONTENT,
+  TemplateDefaultMap,
+  getDefaultTemplateContent,
 } from './data/defaultData';
+import {
+  TEMPLATE_REGISTRY,
+  mountTemplateDocument,
+  renderTemplateForm,
+} from './data/templateRegistry';
 import { Navbar } from './components/Navbar';
 import { LandingPage } from './components/LandingPage';
 import { ChangeTemplateModal } from './components/ChangeTemplateModal';
 import { StyleCustomizer } from './components/StyleCustomizer';
-import { CvForm } from './components/forms/CvForm';
-import { LetterForm } from './components/forms/LetterForm';
-import { CensusForm } from './components/forms/CensusForm';
-import { ReceiptForm } from './components/forms/ReceiptForm';
-import { CertificateForm } from './components/forms/CertificateForm';
-import { CvDocument } from './components/documents/CvDocument';
-import { LetterDocument } from './components/documents/LetterDocument';
-import { CensusDocument } from './components/documents/CensusDocument';
-import { ReceiptDocument } from './components/documents/ReceiptDocument';
-import { CertificateDocument } from './components/documents/CertificateDocument';
 import { exportToPdf, printDocument } from './utils/pdfExport';
 import {
   saveProjectToFile,
@@ -112,7 +96,7 @@ class DocumentErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryS
             className="px-3.5 py-2 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-1.5"
           >
             <RefreshCw className="w-3.5 h-3.5" />
-            <span>Reset to Example</span>
+            <span>Reset Template</span>
           </button>
         </div>
       );
@@ -127,19 +111,21 @@ export default function App() {
   const [showChangeTemplateModal, setShowChangeTemplateModal] = useState<boolean>(false);
   const [keptDraftTypes, setKeptDraftTypes] = useState<DocumentType[]>([]);
 
-  // Document Selection & Styling State
+  // Active Structural Template & Mounted Common Style Assets
   const [docType, setDocType] = useState<DocumentType>('cv');
   const [style, setStyle] = useState<DocumentStyle>(DEFAULT_STYLE);
   const [sidebarTab, setSidebarTab] = useState<SidebarTab>('inputs');
   const [mobileView, setMobileView] = useState<'editor' | 'preview'>('editor');
   const [lang, setLang] = useState<LanguageCode>('en');
 
-  // Document Data Stores
-  const [cvData, setCvData] = useState<CvData>(DEFAULT_CV);
-  const [letterData, setLetterData] = useState<LetterData>(DEFAULT_LETTER);
-  const [censusData, setCensusData] = useState<CensusData>(DEFAULT_CENSUS);
-  const [receiptData, setReceiptData] = useState<ReceiptData>(DEFAULT_RECEIPT);
-  const [certificateData, setCertificateData] = useState<CertificateData>(DEFAULT_CERTIFICATE);
+  // Canonical Template Content Store
+  const [contents, setContents] = useState<TemplateDefaultMap>(() => ({
+    cv: structuredClone(DEFAULT_TEMPLATE_CONTENT.cv),
+    letter: structuredClone(DEFAULT_TEMPLATE_CONTENT.letter),
+    census: structuredClone(DEFAULT_TEMPLATE_CONTENT.census),
+    receipt: structuredClone(DEFAULT_TEMPLATE_CONTENT.receipt),
+    certificate: structuredClone(DEFAULT_TEMPLATE_CONTENT.certificate),
+  }));
 
   // UI & Zoom Controls
   const [zoomLevel, setZoomLevel] = useState<number>(0.95);
@@ -149,6 +135,49 @@ export default function App() {
 
   const documentWrapperRef = useRef<HTMLDivElement>(null);
   const t = (key: string) => getTranslation(lang, key);
+
+  // Pick up common style assets (fonts, colors, paper size, density, header accents) into one mountable bundle
+  const mountedAssets = resolveDocumentAssets(style);
+  const currentPaperSpec = mountedAssets.paper;
+  const currentTheme = mountedAssets.theme;
+  const activeTemplateMeta = TEMPLATE_REGISTRY[docType];
+  const currentDocTitle = t(activeTemplateMeta.titleKey);
+
+  const updateTemplateContent = useCallback(
+    <K extends DocumentType>(type: K, updated: TemplateDefaultMap[K]) => {
+      setContents((prev) => ({
+        ...prev,
+        [type]: updated,
+      }));
+    },
+    []
+  );
+
+  const buildSavedPayload = useCallback((): SavedProjectState => ({
+    version: '2.1',
+    savedAt: new Date().toISOString(),
+    currentType: docType,
+    style,
+    lang,
+    cvData: contents.cv,
+    letterData: contents.letter,
+    censusData: contents.census,
+    receiptData: contents.receipt,
+    certificateData: contents.certificate,
+  }), [docType, style, lang, contents]);
+
+  const applySavedPayload = useCallback((saved: SavedProjectState) => {
+    if (saved.currentType) setDocType(saved.currentType);
+    if (saved.style) setStyle(saved.style);
+    if (saved.lang) setLang(saved.lang);
+    setContents((prev) => ({
+      cv: saved.cvData || prev.cv,
+      letter: saved.letterData || prev.letter,
+      census: saved.censusData || prev.census,
+      receipt: saved.receiptData || prev.receipt,
+      certificate: saved.certificateData || prev.certificate,
+    }));
+  }, []);
 
   const showToast = (message: string) => {
     setToastMessage(message);
@@ -162,45 +191,24 @@ export default function App() {
     const saved = loadAutoSave();
     if (saved) {
       try {
-        if (saved.currentType) setDocType(saved.currentType);
-        if (saved.style) setStyle(saved.style);
-        if (saved.lang) setLang(saved.lang);
-        if (saved.cvData) setCvData(saved.cvData);
-        if (saved.letterData) setLetterData(saved.letterData);
-        if (saved.censusData) setCensusData(saved.censusData);
-        if (saved.receiptData) setReceiptData(saved.receiptData);
-        if (saved.certificateData) setCertificateData(saved.certificateData);
+        applySavedPayload(saved);
         setAutoSavedTime('Restored');
       } catch (err) {
         console.warn('Could not restore autosave:', err);
       }
     }
-  }, []);
+  }, [applySavedPayload]);
 
   // 2. Debounced Automatic Persistence to localStorage
   useEffect(() => {
     const timer = setTimeout(() => {
-      const payload: SavedProjectState = {
-        version: '2.1',
-        savedAt: new Date().toISOString(),
-        currentType: docType,
-        style,
-        lang,
-        cvData,
-        letterData,
-        censusData,
-        receiptData,
-        certificateData,
-      };
-      saveAutoSave(payload);
+      saveAutoSave(buildSavedPayload());
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       setAutoSavedTime(timeStr);
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [docType, style, lang, cvData, letterData, censusData, receiptData, certificateData]);
-
-  const currentPaperSpec = PAPER_SIZES[style.paperSize || 'a4'] || PAPER_SIZES.a4;
+  }, [buildSavedPayload]);
 
   // 3. Dynamic Fit to Screen calculation
   const handleFitToScreen = useCallback(() => {
@@ -246,11 +254,7 @@ export default function App() {
   };
 
   const handleDiscardChangesAndGoHome = () => {
-    if (docType === 'cv') setCvData(getLocalizedCv(lang));
-    if (docType === 'letter') setLetterData(getLocalizedLetter(lang));
-    if (docType === 'census') setCensusData(getLocalizedCensus(lang));
-    if (docType === 'receipt') setReceiptData(getLocalizedReceipt(lang));
-    if (docType === 'certificate') setCertificateData(getLocalizedCertificate(lang));
+    updateTemplateContent(docType, getDefaultTemplateContent(docType));
     setStyle((prev) => ({ ...DEFAULT_STYLE, paperSize: prev.paperSize || 'a4' }));
     setKeptDraftTypes((prev) => prev.filter((item) => item !== docType));
     setShowChangeTemplateModal(false);
@@ -262,18 +266,7 @@ export default function App() {
   // PDF Export
   const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
-    let filename = 'document.pdf';
-    if (docType === 'cv') {
-      filename = `CV_${cvData.fullName.replace(/\s+/g, '_') || 'Resume'}.pdf`;
-    } else if (docType === 'letter') {
-      filename = `Letter_${letterData.senderName.replace(/\s+/g, '_') || 'Presentation'}.pdf`;
-    } else if (docType === 'census') {
-      filename = `Census_${censusData.censusCode || 'Record'}.pdf`;
-    } else if (docType === 'receipt') {
-      filename = `Receipt_${receiptData.receiptNumber || 'Payment'}.pdf`;
-    } else if (docType === 'certificate') {
-      filename = `Certificate_${certificateData.recipientName.replace(/\s+/g, '_') || 'Award'}.pdf`;
-    }
+    const filename = activeTemplateMeta.getPdfFilename(contents);
 
     try {
       const success = await exportToPdf('document-canvas', filename, currentPaperSpec);
@@ -294,50 +287,27 @@ export default function App() {
     printDocument(currentPaperSpec);
   };
 
-  // Language switch handler: translates UI to guide users; does NOT alter entered content
+  // Language switch handler: translates UI guidance only; template contents stay constant
   const handleLanguageChange = (newLang: LanguageCode) => {
     setLang(newLang);
     showToast(`Language: ${LANGUAGES[newLang].name}`);
   };
 
-  // Reset to sample data in active language
+  // Restore neutral blank template state for the active template
   const handleResetData = () => {
-    if (docType === 'cv') setCvData(getLocalizedCv(lang));
-    if (docType === 'letter') setLetterData(getLocalizedLetter(lang));
-    if (docType === 'census') setCensusData(getLocalizedCensus(lang));
-    if (docType === 'receipt') setReceiptData(getLocalizedReceipt(lang));
-    if (docType === 'certificate') setCertificateData(getLocalizedCertificate(lang));
-    showToast(`Example data restored in ${lang.toUpperCase()}`);
+    updateTemplateContent(docType, getDefaultTemplateContent(docType));
+    showToast('Template reset to neutral placeholders');
   };
 
   const handleSaveProgress = () => {
-    const payload: SavedProjectState = {
-      version: '2.1',
-      savedAt: new Date().toISOString(),
-      currentType: docType,
-      style,
-      lang,
-      cvData,
-      letterData,
-      censusData,
-      receiptData,
-      certificateData,
-    };
-    saveProjectToFile(payload);
+    saveProjectToFile(buildSavedPayload());
     showToast('Progress saved as JSON file');
   };
 
   const handleLoadProgress = async () => {
     try {
       const data = await loadProjectFromFile();
-      if (data.currentType) setDocType(data.currentType);
-      if (data.style) setStyle(data.style);
-      if (data.lang) setLang(data.lang);
-      if (data.cvData) setCvData(data.cvData);
-      if (data.letterData) setLetterData(data.letterData);
-      if (data.censusData) setCensusData(data.censusData);
-      if (data.receiptData) setReceiptData(data.receiptData);
-      if (data.certificateData) setCertificateData(data.certificateData);
+      applySavedPayload(data);
       setView('editor');
       setSidebarTab('inputs');
       window.scrollTo({ top: 0, behavior: 'auto' });
@@ -396,19 +366,6 @@ export default function App() {
     }
   }, [mobileView, view, currentPaperSpec.widthPx]);
 
-  const currentTheme = COLOR_THEMES[style.themeId] || COLOR_THEMES['slate-emerald'];
-  const currentDocTitle = t(
-    docType === 'cv'
-      ? 'curriculum_vitae'
-      : docType === 'letter'
-      ? 'presentation_letter'
-      : docType === 'census'
-      ? 'census_record'
-      : docType === 'receipt'
-      ? 'payment_receipt'
-      : 'certificate_award'
-  );
-
   // Toast shared across views
   const toastNode = toastMessage ? (
     <div
@@ -437,7 +394,7 @@ export default function App() {
     );
   }
 
-  // STEP 2: Full Document Editor & Live A4 Preview
+  // STEP 2: Full Document Editor & Live Asset-Mounted Preview
   return (
     <div className="min-h-screen lg:h-screen bg-zinc-100 text-zinc-900 flex flex-col font-sans-title w-full max-w-full overflow-x-hidden lg:overflow-hidden">
       {/* PDF Export Overlay Modal */}
@@ -510,7 +467,7 @@ export default function App() {
 
       {/* Main Workspace Layout */}
       <main className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0 p-2.5 sm:p-4 lg:p-5 gap-4 w-full max-w-full">
-        {/* LEFT PANEL: Form Editor & Controls */}
+        {/* LEFT PANEL: Form Editor & Common Style Assets */}
         <aside
           className={`no-print w-full lg:w-[460px] xl:w-[500px] lg:flex-none bg-white border border-zinc-200 rounded-xl flex flex-col shrink-0 min-h-0 overflow-hidden transition-all ${
             mobileView === 'preview' ? 'max-lg:hidden lg:flex' : 'flex'
@@ -573,27 +530,7 @@ export default function App() {
           {/* Sidebar Tab Content */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-5 custom-scrollbar">
             {sidebarTab === 'inputs' && (
-              <div>
-                {docType === 'cv' && (
-                  <CvForm data={cvData} onChange={setCvData} lang={lang} />
-                )}
-                {docType === 'letter' && (
-                  <LetterForm data={letterData} onChange={setLetterData} lang={lang} />
-                )}
-                {docType === 'census' && (
-                  <CensusForm data={censusData} onChange={setCensusData} lang={lang} />
-                )}
-                {docType === 'receipt' && (
-                  <ReceiptForm data={receiptData} onChange={setReceiptData} lang={lang} />
-                )}
-                {docType === 'certificate' && (
-                  <CertificateForm
-                    data={certificateData}
-                    onChange={setCertificateData}
-                    lang={lang}
-                  />
-                )}
-              </div>
+              <div>{renderTemplateForm(docType, contents, updateTemplateContent, lang)}</div>
             )}
 
             {sidebarTab === 'style' && (
@@ -627,7 +564,7 @@ export default function App() {
               </span>
               <span className="text-zinc-300 hidden md:inline">·</span>
               <span className="text-xs text-zinc-500 hidden md:inline">
-                Font: {style.fontFamily === 'source-serif' ? 'Source Serif 4' : 'Lora'}
+                Font: {mountedAssets.font.name}
               </span>
             </div>
 
@@ -711,21 +648,7 @@ export default function App() {
                   className="bg-white"
                 >
                   <DocumentErrorBoundary onReset={handleResetData}>
-                    {docType === 'cv' && (
-                      <CvDocument data={cvData} style={style} theme={currentTheme} lang={lang} />
-                    )}
-                    {docType === 'letter' && (
-                      <LetterDocument data={letterData} style={style} theme={currentTheme} lang={lang} />
-                    )}
-                    {docType === 'census' && (
-                      <CensusDocument data={censusData} style={style} theme={currentTheme} lang={lang} />
-                    )}
-                    {docType === 'receipt' && (
-                      <ReceiptDocument data={receiptData} style={style} theme={currentTheme} lang={lang} />
-                    )}
-                    {docType === 'certificate' && (
-                      <CertificateDocument data={certificateData} style={style} theme={currentTheme} lang={lang} />
-                    )}
+                    {mountTemplateDocument(docType, contents, mountedAssets, lang)}
                   </DocumentErrorBoundary>
                 </div>
               </div>

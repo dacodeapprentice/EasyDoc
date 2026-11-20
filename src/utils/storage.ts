@@ -22,8 +22,7 @@ export interface SavedProjectState {
   certificateData: CertificateData;
 }
 
-const PRIMARY_STORAGE_KEY = 'easydoc_autosave_v2';
-const LEGACY_STORAGE_KEY = 'docuform_studio_autosave_v2';
+const PRIMARY_STORAGE_KEY = 'easydoc_autosave_v3';
 
 export function saveAutoSave(state: SavedProjectState): void {
   try {
@@ -35,7 +34,7 @@ export function saveAutoSave(state: SavedProjectState): void {
 
 export function loadAutoSave(): SavedProjectState | null {
   try {
-    const raw = localStorage.getItem(PRIMARY_STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
+    const raw = localStorage.getItem(PRIMARY_STORAGE_KEY);
     if (!raw) return null;
     return JSON.parse(raw) as SavedProjectState;
   } catch (err) {
@@ -47,7 +46,6 @@ export function loadAutoSave(): SavedProjectState | null {
 export function clearAutoSave(): void {
   try {
     localStorage.removeItem(PRIMARY_STORAGE_KEY);
-    localStorage.removeItem(LEGACY_STORAGE_KEY);
   } catch {
     // Ignore
   }

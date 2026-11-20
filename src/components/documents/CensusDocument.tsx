@@ -1,58 +1,52 @@
 import React from 'react';
-import { CensusData, DocumentStyle, ColorTheme, LanguageCode } from '../../types/document';
+import {
+  CensusData,
+  DocumentAssetBundle,
+  DocumentStyle,
+  ColorTheme,
+  LanguageCode,
+} from '../../types/document';
 import { ShieldCheck, FileSpreadsheet } from 'lucide-react';
 import { getTranslation } from '../../utils/i18n';
-import { getPaperLayout } from '../../data/defaultData';
+import { resolveDocumentAssets } from '../../assets/documentAssets';
+import {
+  DocumentFooterBand,
+  DocumentHeaderBand,
+  DocumentInfoCard,
+  DocumentNotesBox,
+  DocumentSheet,
+  DocumentStatusBadge,
+  PlaceholderText,
+  hasText,
+} from './TemplatePrimitives';
 
 interface CensusDocumentProps {
   data: CensusData;
   style: DocumentStyle;
-  theme: ColorTheme;
+  theme?: ColorTheme;
+  assets?: DocumentAssetBundle;
   lang?: LanguageCode;
 }
 
 export const CensusDocument: React.FC<CensusDocumentProps> = ({
   data,
   style,
-  theme,
+  assets,
   lang = 'en',
 }) => {
   const t = (k: string) => getTranslation(lang, k);
-  const layout = getPaperLayout(style.paperSize, style.density);
-  const { paper, isCompact, isTall, isLarge } = layout;
-  const fontClass = style.fontFamily === 'lora' ? 'font-serif-lora' : 'font-serif-reading';
+  const mounted = assets || resolveDocumentAssets(style);
+  const { theme, layout } = mounted;
+  const { isCompact, isTall, isLarge } = layout;
+
+  const hasNotes = hasText(data.officialNotes);
 
   return (
-    <div
-      className={`bg-white text-slate-900 w-full transition-all relative ${fontClass}`}
-      style={{
-        boxSizing: 'border-box',
-        minHeight: `${paper.heightPx}px`,
-        padding: `${layout.paddingPx}px`,
-        overflowWrap: 'anywhere',
-      }}
-    >
-      {/* Decorative Accents */}
-      {style.headerStyle === 'left-bar' && (
-        <div
-          className={`absolute left-0 top-0 bottom-0 ${layout.accentBarWidthClass}`}
-          style={{ backgroundColor: theme.primary }}
-        />
-      )}
-      {style.headerStyle === 'banner' && (
-        <div
-          className={`absolute left-0 top-0 right-0 ${layout.accentBannerHeightClass}`}
-          style={{ backgroundColor: theme.primary }}
-        />
-      )}
-
-      {/* Header: Official Census Authority */}
-      <header className={`border-b ${isCompact ? 'pb-4 mb-4' : isLarge ? 'pb-7 mb-8' : 'pb-5 mb-6'} border-slate-200`}>
-        <div
-          className={`flex ${
-            isCompact ? 'flex-col items-start gap-3' : 'flex-row items-start justify-between gap-4'
-          }`}
-        >
+    <DocumentSheet assets={mounted}>
+      {/* Census Registry Header Structure */}
+      <DocumentHeaderBand
+        assets={mounted}
+        left={
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <span className="p-1 rounded bg-slate-100 text-slate-700">
@@ -71,39 +65,37 @@ export const CensusDocument: React.FC<CensusDocumentProps> = ({
               Demographic Household Survey
             </h1>
             <p className={`font-sans-title ${layout.metaSizeClass} text-slate-600 mt-1`}>
-              District Jurisdiction: <strong>{data.districtRegion || 'Metropolitan District'}</strong>
-              {data.enumerationArea && ` · Area Code: ${data.enumerationArea}`}
+              District / Region:{' '}
+              <strong>
+                <PlaceholderText value={data.districtRegion} placeholder="District or Region Here" />
+              </strong>
+              {(hasText(data.enumerationArea) || !hasText(data.districtRegion)) && (
+                <>
+                  {' · '}Area Code: <PlaceholderText value={data.enumerationArea} placeholder="Area Code" />
+                </>
+              )}
             </p>
           </div>
-
-          {/* Census Code Badge */}
-          <div className={`${isCompact ? 'text-left' : 'text-right'} font-sans-title shrink-0`}>
-            <div
-              className={`flex w-fit ${isCompact ? '' : 'ml-auto'} items-center gap-1.5 px-2.5 py-1 rounded ${layout.smallSizeClass} font-bold uppercase tracking-wider`}
-              style={{
-                backgroundColor: theme.badgeBg,
-                color: theme.badgeText,
-              }}
-            >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Verified Record</span>
-            </div>
+        }
+        right={
+          <div className="font-sans-title">
+            <DocumentStatusBadge
+              assets={mounted}
+              icon={<ShieldCheck className="w-3.5 h-3.5" />}
+              label={t('verified')}
+            />
             <div className={`font-mono-tabular ${layout.metaSizeClass} font-semibold text-slate-700 mt-1.5`}>
-              ID: {data.censusCode || 'CENSUS-0000'}
+              ID: <PlaceholderText value={data.censusCode} placeholder="ID-0000" />
             </div>
             <div className={`${layout.smallSizeClass} text-slate-500 mt-0.5`}>
-              {t('survey_date')}: {data.surveyDate || '—'}
+              {t('survey_date')}: <PlaceholderText value={data.surveyDate} placeholder="YYYY-MM-DD" />
             </div>
           </div>
-        </div>
-      </header>
+        }
+      />
 
-      {/* Dwelling & Household Demographics */}
-      <section
-        className={`${layout.sectionMbClass} ${
-          isCompact ? 'p-3' : isLarge ? 'p-6' : 'p-4'
-        } rounded-md border border-slate-200 bg-slate-50/70 font-sans-title ${layout.metaSizeClass} print-avoid-break`}
-      >
+      {/* Dwelling & Household Demographics Card */}
+      <DocumentInfoCard assets={mounted}>
         <div
           className={`grid ${
             isCompact ? 'grid-cols-2 gap-2.5' : isLarge ? 'grid-cols-3 gap-5' : 'grid-cols-3 gap-3.5'
@@ -112,49 +104,53 @@ export const CensusDocument: React.FC<CensusDocumentProps> = ({
           <div>
             <span className={`text-slate-500 ${layout.smallSizeClass} block`}>{t('head_household')}:</span>
             <strong className={`text-slate-900 ${isCompact ? 'text-xs' : isLarge ? 'text-base' : 'text-sm'} font-bold block mt-0.5`}>
-              {data.headOfHousehold || '—'}
+              <PlaceholderText value={data.headOfHousehold} placeholder="Head of Household Name" />
             </strong>
           </div>
 
           <div className={isCompact ? 'col-span-1' : 'col-span-2'}>
             <span className={`text-slate-500 ${layout.smallSizeClass} block`}>{t('residential_address')}:</span>
             <span className="text-slate-800 font-semibold block mt-0.5">
-              {data.residentialAddress || '—'}
+              <PlaceholderText value={data.residentialAddress} placeholder="Street address, unit, city" />
             </span>
           </div>
 
           <div>
             <span className={`text-slate-500 ${layout.smallSizeClass} block`}>{t('dwelling_type')}:</span>
-            <span className="text-slate-800 font-medium block mt-0.5">{data.dwellingType}</span>
+            <span className="text-slate-800 font-medium block mt-0.5">
+              <PlaceholderText value={data.dwellingType} placeholder="Dwelling type here" />
+            </span>
           </div>
 
           <div>
             <span className={`text-slate-500 ${layout.smallSizeClass} block`}>{t('tenure_status')}:</span>
-            <span className="text-slate-800 font-medium block mt-0.5">{data.tenureStatus}</span>
+            <span className="text-slate-800 font-medium block mt-0.5">
+              <PlaceholderText value={data.tenureStatus} placeholder="Tenure status here" />
+            </span>
           </div>
 
           <div>
             <span className={`text-slate-500 ${layout.smallSizeClass} block`}>{t('total_rooms')}:</span>
             <span className="text-slate-800 font-mono-tabular font-bold block mt-0.5">
-              {data.totalRooms}
+              <PlaceholderText value={data.totalRooms} placeholder="0" />
             </span>
           </div>
 
           <div>
             <span className={`text-slate-500 ${layout.smallSizeClass} block`}>{t('water_source')}:</span>
             <span className="text-slate-800 font-medium block mt-0.5">
-              {data.primaryWaterSource}
+              <PlaceholderText value={data.primaryWaterSource} placeholder="Water source here" />
             </span>
           </div>
 
-          <div className={isCompact ? 'col-span-2' : 'col-span-2'}>
+          <div className="col-span-2">
             <span className={`text-slate-500 ${layout.smallSizeClass} block`}>{t('electricity_access')}:</span>
             <span className="text-slate-800 font-medium block mt-0.5">
-              {data.electricityAccess}
+              <PlaceholderText value={data.electricityAccess} placeholder="Electricity access here" />
             </span>
           </div>
         </div>
-      </section>
+      </DocumentInfoCard>
 
       {/* Household Residents Roster Table */}
       <section className={`${layout.sectionMbClass} print-avoid-break`}>
@@ -163,13 +159,13 @@ export const CensusDocument: React.FC<CensusDocumentProps> = ({
             className={`${layout.metaSizeClass} font-bold uppercase tracking-wider`}
             style={{ color: theme.primaryDark }}
           >
-            {t('resident_roster')} ({data.householdMembers.length} Occupants)
+            {t('resident_roster')} ({data.householdMembers.length})
           </h2>
         </div>
 
         <table
           className={`w-full text-left border-collapse ${
-            isCompact ? 'text-[9.5px] table-fixed' : isLarge ? 'text-sm' : 'text-xs'
+            isCompact ? 'text-[9.5px] table-fixed' : layout.tableTextClass
           }`}
         >
           <thead>
@@ -190,22 +186,22 @@ export const CensusDocument: React.FC<CensusDocumentProps> = ({
                   {idx + 1}
                 </td>
                 <td className={`${isCompact ? 'py-1.5 px-1.5' : isTall || isLarge ? 'py-3.5 px-3' : 'py-2.5 px-3'} font-semibold text-slate-900 font-sans-title`}>
-                  {member.fullName}
+                  <PlaceholderText value={member.fullName} placeholder="Resident name" />
                 </td>
                 <td className={`${isCompact ? 'py-1.5 px-1.5' : isTall || isLarge ? 'py-3.5 px-3' : 'py-2.5 px-3'} text-slate-700 font-sans-title`}>
-                  {member.relationship}
+                  <PlaceholderText value={member.relationship} placeholder="Relationship" />
                 </td>
                 <td className={`${isCompact ? 'py-1.5 px-1' : isTall || isLarge ? 'py-3.5 px-2' : 'py-2.5 px-2'} text-center font-mono-tabular text-slate-700`}>
-                  {member.age}
+                  <PlaceholderText value={member.age} placeholder="—" />
                 </td>
                 <td className={`${isCompact ? 'py-1.5 px-1' : isTall || isLarge ? 'py-3.5 px-2' : 'py-2.5 px-2'} text-center font-sans-title text-slate-600`}>
-                  {member.gender}
+                  <PlaceholderText value={member.gender} placeholder="—" />
                 </td>
                 <td className={`${isCompact ? 'py-1.5 px-1.5 text-[9px]' : isLarge ? 'py-3.5 px-3 text-xs' : 'py-2.5 px-3 text-[11px]'} text-slate-600 font-sans-title`}>
-                  {member.educationLevel}
+                  <PlaceholderText value={member.educationLevel} placeholder="Education" />
                 </td>
                 <td className={`${isCompact ? 'py-1.5 px-1.5 text-[9px]' : isLarge ? 'py-3.5 px-3 text-xs' : 'py-2.5 px-3 text-[11px]'} text-slate-600 font-sans-title`}>
-                  {member.occupation}
+                  <PlaceholderText value={member.occupation} placeholder="Occupation" />
                 </td>
               </tr>
             ))}
@@ -214,37 +210,41 @@ export const CensusDocument: React.FC<CensusDocumentProps> = ({
       </section>
 
       {/* Field Notes */}
-      {data.officialNotes && (
-        <section
-          className={`${layout.sectionMbClass} ${
-            isCompact ? 'p-2.5' : 'p-3.5'
-          } rounded bg-slate-50 border-l-3 border-slate-400 font-sans-title ${layout.metaSizeClass} text-slate-700 print-avoid-break`}
-        >
-          <strong className="block text-slate-800 mb-0.5">{t('field_notes')}:</strong>
-          <p>{data.officialNotes}</p>
-        </section>
+      {(hasNotes || !hasText(data.headOfHousehold)) && (
+        <DocumentNotesBox
+          assets={mounted}
+          label={t('field_notes')}
+          text={data.officialNotes}
+          placeholder="Add general observations or verification notes here."
+        />
       )}
 
       {/* Signatures & Certification Footer */}
-      <footer
-        className={`pt-5 border-t border-slate-200 flex ${
-          isCompact ? 'flex-col items-start gap-3' : 'flex-row items-end justify-between gap-4'
-        } font-sans-title ${layout.metaSizeClass} text-slate-600 print-avoid-break`}
-      >
-        <div>
-          <div className={`${layout.smallSizeClass} text-slate-400`}>{t('enumerator_name')}:</div>
-          <div className="font-bold text-slate-900 mt-0.5">{data.enumeratorName}</div>
-        </div>
-
-        <div className={`${isCompact ? 'text-left' : 'text-right'} border p-2.5 rounded bg-slate-50 border-slate-200`}>
-          <div className={`${layout.smallSizeClass} text-slate-500 font-medium`}>
-            {data.supervisorSignatureRef}
+      <DocumentFooterBand
+        assets={mounted}
+        align="end"
+        left={
+          <div>
+            <div className={`${layout.smallSizeClass} text-slate-400`}>{t('enumerator_name')}:</div>
+            <div className="font-bold text-slate-900 mt-0.5">
+              <PlaceholderText value={data.enumeratorName} placeholder="Enumerator Name Here" />
+            </div>
           </div>
-          <div className={`${isCompact ? 'text-[9px]' : 'text-[10px]'} text-slate-400 font-mono-tabular mt-0.5`}>
-            Official Municipal Archive Record
+        }
+        right={
+          <div className="border p-2.5 rounded bg-slate-50 border-slate-200">
+            <div className={`${layout.smallSizeClass} text-slate-500 font-medium`}>
+              <PlaceholderText
+                value={data.supervisorSignatureRef}
+                placeholder="Supervisor verification reference"
+              />
+            </div>
+            <div className={`${isCompact ? 'text-[9px]' : 'text-[10px]'} text-slate-400 font-mono-tabular mt-0.5`}>
+              {t('census_registry')}
+            </div>
           </div>
-        </div>
-      </footer>
-    </div>
+        }
+      />
+    </DocumentSheet>
   );
 };

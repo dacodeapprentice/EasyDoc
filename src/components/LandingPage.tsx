@@ -1,12 +1,8 @@
 import React from 'react';
 import { DocumentType, LanguageCode } from '../types/document';
 import { LANGUAGES, getTranslation } from '../utils/i18n';
+import { TEMPLATE_LIST } from '../data/templateRegistry';
 import {
-  FileText,
-  Mail,
-  FileSpreadsheet,
-  Receipt,
-  Award,
   ArrowRight,
   ArrowDown,
   FolderOpen,
@@ -36,49 +32,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }
   };
 
-  const templates: Array<{
-    type: DocumentType;
-    title: string;
-    description: string;
-    includes: string;
-    icon: React.ReactNode;
-  }> = [
-    {
-      type: 'cv',
-      title: t('curriculum_vitae'),
-      description: t('cv_desc'),
-      includes: t('cv_includes'),
-      icon: <FileText className="w-5 h-5" />,
-    },
-    {
-      type: 'letter',
-      title: t('presentation_letter'),
-      description: t('letter_desc'),
-      includes: t('letter_includes'),
-      icon: <Mail className="w-5 h-5" />,
-    },
-    {
-      type: 'census',
-      title: t('census_record'),
-      description: t('census_desc'),
-      includes: t('census_includes'),
-      icon: <FileSpreadsheet className="w-5 h-5" />,
-    },
-    {
-      type: 'receipt',
-      title: t('payment_receipt'),
-      description: t('receipt_desc'),
-      includes: t('receipt_includes'),
-      icon: <Receipt className="w-5 h-5" />,
-    },
-    {
-      type: 'certificate',
-      title: t('certificate_award'),
-      description: t('certificate_desc'),
-      includes: t('certificate_includes'),
-      icon: <Award className="w-5 h-5" />,
-    },
-  ];
+  const templates = TEMPLATE_LIST.map(({ type, titleKey, descriptionKey, includesKey, Icon }) => ({
+    type,
+    title: t(titleKey),
+    description: t(descriptionKey),
+    includes: t(includesKey),
+    icon: <Icon className="w-5 h-5" />,
+  }));
 
   return (
     <div className="min-h-screen bg-zinc-100 text-zinc-900 flex flex-col font-sans-title w-full max-w-full overflow-x-hidden">

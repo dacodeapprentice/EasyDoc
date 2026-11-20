@@ -45,6 +45,58 @@ export interface DocumentStyle {
   paperSize: PaperSizeId;
 }
 
+export interface FontAsset {
+  id: FontFamilyChoice;
+  name: string;
+  description: string;
+  cssClass: string;
+  previewClass: string;
+}
+
+export interface DensityAsset {
+  id: DensityChoice;
+  labelKey: string;
+  description: string;
+  paddingScale: number;
+}
+
+export interface HeaderAccentAsset {
+  id: HeaderStyleChoice;
+  labelKey: string;
+}
+
+export interface DocumentLayoutTokens {
+  paper: PaperSizeSpec;
+  isCompact: boolean; // a5
+  isShort: boolean;   // letter
+  isTall: boolean;    // legal
+  isLarge: boolean;   // a3
+  paddingPx: number;
+  headerMbClass: string;
+  sectionMbClass: string;
+  itemGapClass: string;
+  titleSizeClass: string;
+  subtitleSizeClass: string;
+  bodySizeClass: string;
+  metaSizeClass: string;
+  smallSizeClass: string;
+  accentBarWidthClass: string;
+  accentBannerHeightClass: string;
+  tableTextClass: string;
+  tableCellPaddingClass: string;
+  tableHeaderPaddingClass: string;
+}
+
+export interface DocumentAssetBundle {
+  style: DocumentStyle;
+  theme: ColorTheme;
+  font: FontAsset;
+  paper: PaperSizeSpec;
+  density: DensityAsset;
+  headerAccent: HeaderAccentAsset;
+  layout: DocumentLayoutTokens;
+}
+
 // 1. CV Data Types
 export interface WorkExperienceItem {
   id: string;
@@ -135,8 +187,8 @@ export interface CensusData {
 export interface ReceiptItem {
   id: string;
   description: string;
-  quantity: number;
-  unitPrice: number;
+  quantity: number | string;
+  unitPrice: number | string;
   total: number;
 }
 
@@ -155,8 +207,8 @@ export interface ReceiptData {
   customerEmail: string;
   customerAddress: string;
   items: ReceiptItem[];
-  taxRatePercent: number;
-  discountAmount: number;
+  taxRatePercent: number | string;
+  discountAmount: number | string;
   notes: string;
   cashierOrAgent: string;
 }

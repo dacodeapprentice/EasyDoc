@@ -1,6 +1,6 @@
 import React from 'react';
 import { DocumentType, LanguageCode } from '../types/document';
-import { FileText, Mail, FileSpreadsheet, Receipt, Award } from 'lucide-react';
+import { TEMPLATE_LIST } from '../data/templateRegistry';
 import { getTranslation } from '../utils/i18n';
 
 interface DocumentSelectorProps {
@@ -16,43 +16,12 @@ export const DocumentSelector: React.FC<DocumentSelectorProps> = ({
 }) => {
   const t = (k: string) => getTranslation(lang, k);
 
-  const options: Array<{
-    type: DocumentType;
-    title: string;
-    description: string;
-    icon: React.ReactNode;
-  }> = [
-    {
-      type: 'cv',
-      title: t('curriculum_vitae'),
-      description: t('cv_desc'),
-      icon: <FileText className="w-4 h-4" />,
-    },
-    {
-      type: 'letter',
-      title: t('presentation_letter'),
-      description: t('letter_desc'),
-      icon: <Mail className="w-4 h-4" />,
-    },
-    {
-      type: 'census',
-      title: t('census_record'),
-      description: t('census_desc'),
-      icon: <FileSpreadsheet className="w-4 h-4" />,
-    },
-    {
-      type: 'receipt',
-      title: t('payment_receipt'),
-      description: t('receipt_desc'),
-      icon: <Receipt className="w-4 h-4" />,
-    },
-    {
-      type: 'certificate',
-      title: t('certificate_award'),
-      description: t('certificate_desc'),
-      icon: <Award className="w-4 h-4" />,
-    },
-  ];
+  const options = TEMPLATE_LIST.map(({ type, titleKey, descriptionKey, Icon }) => ({
+    type,
+    title: t(titleKey),
+    description: t(descriptionKey),
+    icon: <Icon className="w-4 h-4" />,
+  }));
 
   return (
     <div className="space-y-3 font-sans-title">

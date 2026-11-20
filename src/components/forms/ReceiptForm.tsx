@@ -36,10 +36,10 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
   const addItem = () => {
     const newItem: ReceiptItem = {
       id: `item-${Date.now()}`,
-      description: 'New Billable Service or Product Item',
-      quantity: 1,
-      unitPrice: 100,
-      total: 100,
+      description: '',
+      quantity: '',
+      unitPrice: '',
+      total: 0,
     };
     updateField('items', [...data.items, newItem]);
   };
@@ -108,7 +108,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                   value={data.businessName}
                   onChange={(e) => updateField('businessName', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="Verdant Precision Solutions LLC"
+                  placeholder="Business or organization name"
                 />
               </div>
 
@@ -121,7 +121,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                   value={data.businessTaxId}
                   onChange={(e) => updateField('businessTaxId', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="EIN: 84-2947192"
+                  placeholder="Tax ID / Registration"
                 />
               </div>
 
@@ -134,7 +134,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                   value={data.businessAddress}
                   onChange={(e) => updateField('businessAddress', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="100 Meridian Blvd, Denver, CO"
+                  placeholder="Business address here"
                 />
               </div>
 
@@ -147,7 +147,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                   value={data.businessEmail}
                   onChange={(e) => updateField('businessEmail', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="billing@verdantprecision.com"
+                  placeholder="billing@example.com"
                 />
               </div>
 
@@ -160,7 +160,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                   value={data.receiptNumber}
                   onChange={(e) => updateField('receiptNumber', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="RCP-2026-09418"
+                  placeholder="Receipt number here"
                 />
               </div>
 
@@ -185,7 +185,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                   value={data.paymentMethod}
                   onChange={(e) => updateField('paymentMethod', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="Bank Wire (SEPA / Fedwire)"
+                  placeholder="Payment method here"
                 />
               </div>
 
@@ -198,7 +198,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                   value={data.transactionRef}
                   onChange={(e) => updateField('transactionRef', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="TXN-984210385-CLR"
+                  placeholder="Transaction reference"
                 />
               </div>
             </div>
@@ -235,7 +235,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                 value={data.customerName}
                 onChange={(e) => updateField('customerName', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Aria Thorne"
+                placeholder="Customer name here"
               />
             </div>
 
@@ -248,7 +248,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                 value={data.customerCompany}
                 onChange={(e) => updateField('customerCompany', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Highland Environmental Systems Inc."
+                placeholder="Customer organization"
               />
             </div>
 
@@ -261,7 +261,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                 value={data.customerEmail}
                 onChange={(e) => updateField('customerEmail', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="athorne@highland.org"
+                placeholder="customer@example.com"
               />
             </div>
 
@@ -274,7 +274,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                 value={data.customerAddress}
                 onChange={(e) => updateField('customerAddress', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="820 Aspen Crest Parkway, Boulder, CO"
+                placeholder="Customer address here"
               />
             </div>
           </div>
@@ -347,7 +347,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                       value={item.description}
                       onChange={(e) => updateItem(item.id, 'description', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Consulting Services, Transducers, etc."
+                      placeholder="Item or service description here"
                     />
                   </div>
 
@@ -365,6 +365,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                           updateItem(item.id, 'quantity', e.target.value === '' ? '' : Number(e.target.value))
                         }
                         className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        placeholder="0"
                       />
                     </div>
                     <div>
@@ -380,6 +381,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                           updateItem(item.id, 'unitPrice', e.target.value === '' ? '' : Number(e.target.value))
                         }
                         className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        placeholder="0.00"
                       />
                     </div>
                     <div>
@@ -431,11 +433,11 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                   onChange={(e) =>
                     updateField(
                       'taxRatePercent',
-                      e.target.value === '' ? 0 : Number(e.target.value)
+                      e.target.value === '' ? '' : Number(e.target.value)
                     )
                   }
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="6.5"
+                  placeholder="0.0"
                 />
               </div>
 
@@ -451,11 +453,11 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                   onChange={(e) =>
                     updateField(
                       'discountAmount',
-                      e.target.value === '' ? 0 : Number(e.target.value)
+                      e.target.value === '' ? '' : Number(e.target.value)
                     )
                   }
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="50"
+                  placeholder="0.00"
                 />
               </div>
 
@@ -468,7 +470,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                   value={data.cashierOrAgent}
                   onChange={(e) => updateField('cashierOrAgent', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="Elena Rostova, CAO"
+                  placeholder="Authorized signatory name"
                 />
               </div>
             </div>
@@ -482,7 +484,7 @@ export const ReceiptForm: React.FC<ReceiptFormProps> = ({ data, onChange, lang =
                 value={data.notes}
                 onChange={(e) => updateField('notes', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Payment received in full. Warranty terms, etc."
+                placeholder="Add payment terms, notes, or conditions here..."
               />
             </div>
           </div>

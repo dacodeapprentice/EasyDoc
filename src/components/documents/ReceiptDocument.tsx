@@ -1,26 +1,44 @@
 import React from 'react';
-import { ReceiptData, DocumentStyle, ColorTheme, LanguageCode } from '../../types/document';
+import {
+  ReceiptData,
+  DocumentAssetBundle,
+  DocumentStyle,
+  ColorTheme,
+  LanguageCode,
+} from '../../types/document';
 import { Receipt, CheckCircle2 } from 'lucide-react';
 import { getTranslation } from '../../utils/i18n';
-import { getPaperLayout } from '../../data/defaultData';
+import { resolveDocumentAssets } from '../../assets/documentAssets';
+import {
+  DocumentFooterBand,
+  DocumentHeaderBand,
+  DocumentInfoCard,
+  DocumentLogo,
+  DocumentNotesBox,
+  DocumentSheet,
+  DocumentStatusBadge,
+  PlaceholderText,
+  hasText,
+} from './TemplatePrimitives';
 
 interface ReceiptDocumentProps {
   data: ReceiptData;
   style: DocumentStyle;
-  theme: ColorTheme;
+  theme?: ColorTheme;
+  assets?: DocumentAssetBundle;
   lang?: LanguageCode;
 }
 
 export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
   data,
   style,
-  theme,
+  assets,
   lang = 'en',
 }) => {
   const t = (k: string) => getTranslation(lang, k);
-  const layout = getPaperLayout(style.paperSize, style.density);
-  const { paper, isCompact, isTall, isLarge } = layout;
-  const fontClass = style.fontFamily === 'lora' ? 'font-serif-lora' : 'font-serif-reading';
+  const mounted = assets || resolveDocumentAssets(style);
+  const { theme, layout } = mounted;
+  const { isCompact, isLarge } = layout;
 
   const safeNum = (v: any, fallback = 0) => {
     const n = parseFloat(v);
@@ -37,57 +55,44 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
   const grandTotal = Math.max(0, subtotal + taxAmount - discountAmount);
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat(lang === 'pt' ? 'pt-PT' : lang === 'es' ? 'es-ES' : lang === 'fr' ? 'fr-FR' : 'en-US', {
-      style: 'currency',
-      currency: lang === 'pt' || lang === 'es' || lang === 'fr' ? 'EUR' : 'USD',
-    }).format(amount);
+    return new Intl.NumberFormat(
+      lang === 'pt' ? 'pt-PT' : lang === 'es' ? 'es-ES' : lang === 'fr' ? 'fr-FR' : 'en-US',
+      {
+        style: 'currency',
+        currency: lang === 'pt' || lang === 'es' || lang === 'fr' ? 'EUR' : 'USD',
+      }
+    ).format(amount);
   };
 
-  return (
-    <div
-      className={`bg-white text-slate-900 w-full transition-all relative ${fontClass}`}
-      style={{
-        boxSizing: 'border-box',
-        minHeight: `${paper.heightPx}px`,
-        padding: `${layout.paddingPx}px`,
-        overflowWrap: 'anywhere',
-      }}
-    >
-      {/* Decorative Accents */}
-      {style.headerStyle === 'left-bar' && (
-        <div
-          className={`absolute left-0 top-0 bottom-0 ${layout.accentBarWidthClass}`}
-          style={{ backgroundColor: theme.primary }}
-        />
-      )}
-      {style.headerStyle === 'banner' && (
-        <div
-          className={`absolute left-0 top-0 right-0 ${layout.accentBannerHeightClass}`}
-          style={{ backgroundColor: theme.primary }}
-        />
-      )}
+  const hasBusinessDetails =
+    hasText(data.businessName) ||
+    hasText(data.businessTaxId) ||
+    hasText(data.businessAddress) ||
+    hasText(data.businessEmail);
 
-      {/* Header: Company & Receipt Details */}
-      <header className={`border-b ${isCompact ? 'pb-4 mb-4' : isLarge ? 'pb-8 mb-8' : 'pb-6 mb-6'} border-slate-200`}>
-        <div
-          className={`flex ${
-            isCompact ? 'flex-col items-start gap-3' : 'flex-row items-start justify-between gap-4'
-          }`}
-        >
+  const hasCustomerDetails =
+    hasText(data.customerName) ||
+    hasText(data.customerCompany) ||
+    hasText(data.customerEmail) ||
+    hasText(data.customerAddress);
+
+  return (
+    <DocumentSheet assets={mounted}>
+      {/* Receipt Voucher Header Structure */}
+      <DocumentHeaderBand
+        assets={mounted}
+        left={
           <div className="flex items-start gap-3.5">
             {data.logoUrl && (
-              <img
-                src={data.logoUrl}
-                alt="Business Logo"
-                className={`${
-                  isCompact ? 'w-11 h-11' : isLarge ? 'w-20 h-20' : 'w-16 h-16'
-                } object-contain rounded-md border border-slate-200 shrink-0 bg-white`}
-              />
+              <DocumentLogo src={data.logoUrl} alt="Business Logo" assets={mounted} />
             )}
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="p-1 rounded bg-slate-100 text-slate-800">
-                  <Receipt className={`${isCompact ? 'w-4 h-4' : 'w-5 h-5'}`} style={{ color: theme.primary }} />
+                  <Receipt
+                    className={isCompact ? 'w-4 h-4' : 'w-5 h-5'}
+                    style={{ color: theme.primary }}
+                  />
                 </span>
                 <span className={`font-sans-title ${layout.metaSizeClass} font-bold uppercase tracking-widest text-slate-500`}>
                   {t('official_voucher')}
@@ -97,71 +102,61 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
                 className={`font-sans-title ${
                   isCompact ? 'text-lg' : isLarge ? 'text-3xl' : 'text-2xl'
                 } font-extrabold tracking-tight`}
-                style={{ color: theme.textHeader }}
+                style={hasText(data.businessName) ? { color: theme.textHeader } : undefined}
               >
-                {data.businessName || 'Business Name'}
+                <PlaceholderText value={data.businessName} placeholder="Business or Issuer Name" />
               </h1>
-              {data.businessTaxId && (
+              {(!hasBusinessDetails || hasText(data.businessTaxId)) && (
                 <p className={`font-mono-tabular ${layout.metaSizeClass} text-slate-500 mt-1`}>
-                  {data.businessTaxId}
+                  <PlaceholderText value={data.businessTaxId} placeholder="Tax ID / Registration" />
                 </p>
               )}
-              {data.businessAddress && (
+              {(!hasBusinessDetails || hasText(data.businessAddress)) && (
                 <p className={`font-sans-title ${layout.metaSizeClass} text-slate-600 mt-0.5`}>
-                  {data.businessAddress}
+                  <PlaceholderText value={data.businessAddress} placeholder="Business address here" />
                 </p>
               )}
-              {data.businessEmail && (
+              {(!hasBusinessDetails || hasText(data.businessEmail)) && (
                 <p className={`font-sans-title ${layout.metaSizeClass} text-slate-500 mt-0.5`}>
-                  {data.businessEmail}
+                  <PlaceholderText value={data.businessEmail} placeholder="billing@example.com" />
                 </p>
               )}
             </div>
           </div>
-
-          <div className={`${isCompact ? 'text-left' : 'text-right'} shrink-0`}>
-            <div
-              className={`flex w-fit ${isCompact ? '' : 'ml-auto'} items-center gap-1.5 px-2.5 py-1 rounded ${layout.smallSizeClass} font-bold uppercase tracking-wide mb-2`}
-              style={{
-                backgroundColor: theme.badgeBg,
-                color: theme.badgeText,
-              }}
-            >
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>{t('payment_received')}</span>
-            </div>
+        }
+        right={
+          <div>
+            <DocumentStatusBadge
+              assets={mounted}
+              icon={<CheckCircle2 className="w-3.5 h-3.5" />}
+              label={t('payment_received')}
+              className="tracking-wide mb-2"
+            />
             <div className={`${layout.metaSizeClass} text-slate-500 font-sans-title`}>
               {t('receipt_no')}:{' '}
               <strong className="font-mono-tabular font-bold text-slate-800">
-                {data.receiptNumber || 'RCP-0000'}
+                <PlaceholderText value={data.receiptNumber} placeholder="RCP-0000" />
               </strong>
             </div>
             <div className={`${layout.metaSizeClass} text-slate-500 font-sans-title mt-0.5`}>
-              {t('issue_date')}: {data.issueDate || '—'}
+              {t('issue_date')}: <PlaceholderText value={data.issueDate} placeholder="YYYY-MM-DD" />
             </div>
-            {data.paymentMethod && (
+            {(!hasText(data.receiptNumber) || hasText(data.paymentMethod)) && (
               <div className={`${layout.metaSizeClass} text-slate-500 font-sans-title mt-0.5`}>
-                {t('payment_method')}: {data.paymentMethod}
+                {t('payment_method')}: <PlaceholderText value={data.paymentMethod} placeholder="Payment method" />
               </div>
             )}
-            {data.transactionRef && (
+            {hasText(data.transactionRef) && (
               <div className={`${layout.smallSizeClass} font-mono-tabular text-slate-400 mt-0.5`}>
                 Ref: {data.transactionRef}
               </div>
             )}
           </div>
-        </div>
-      </header>
+        }
+      />
 
       {/* Bill To Customer Information */}
-      <section
-        className={`${layout.sectionMbClass} ${
-          isCompact ? 'p-3' : isLarge ? 'p-5' : 'p-4'
-        } rounded-md border border-slate-200 bg-slate-50/60 font-sans-title print-avoid-break`}
-      >
-        <h2 className={`${layout.smallSizeClass} font-bold uppercase tracking-wider text-slate-500 mb-2`}>
-          {t('billed_to')}
-        </h2>
+      <DocumentInfoCard assets={mounted} title={t('billed_to')}>
         <div
           className={`grid ${
             isCompact ? 'grid-cols-1 gap-1.5' : 'grid-cols-2 gap-3'
@@ -169,28 +164,52 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
         >
           <div>
             <div className={`font-bold text-slate-900 ${isCompact ? 'text-xs' : isLarge ? 'text-base' : 'text-sm'}`}>
-              {data.customerName || 'Customer Name'}
+              <PlaceholderText value={data.customerName} placeholder="Customer Name Here" />
             </div>
-            {data.customerCompany && (
-              <div className="text-slate-700 font-medium">{data.customerCompany}</div>
+            {(!hasCustomerDetails || hasText(data.customerCompany)) && (
+              <div className="text-slate-700 font-medium">
+                <PlaceholderText value={data.customerCompany} placeholder="Customer Organization" />
+              </div>
             )}
           </div>
           <div className={`text-slate-600 ${isCompact ? 'text-left' : 'text-right'}`}>
-            {data.customerEmail && <div>{data.customerEmail}</div>}
-            {data.customerAddress && <div>{data.customerAddress}</div>}
+            {(!hasCustomerDetails || hasText(data.customerEmail)) && (
+              <div>
+                <PlaceholderText value={data.customerEmail} placeholder="customer@example.com" />
+              </div>
+            )}
+            {(!hasCustomerDetails || hasText(data.customerAddress)) && (
+              <div>
+                <PlaceholderText value={data.customerAddress} placeholder="Customer address here" />
+              </div>
+            )}
           </div>
         </div>
-      </section>
+      </DocumentInfoCard>
 
       {/* Line Items Table */}
       <section className={`${layout.sectionMbClass} print-avoid-break`}>
-        <table className={`w-full text-left border-collapse ${isCompact ? 'text-[10px]' : isLarge ? 'text-sm' : 'text-xs'}`}>
+        <table className={`w-full text-left border-collapse ${layout.tableTextClass}`}>
           <thead>
             <tr className="border-b-2 border-slate-300 font-sans-title text-slate-700 font-bold bg-slate-50/80">
-              <th className={isCompact ? 'py-2 px-2' : 'py-2.5 px-3'}>{t('item_description')}</th>
-              <th className={`${isCompact ? 'py-2 px-1.5 w-10' : 'py-2.5 px-3 w-16'} text-center`}>{t('quantity')}</th>
-              <th className={`${isCompact ? 'py-2 px-2 w-20' : isLarge ? 'py-2.5 px-3 w-36' : 'py-2.5 px-3 w-28'} text-right`}>{t('unit_price')}</th>
-              <th className={`${isCompact ? 'py-2 px-2 w-20' : isLarge ? 'py-2.5 px-3 w-36' : 'py-2.5 px-3 w-28'} text-right`}>{t('line_total')}</th>
+              <th className={layout.tableHeaderPaddingClass}>{t('item_description')}</th>
+              <th className={`${isCompact ? 'py-2 px-1.5 w-10' : 'py-2.5 px-3 w-16'} text-center`}>
+                {t('quantity')}
+              </th>
+              <th
+                className={`${
+                  isCompact ? 'py-2 px-2 w-20' : isLarge ? 'py-2.5 px-3 w-36' : 'py-2.5 px-3 w-28'
+                } text-right`}
+              >
+                {t('unit_price')}
+              </th>
+              <th
+                className={`${
+                  isCompact ? 'py-2 px-2 w-20' : isLarge ? 'py-2.5 px-3 w-36' : 'py-2.5 px-3 w-28'
+                } text-right`}
+              >
+                {t('line_total')}
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200">
@@ -198,21 +217,23 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
               const qty = safeNum(item.quantity);
               const price = safeNum(item.unitPrice);
               const lineTot = qty * price;
-              const cellPy = isCompact ? 'py-2 px-2' : isTall || isLarge ? 'py-4 px-3' : 'py-3 px-3';
               return (
                 <tr key={item.id || idx} className="hover:bg-slate-50/50 transition-colors">
-                  <td className={cellPy}>
+                  <td className={layout.tableCellPaddingClass}>
                     <span className="font-semibold text-slate-900 block">
-                      {item.description || 'Service or item description'}
+                      <PlaceholderText
+                        value={item.description}
+                        placeholder="Item or service description here"
+                      />
                     </span>
                   </td>
-                  <td className={`${cellPy} text-center font-mono-tabular text-slate-600`}>
+                  <td className={`${layout.tableCellPaddingClass} text-center font-mono-tabular text-slate-600`}>
                     {qty}
                   </td>
-                  <td className={`${cellPy} text-right font-mono-tabular text-slate-600`}>
+                  <td className={`${layout.tableCellPaddingClass} text-right font-mono-tabular text-slate-600`}>
                     {formatCurrency(price)}
                   </td>
-                  <td className={`${cellPy} text-right font-mono-tabular font-bold text-slate-900`}>
+                  <td className={`${layout.tableCellPaddingClass} text-right font-mono-tabular font-bold text-slate-900`}>
                     {formatCurrency(lineTot)}
                   </td>
                 </tr>
@@ -272,41 +293,42 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
       </section>
 
       {/* Additional Terms & Notes */}
-      {data.notes && (
-        <section
-          className={`${layout.sectionMbClass} ${
-            isCompact ? 'p-2.5' : 'p-3.5'
-          } rounded bg-slate-50 border-l-3 border-slate-400 font-sans-title ${layout.metaSizeClass} text-slate-600 print-avoid-break`}
-        >
-          <span className="font-bold text-slate-700 block mb-0.5">
-            {t('notes_terms')}:
-          </span>
-          <p className="leading-relaxed">{data.notes}</p>
-        </section>
+      {(hasText(data.notes) || !hasBusinessDetails) && (
+        <DocumentNotesBox
+          assets={mounted}
+          label={t('notes_terms')}
+          text={data.notes}
+          placeholder="Add payment terms, notes, or warranty details here."
+        />
       )}
 
       {/* Signatory & Security Footer */}
-      <footer
-        className={`pt-5 border-t border-slate-200 flex ${
-          isCompact ? 'flex-col items-start gap-3' : 'flex-row items-center justify-between gap-4'
-        } font-sans-title ${layout.metaSizeClass} text-slate-500 print-avoid-break`}
-      >
-        <div>
-          {data.cashierOrAgent && (
-            <div>
-              {t('authorized_signatory')}:{' '}
-              <strong className="text-slate-800">{data.cashierOrAgent}</strong>
+      <DocumentFooterBand
+        assets={mounted}
+        left={
+          <div>
+            {(!hasBusinessDetails || hasText(data.cashierOrAgent)) && (
+              <div>
+                {t('authorized_signatory')}:{' '}
+                <strong className="text-slate-800">
+                  <PlaceholderText value={data.cashierOrAgent} placeholder="Signatory Name Here" />
+                </strong>
+              </div>
+            )}
+            <div className={`${layout.smallSizeClass} text-slate-400 mt-0.5`}>
+              {t('electronic_record')}
             </div>
-          )}
-          <div className={`${layout.smallSizeClass} text-slate-400 mt-0.5`}>
-            {t('electronic_record')}
           </div>
-        </div>
-        <div className={`${isCompact ? 'text-left' : 'text-right'} ${layout.smallSizeClass} text-slate-400`}>
-          <div>Verified & Reconciled</div>
-          <div className="font-mono-tabular">AUTH-ID: {data.receiptNumber || '000'}</div>
-        </div>
-      </footer>
-    </div>
+        }
+        right={
+          <div className={`${layout.smallSizeClass} text-slate-400`}>
+            <div>{t('verified')}</div>
+            <div className="font-mono-tabular">
+              AUTH-ID: <PlaceholderText value={data.receiptNumber} placeholder="000" />
+            </div>
+          </div>
+        }
+      />
+    </DocumentSheet>
   );
 };
