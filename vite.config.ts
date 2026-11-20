@@ -12,11 +12,11 @@ function html2canvasOklchPlugin(): Plugin {
         return code
           .replace(
             /throw new Error\s*\(\s*["']Attempting to parse an unsupported color function[^)]*\);?/g,
-            'return 0x0f172aff;'
+            'return 0x00000000;'
           )
           .replace(
             /throw new Error\s*\(\s*["']Unsupported color[^)]*\);?/g,
-            'return 0x0f172aff;'
+            'return 0x00000000;'
           );
       }
       return null;

@@ -121,7 +121,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
 
           <div className={`${isCompact ? 'text-left' : 'text-right'} shrink-0`}>
             <div
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded ${layout.smallSizeClass} font-bold uppercase tracking-wide mb-2`}
+              className={`flex w-fit ${isCompact ? '' : 'ml-auto'} items-center gap-1.5 px-2.5 py-1 rounded ${layout.smallSizeClass} font-bold uppercase tracking-wide mb-2`}
               style={{
                 backgroundColor: theme.badgeBg,
                 color: theme.badgeText,

@@ -100,31 +100,88 @@ export async function exportToPdf(
       await document.fonts.ready;
     }
 
-    // Helper to convert modern CSS color functions (oklch, oklab) to standard rgba
-    const oklchToRgba = (colorStr: string): string => {
-      if (!colorStr || (!colorStr.includes('oklch') && !colorStr.includes('oklab'))) return colorStr;
+    // Helper to convert modern CSS color functions (oklch, oklab, color-mix, color(), lab, lch) to standard rgb/rgba
+    const colorCanvas = document.createElement('canvas');
+    colorCanvas.width = 1;
+    colorCanvas.height = 1;
+    const colorCtx = colorCanvas.getContext('2d', { willReadFrequently: true });
+
+    const colorCache = new Map<string, string>();
+    const UNSUPPORTED_COLOR_REGEX = /\b(oklch|oklab|color-mix|color|lab|lch)\s*\(/i;
+
+    const resolveCssColorToRgba = (colorStr: string): string => {
+      if (!colorStr || !UNSUPPORTED_COLOR_REGEX.test(colorStr)) return colorStr;
+      const cached = colorCache.get(colorStr);
+      if (cached) return cached;
+
+      if (!colorCtx) return 'rgba(0, 0, 0, 0)';
       try {
-        const c = document.createElement('canvas');
-        c.width = 1;
-        c.height = 1;
-        const ctx = c.getContext('2d');
-        if (!ctx) return '#0f172a';
-        ctx.fillStyle = '#0f172a';
-        ctx.fillStyle = colorStr;
-        ctx.fillRect(0, 0, 1, 1);
-        const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data;
-        return `rgba(${r}, ${g}, ${b}, ${(a / 255).toFixed(3)})`;
+        colorCtx.clearRect(0, 0, 1, 1);
+        colorCtx.fillStyle = 'rgba(0, 0, 0, 0)';
+        colorCtx.fillStyle = colorStr;
+        colorCtx.fillRect(0, 0, 1, 1);
+        const [r, g, b, a] = colorCtx.getImageData(0, 0, 1, 1).data;
+        const result =
+          a === 0
+            ? 'rgba(0, 0, 0, 0)'
+            : a === 255
+            ? `rgb(${r}, ${g}, ${b})`
+            : `rgba(${r}, ${g}, ${b}, ${(a / 255).toFixed(3)})`;
+        colorCache.set(colorStr, result);
+        return result;
       } catch {
-        return '#0f172a';
+        return 'rgba(0, 0, 0, 0)';
       }
     };
 
-    const sanitizeOklch = (val: string): string => {
-      if (!val || (!val.includes('oklch') && !val.includes('oklab'))) return val;
-      return val
-        .replace(/oklch\([^)]+\)/gi, (m) => oklchToRgba(m))
-        .replace(/oklab\([^)]+\)/gi, (m) => oklchToRgba(m));
+    // Balanced-parenthesis replacer so nested expressions like color-mix(in oklab, oklch(...) 60%, transparent) work cleanly
+    const replaceUnsupportedColors = (val: string): string => {
+      if (!val || !UNSUPPORTED_COLOR_REGEX.test(val)) return val;
+      const fnRegex = /\b(oklch|oklab|color-mix|color|lab|lch)\s*\(/gi;
+      let output = '';
+      let lastIndex = 0;
+      let match: RegExpExecArray | null;
+
+      while ((match = fnRegex.exec(val)) !== null) {
+        const start = match.index;
+        if (start < lastIndex) continue;
+
+        output += val.slice(lastIndex, start);
+        let depth = 1;
+        let i = fnRegex.lastIndex;
+        while (i < val.length && depth > 0) {
+          if (val[i] === '(') depth++;
+          else if (val[i] === ')') depth--;
+          i++;
+        }
+
+        const expr = val.slice(start, i);
+        output += resolveCssColorToRgba(expr);
+        lastIndex = i;
+        fnRegex.lastIndex = i;
+      }
+
+      output += val.slice(lastIndex);
+      return output;
     };
+
+    const COLOR_CSS_PROPS = [
+      'color',
+      'background-color',
+      'border-top-color',
+      'border-right-color',
+      'border-bottom-color',
+      'border-left-color',
+      'outline-color',
+      'text-decoration-color',
+      'column-rule-color',
+      'caret-color',
+      'fill',
+      'stroke',
+      'box-shadow',
+      'text-shadow',
+      'background-image',
+    ];
 
     // 2. High-resolution pixelated rasterization (2x scale for sharp, high-DPI graphics)
     const canvas = await html2canvas(targetElement, {
@@ -137,29 +194,35 @@ export async function exportToPdf(
       scrollX: 0,
       scrollY: 0,
       onclone: (clonedDoc: Document, clonedEl: HTMLElement) => {
-        // Sanitize styles in cloned document
+        // Sanitize inline <style> tags as defense-in-depth
         const styleTags = clonedDoc.querySelectorAll('style');
         styleTags.forEach((tag) => {
-          if (tag.textContent && (tag.textContent.includes('oklch') || tag.textContent.includes('oklab'))) {
-            tag.textContent = sanitizeOklch(tag.textContent);
+          if (tag.textContent && UNSUPPORTED_COLOR_REGEX.test(tag.textContent)) {
+            tag.textContent = replaceUnsupportedColors(tag.textContent);
           }
         });
 
-        // Sanitize any elements with oklch in clonedEl
-        const allNodes = clonedEl.querySelectorAll('*');
-        allNodes.forEach((node) => {
-          const el = node as HTMLElement;
-          if (el.style) {
-            const props = ['color', 'backgroundColor', 'borderColor', 'outlineColor', 'boxShadow'];
-            props.forEach((prop) => {
-              const val = (el.style as any)[prop];
-              if (val && typeof val === 'string' && (val.includes('oklch') || val.includes('oklab'))) {
-                const kebab = prop.replace(/([A-Z])/g, '-$1').toLowerCase();
-                el.style.setProperty(kebab, sanitizeOklch(val), 'important');
-              }
-            });
+        // Resolve computed CSS colors (including external <link rel="stylesheet"> Tailwind v4 oklch/oklab/color-mix rules)
+        // directly onto inline !important styles so html2canvas receives standard rgb/rgba values.
+        const win = clonedDoc.defaultView || window;
+        const elements: Element[] = [
+          clonedDoc.documentElement,
+          clonedDoc.body,
+          clonedEl,
+          ...Array.from(clonedEl.querySelectorAll('*')),
+        ].filter((n): n is Element => Boolean(n));
+
+        for (const node of elements) {
+          const el = node as HTMLElement | SVGElement;
+          if (!el.style) continue;
+          const cs = win.getComputedStyle(el);
+          for (const prop of COLOR_CSS_PROPS) {
+            const computedVal = cs.getPropertyValue(prop);
+            if (computedVal && UNSUPPORTED_COLOR_REGEX.test(computedVal)) {
+              el.style.setProperty(prop, replaceUnsupportedColors(computedVal), 'important');
+            }
           }
-        });
+        }
       },
     });
 

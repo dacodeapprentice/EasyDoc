@@ -79,7 +79,7 @@ export const CensusDocument: React.FC<CensusDocumentProps> = ({
           {/* Census Code Badge */}
           <div className={`${isCompact ? 'text-left' : 'text-right'} font-sans-title shrink-0`}>
             <div
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded ${layout.smallSizeClass} font-bold uppercase tracking-wider`}
+              className={`flex w-fit ${isCompact ? '' : 'ml-auto'} items-center gap-1.5 px-2.5 py-1 rounded ${layout.smallSizeClass} font-bold uppercase tracking-wider`}
               style={{
                 backgroundColor: theme.badgeBg,
                 color: theme.badgeText,
