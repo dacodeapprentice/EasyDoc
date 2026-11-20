@@ -2,9 +2,8 @@ import React from 'react';
 import { DocumentType, LanguageCode } from '../types/document';
 import {
   Download,
-  Printer,
   Loader2,
-  Sparkles,
+  RefreshCw,
   Save,
   FolderOpen,
   ArrowLeft,
@@ -17,7 +16,6 @@ interface NavbarProps {
   paperSizeLabel: string;
   onRequestChangeTemplate: () => void;
   onDownloadPdf: () => void;
-  onPrint: () => void;
   isGeneratingPdf: boolean;
   onResetData: () => void;
   onSaveProgress: () => void;
@@ -31,7 +29,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   paperSizeLabel,
   onRequestChangeTemplate,
   onDownloadPdf,
-  onPrint,
   isGeneratingPdf,
   onResetData,
   onSaveProgress,
@@ -127,18 +124,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           title={t('reset_template_tooltip')}
           className="hidden md:inline-flex h-9 items-center gap-1.5 px-2.5 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 hover:bg-zinc-100 rounded-lg transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
         >
-          <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+          <RefreshCw className="w-3.5 h-3.5 text-zinc-600" />
           <span className="hidden 2xl:inline">{t('preset_data')}</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={onPrint}
-          title="Instant High-Resolution Browser Vector Print / Save PDF"
-          className="inline-flex h-9 items-center gap-1.5 px-2.5 sm:px-3 text-xs font-medium text-zinc-700 bg-white hover:bg-zinc-100 border border-zinc-200 rounded-lg transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-        >
-          <Printer className="w-3.5 h-3.5 text-zinc-500" />
-          <span className="hidden lg:inline">{t('print_vector')}</span>
         </button>
 
         <button

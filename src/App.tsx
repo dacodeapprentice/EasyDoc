@@ -27,7 +27,7 @@ import { Navbar } from './components/Navbar';
 import { LandingPage } from './components/LandingPage';
 import { ChangeTemplateModal } from './components/ChangeTemplateModal';
 import { StyleCustomizer } from './components/StyleCustomizer';
-import { exportToPdf, printDocument } from './utils/pdfExport';
+import { exportToPdf } from './utils/pdfExport';
 import {
   saveProjectToFile,
   loadProjectFromFile,
@@ -273,18 +273,14 @@ export default function App() {
       if (success) {
         showToast(`Document downloaded: ${filename}`);
       } else {
-        showToast('PDF generation failed. Please try "Print / Vector PDF" instead.');
+        showToast('PDF generation failed. Please try again.');
       }
     } catch (err) {
       console.error('PDF export error:', err);
-      showToast('PDF generation failed. Please try "Print / Vector PDF" instead.');
+      showToast('PDF generation failed. Please try again.');
     } finally {
       setIsGeneratingPdf(false);
     }
-  };
-
-  const handlePrint = () => {
-    printDocument(currentPaperSpec);
   };
 
   // Language switch handler: translates UI guidance only; template contents stay constant
@@ -424,7 +420,6 @@ export default function App() {
         paperSizeLabel={currentPaperSpec.name}
         onRequestChangeTemplate={() => setShowChangeTemplateModal(true)}
         onDownloadPdf={handleDownloadPdf}
-        onPrint={handlePrint}
         isGeneratingPdf={isGeneratingPdf}
         onResetData={handleResetData}
         onSaveProgress={handleSaveProgress}
@@ -637,7 +632,7 @@ export default function App() {
                 }}
                 className="doc-page-shadow rounded-sm print-canvas bg-white shrink-0 border border-zinc-200"
               >
-                {/* Single dedicated DOM ID for PDF export and vector print */}
+                {/* Single dedicated DOM ID for PDF export */}
                 <div
                   id="document-canvas"
                   style={{

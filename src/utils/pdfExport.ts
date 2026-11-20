@@ -13,30 +13,6 @@ const JsPdfConstructor: any =
     ? (jsPDFImport as any).default
     : (jsPDFImport as any)?.jsPDF;
 
-export function printDocument(paperSpec: PaperSizeSpec = PAPER_SIZES.a4): void {
-  const scaleWrapper = document.getElementById('document-scale-wrapper');
-  const previousTransform = scaleWrapper ? scaleWrapper.style.transform : '';
-
-  // Dynamically apply the selected paper size to @page before invoking browser print
-  let pageStyle = document.getElementById('easydoc-print-page-style') as HTMLStyleElement | null;
-  if (!pageStyle) {
-    pageStyle = document.createElement('style');
-    pageStyle.id = 'easydoc-print-page-style';
-    document.head.appendChild(pageStyle);
-  }
-  pageStyle.textContent = `@media print { @page { size: ${paperSpec.cssPageSize}; margin: 10mm; } }`;
-
-  if (scaleWrapper) {
-    scaleWrapper.style.transform = 'none';
-  }
-
-  window.print();
-
-  if (scaleWrapper) {
-    scaleWrapper.style.transform = previousTransform;
-  }
-}
-
 /**
  * Converts the vector DOM document into a high-resolution pixelated raster PDF file
  * matching the selected paper dimensions and triggers immediate download.
