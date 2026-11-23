@@ -1,7 +1,8 @@
 import jsPDFImport, { jsPDF as jsPDFNamed } from 'jspdf';
 import html2canvas from 'html2canvas';
-import { PaperSizeSpec } from '../types/document';
+import { EasyDocPdfPayload, PaperSizeSpec } from '../types/document';
 import { PAPER_SIZES } from '../data/defaultData';
+import { attachHiddenPayloadToJsPdf } from './pdfProjectCodec';
 
 // Robust constructor resolution for jsPDF across both ESM and CommonJS bundles
 const JsPdfConstructor: any =
@@ -20,7 +21,8 @@ const JsPdfConstructor: any =
 export async function exportToPdf(
   elementId: string,
   filename: string,
-  paperSpec: PaperSizeSpec = PAPER_SIZES.a4
+  paperSpec: PaperSizeSpec = PAPER_SIZES.a4,
+  projectPayload?: EasyDocPdfPayload
 ): Promise<boolean> {
   const source = document.getElementById(elementId);
   if (!source) {
@@ -242,6 +244,10 @@ export async function exportToPdf(
     }
 
     const safeFilename = filename.toLowerCase().endsWith('.pdf') ? filename : `${filename}.pdf`;
+
+    if (projectPayload) {
+      attachHiddenPayloadToJsPdf(pdf, projectPayload);
+    }
 
     // 5. Trigger download using official pdf.save()
     let downloadSucceeded = false;

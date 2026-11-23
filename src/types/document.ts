@@ -97,6 +97,56 @@ export interface DocumentAssetBundle {
   layout: DocumentLayoutTokens;
 }
 
+export type TemplateFeatureKey =
+  | 'photo_avatar'
+  | 'org_logo'
+  | 'official_seal'
+  | 'multi_item_list'
+  | 'financial_totals'
+  | 'header_accent'
+  | 'color_theme'
+  | 'typography'
+  | 'paper_size'
+  | 'margins_density';
+
+export interface TemplateSectionSpec {
+  id: string;
+  labelKey: string;
+  required?: boolean;
+}
+
+export interface TemplatePdfStructure {
+  templateId: DocumentType;
+  sections: TemplateSectionSpec[];
+  supportedFeatures: TemplateFeatureKey[];
+  recommendedPaperSizes: PaperSizeId[];
+}
+
+export interface EasyDocPdfPayload {
+  schema: 'easydoc.pdf.v3';
+  savedAt: string;
+  template: {
+    type: DocumentType;
+    sections: string[];
+    supportedFeatures: TemplateFeatureKey[];
+  };
+  features: DocumentStyle;
+  lang: LanguageCode;
+  activeContent:
+    | CvData
+    | LetterData
+    | CensusData
+    | ReceiptData
+    | CertificateData;
+  templates: Partial<{
+    cv: CvData;
+    letter: LetterData;
+    census: CensusData;
+    receipt: ReceiptData;
+    certificate: CertificateData;
+  }>;
+}
+
 // 1. CV Data Types
 export interface WorkExperienceItem {
   id: string;

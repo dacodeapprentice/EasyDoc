@@ -26,10 +26,16 @@ import {
 import { Navbar } from './components/Navbar';
 import { LandingPage } from './components/LandingPage';
 import { ChangeTemplateModal } from './components/ChangeTemplateModal';
+import { ContentTranslatorBar } from './components/ContentTranslatorBar';
 import { StyleCustomizer } from './components/StyleCustomizer';
 import { exportToPdf } from './utils/pdfExport';
+import { buildEasyDocPdfPayload } from './utils/pdfProjectCodec';
 import {
-  saveProjectToFile,
+  TARGET_LANGUAGES,
+  hasTranslatableContent,
+  translateDocumentContent,
+} from './utils/translateContent';
+import {
   loadProjectFromFile,
   saveAutoSave,
   loadAutoSave,
@@ -133,6 +139,13 @@ export default function App() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [autoSavedTime, setAutoSavedTime] = useState<string | null>(null);
 
+  // Document Content Translation State
+  const [targetTranslateLang, setTargetTranslateLang] = useState<string>('es');
+  const [isTranslating, setIsTranslating] = useState<boolean>(false);
+  const [translationError, setTranslationError] = useState<string | null>(null);
+  const [preTranslationSnapshots, setPreTranslationSnapshots] = useState<Partial<TemplateDefaultMap>>({});
+  const [translatedLabels, setTranslatedLabels] = useState<Partial<Record<DocumentType, string>>>({});
+
   const documentWrapperRef = useRef<HTMLDivElement>(null);
   const t = (key: string) => getTranslation(lang, key);
 
@@ -177,6 +190,9 @@ export default function App() {
       receipt: saved.receiptData || prev.receipt,
       certificate: saved.certificateData || prev.certificate,
     }));
+    setPreTranslationSnapshots({});
+    setTranslatedLabels({});
+    setTranslationError(null);
   }, []);
 
   const showToast = (message: string) => {
@@ -257,19 +273,31 @@ export default function App() {
     updateTemplateContent(docType, getDefaultTemplateContent(docType));
     setStyle((prev) => ({ ...DEFAULT_STYLE, paperSize: prev.paperSize || 'a4' }));
     setKeptDraftTypes((prev) => prev.filter((item) => item !== docType));
+    setPreTranslationSnapshots((prev) => {
+      const next = { ...prev };
+      delete next[docType];
+      return next;
+    });
+    setTranslatedLabels((prev) => {
+      const next = { ...prev };
+      delete next[docType];
+      return next;
+    });
+    setTranslationError(null);
     setShowChangeTemplateModal(false);
     setView('home');
     scrollToTemplatePicker();
     showToast(t('changes_discarded_toast'));
   };
 
-  // PDF Export
+  // PDF Export (embeds hidden template-organized project state inside the generated PDF)
   const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
     const filename = activeTemplateMeta.getPdfFilename(contents);
+    const pdfPayload = buildEasyDocPdfPayload(docType, style, lang, contents);
 
     try {
-      const success = await exportToPdf('document-canvas', filename, currentPaperSpec);
+      const success = await exportToPdf('document-canvas', filename, currentPaperSpec, pdfPayload);
       if (success) {
         showToast(`Document downloaded: ${filename}`);
       } else {
@@ -292,12 +320,101 @@ export default function App() {
   // Restore neutral blank template state for the active template
   const handleResetData = () => {
     updateTemplateContent(docType, getDefaultTemplateContent(docType));
+    setPreTranslationSnapshots((prev) => {
+      const next = { ...prev };
+      delete next[docType];
+      return next;
+    });
+    setTranslatedLabels((prev) => {
+      const next = { ...prev };
+      delete next[docType];
+      return next;
+    });
+    setTranslationError(null);
     showToast('Template reset to neutral placeholders');
   };
 
-  const handleSaveProgress = () => {
-    saveProjectToFile(buildSavedPayload());
-    showToast('Progress saved as JSON file');
+  // Translate entered/uploaded content for multi-country applications
+  const handleTranslateContent = async () => {
+    const activeContent = contents[docType];
+    setTranslationError(null);
+
+    if (!hasTranslatableContent(docType, activeContent)) {
+      const msg = t('translate_empty_error');
+      setTranslationError(msg);
+      showToast(msg);
+      return;
+    }
+
+    const selectedOption =
+      TARGET_LANGUAGES.find((opt) => opt.code === targetTranslateLang) || TARGET_LANGUAGES[0];
+
+    const originalBeforeRun = structuredClone(activeContent);
+
+    setIsTranslating(true);
+    try {
+      const result = await translateDocumentContent({
+        docType,
+        targetLanguage: selectedOption.apiName,
+        content: activeContent,
+      });
+      if (!preTranslationSnapshots[docType]) {
+        setPreTranslationSnapshots((prev) => ({
+          ...prev,
+          [docType]: originalBeforeRun,
+        }));
+      }
+      updateTemplateContent(docType, result.translatedContent);
+      setTranslatedLabels((prev) => ({
+        ...prev,
+        [docType]: `${selectedOption.flag} ${selectedOption.label}`,
+      }));
+      showToast(`${t('translate_success_toast')} ${selectedOption.label}`);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Could not translate document content.';
+      setTranslationError(msg);
+      showToast(msg);
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
+  const handleRestorePreTranslation = () => {
+    const snapshot = preTranslationSnapshots[docType];
+    if (!snapshot) return;
+    updateTemplateContent(docType, structuredClone(snapshot) as TemplateDefaultMap[typeof docType]);
+    setPreTranslationSnapshots((prev) => {
+      const next = { ...prev };
+      delete next[docType];
+      return next;
+    });
+    setTranslatedLabels((prev) => {
+      const next = { ...prev };
+      delete next[docType];
+      return next;
+    });
+    setTranslationError(null);
+    showToast(t('restore_original_toast'));
+  };
+
+  const handleSaveProgress = async () => {
+    setIsGeneratingPdf(true);
+    const saveFilename = `EasyDoc_${docType}_${new Date().toISOString().split('T')[0]}.pdf`;
+    const pdfPayload = buildEasyDocPdfPayload(docType, style, lang, contents);
+
+    try {
+      const success = await exportToPdf('document-canvas', saveFilename, currentPaperSpec, pdfPayload);
+      if (success) {
+        showToast(t('pdf_saved_progress_toast'));
+      } else {
+        showToast('Could not save progress PDF. Please try again.');
+      }
+    } catch (err) {
+      console.error('Save PDF progress error:', err);
+      showToast('Could not save progress PDF. Please try again.');
+    } finally {
+      setIsGeneratingPdf(false);
+    }
   };
 
   const handleLoadProgress = async () => {
@@ -307,10 +424,12 @@ export default function App() {
       setView('editor');
       setSidebarTab('inputs');
       window.scrollTo({ top: 0, behavior: 'auto' });
-      showToast('Project progress restored successfully!');
+      showToast(t('pdf_restored_toast'));
     } catch (err: any) {
-      if (err?.message !== 'No file selected') {
-        showToast(err?.message || 'Could not load project file.');
+      if (err?.message === 'NO_EMBEDDED_EASYDOC_DATA') {
+        showToast(t('pdf_no_project_data'));
+      } else if (err?.message !== 'No file selected') {
+        showToast(err?.message || 'Could not load PDF file.');
       }
     }
   };
@@ -525,7 +644,24 @@ export default function App() {
           {/* Sidebar Tab Content */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-5 custom-scrollbar">
             {sidebarTab === 'inputs' && (
-              <div>{renderTemplateForm(docType, contents, updateTemplateContent, lang)}</div>
+              <div>
+                <ContentTranslatorBar
+                  lang={lang}
+                  targetLangCode={targetTranslateLang}
+                  onChangeTargetLang={(code) => {
+                    setTargetTranslateLang(code);
+                    setTranslationError(null);
+                  }}
+                  onTranslate={handleTranslateContent}
+                  onRestoreOriginal={handleRestorePreTranslation}
+                  hasOriginalSnapshot={Boolean(preTranslationSnapshots[docType])}
+                  lastTranslatedLabel={translatedLabels[docType] || null}
+                  isTranslating={isTranslating}
+                  errorMessage={translationError}
+                  onDismissError={() => setTranslationError(null)}
+                />
+                {renderTemplateForm(docType, contents, updateTemplateContent, lang)}
+              </div>
             )}
 
             {sidebarTab === 'style' && (

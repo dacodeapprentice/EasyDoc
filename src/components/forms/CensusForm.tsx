@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CensusData, HouseholdMember, LanguageCode } from '../../types/document';
 import { Plus, Trash2, Users, Home, FileSpreadsheet, ChevronDown, ChevronUp } from 'lucide-react';
+import { CalendarDatePicker } from '../CalendarDatePicker';
 import { getTranslation } from '../../utils/i18n';
 
 interface CensusFormProps {
@@ -93,11 +94,11 @@ export const CensusForm: React.FC<CensusFormProps> = ({ data, onChange, lang = '
               <label className="block text-xs font-semibold text-zinc-700 mb-1">
                 {t('survey_date')}
               </label>
-              <input
-                type="date"
+              <CalendarDatePicker
                 value={data.surveyDate}
-                onChange={(e) => updateField('surveyDate', e.target.value)}
-                className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
+                onChange={(val) => updateField('surveyDate', val)}
+                lang={lang}
+                outputFormat="iso"
               />
             </div>
 

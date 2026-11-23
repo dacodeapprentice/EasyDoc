@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CertificateData, LanguageCode } from '../../types/document';
-import { ChevronDown, ChevronUp, Award, Users, FileText } from 'lucide-react';
+import { ChevronDown, ChevronUp, Award, Users } from 'lucide-react';
+import { CalendarDatePicker } from '../CalendarDatePicker';
 import { getTranslation } from '../../utils/i18n';
 
 interface CertificateFormProps {
@@ -110,12 +111,11 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
               <label className="block text-xs font-semibold text-zinc-700 mb-1">
                 {t('cert_date')}
               </label>
-              <input
-                type="text"
+              <CalendarDatePicker
                 value={data.dateOfAward}
-                onChange={(e) => updateField('dateOfAward', e.target.value)}
-                className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Date here"
+                onChange={(val) => updateField('dateOfAward', val)}
+                lang={lang}
+                outputFormat="long"
               />
             </div>
 

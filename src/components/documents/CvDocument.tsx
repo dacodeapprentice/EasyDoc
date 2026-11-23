@@ -140,7 +140,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
                 </div>
               </div>
               <div className={`${layout.smallSizeClass} font-medium text-slate-500 font-mono-tabular shrink-0`}>
-                <PlaceholderText value={edu.year} placeholder="Year" />
+                <PlaceholderText value={edu.year} placeholder="Start – End" />
               </div>
             </div>
           ))}

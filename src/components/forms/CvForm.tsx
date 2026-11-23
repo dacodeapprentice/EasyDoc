@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CvData, WorkExperienceItem, EducationItem, LanguageCode } from '../../types/document';
 import { Plus, Trash2, ChevronDown, ChevronUp, User, Briefcase, GraduationCap, Wrench } from 'lucide-react';
 import { ImageUploadCrop } from '../ImageUploadCrop';
+import { CalendarPeriodPicker } from '../CalendarDatePicker';
 import { getTranslation } from '../../utils/i18n';
 
 interface CvFormProps {
@@ -354,19 +355,18 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       placeholder="Organization name"
                     />
                   </div>
-                  <div>
+                  <div className="sm:col-span-2">
                     <label className="block text-[11px] font-medium text-zinc-600 mb-1">
                       {t('employment_period')}
                     </label>
-                    <input
-                      type="text"
+                    <CalendarPeriodPicker
                       value={exp.period}
-                      onChange={(e) => updateExperience(exp.id, 'period', e.target.value)}
-                      className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Start – End"
+                      onChange={(val) => updateExperience(exp.id, 'period', val)}
+                      lang={lang}
+                      allowPresent
                     />
                   </div>
-                  <div>
+                  <div className="sm:col-span-2">
                     <label className="block text-[11px] font-medium text-zinc-600 mb-1">
                       {t('location_city')}
                     </label>
@@ -488,7 +488,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       placeholder="Degree or certification title"
                     />
                   </div>
-                  <div>
+                  <div className="sm:col-span-2">
                     <label className="block text-[11px] font-medium text-zinc-600 mb-1">
                       {t('institution_school')}
                     </label>
@@ -500,16 +500,14 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       placeholder="Institution name"
                     />
                   </div>
-                  <div>
+                  <div className="sm:col-span-2">
                     <label className="block text-[11px] font-medium text-zinc-600 mb-1">
                       {t('grad_year')}
                     </label>
-                    <input
-                      type="text"
+                    <CalendarPeriodPicker
                       value={edu.year}
-                      onChange={(e) => updateEducation(edu.id, 'year', e.target.value)}
-                      className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Year or period"
+                      onChange={(val) => updateEducation(edu.id, 'year', val)}
+                      lang={lang}
                     />
                   </div>
                   <div className="sm:col-span-2">

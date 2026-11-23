@@ -249,7 +249,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 );
               })}
 
-              {/* 6th Card: Resume from Saved File (.json) */}
+              {/* 6th Card: Resume from Saved PDF (.pdf) */}
               <button
                 type="button"
                 onClick={onLoadProgress}
@@ -261,7 +261,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       <FolderOpen className="w-5 h-5" />
                     </div>
                     <span className="text-xs font-medium text-zinc-500 font-mono-tabular">
-                      .json
+                      .pdf
                     </span>
                   </div>
 
