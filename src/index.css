@@ -28,6 +28,7 @@ body {
 #document-canvas {
   background-color: #ffffff !important;
   color: #0f172a !important;
+  font-family: var(--doc-font-body, var(--font-serif));
 }
 
 #document-canvas hr,
@@ -50,6 +51,21 @@ body {
 
 .font-mono-tabular {
   font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+#document-canvas .font-sans-title {
+  font-family: var(--doc-font-heading, var(--font-sans));
+}
+
+#document-canvas .font-serif-reading,
+#document-canvas .font-serif-lora,
+#document-canvas .doc-font-body {
+  font-family: var(--doc-font-body, var(--font-serif));
+}
+
+#document-canvas .font-mono-tabular {
+  font-family: var(--doc-font-mono, var(--font-mono));
   font-variant-numeric: tabular-nums;
 }
 

@@ -161,9 +161,18 @@ export async function exportToPdf(
       'background-image',
     ];
 
-    // 2. High-resolution pixelated rasterization (2x scale for sharp, high-DPI graphics)
+    // 2. High-resolution pixelated rasterization (adaptive scale so giant custom canvases never exceed browser limits)
+    const isCustomPaper = paperSpec.id === 'custom';
+    const estimatedHeightPx = isCustomPaper
+      ? paperSpec.heightPx
+      : Math.max(paperSpec.heightPx, targetElement.scrollHeight || paperSpec.heightPx);
+    const maxDimPx = Math.max(targetWidthPx, estimatedHeightPx);
+    const rasterScale = maxDimPx > 3600 ? 0.75 : maxDimPx > 2000 ? 1.0 : maxDimPx > 1400 ? 1.5 : 2.0;
+
     const canvas = await html2canvas(targetElement, {
-      scale: 2.0,
+      scale: rasterScale,
+      width: targetWidthPx,
+      ...(isCustomPaper ? { height: paperSpec.heightPx } : {}),
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',
@@ -216,9 +225,9 @@ export async function exportToPdf(
     // 3. Convert high-resolution pixelated canvas into JPEG image data
     const imgData = canvas.toDataURL('image/jpeg', 0.98);
 
-    // 4. Instantiate jsPDF using exact selected paper format
+    // 4. Instantiate jsPDF using exact selected paper format and orientation
     const pdf = new JsPdfConstructor({
-      orientation: 'portrait',
+      orientation: paperSpec.orientation || (paperSpec.widthMm > paperSpec.heightMm ? 'landscape' : 'portrait'),
       unit: 'mm',
       format: paperSpec.jsPdfFormat,
       compress: true,
@@ -235,12 +244,14 @@ export async function exportToPdf(
     pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
     heightLeft -= pdfHeight;
 
-    // Multi-page pagination if content exceeds 1 A4 page
-    while (heightLeft > 5) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
-      heightLeft -= pdfHeight;
+    // Multi-page pagination for standard flowing sheets; custom sizes clip cleanly inside their defined single frame
+    if (!isCustomPaper) {
+      while (heightLeft > 5) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight, undefined, 'FAST');
+        heightLeft -= pdfHeight;
+      }
     }
 
     const safeFilename = filename.toLowerCase().endsWith('.pdf') ? filename : `${filename}.pdf`;

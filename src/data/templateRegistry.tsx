@@ -67,7 +67,7 @@ export const TEMPLATE_REGISTRY: Record<DocumentType, TemplateMetadata> = {
         'paper_size',
         'margins_density',
       ],
-      recommendedPaperSizes: ['a4', 'letter'],
+      recommendedPaperSizes: ['a4', 'letter', 'executive', 'b5', 'legal'],
     },
     getPdfFilename: (contents) =>
       `CV_${contents.cv.fullName.replace(/\s+/g, '_') || 'Resume'}.pdf`,
@@ -96,7 +96,7 @@ export const TEMPLATE_REGISTRY: Record<DocumentType, TemplateMetadata> = {
         'paper_size',
         'margins_density',
       ],
-      recommendedPaperSizes: ['a4', 'letter', 'legal'],
+      recommendedPaperSizes: ['a4', 'letter', 'executive', 'a5', 'statement'],
     },
     getPdfFilename: (contents) =>
       `Letter_${contents.letter.senderName.replace(/\s+/g, '_') || 'Presentation'}.pdf`,
@@ -123,7 +123,7 @@ export const TEMPLATE_REGISTRY: Record<DocumentType, TemplateMetadata> = {
         'paper_size',
         'margins_density',
       ],
-      recommendedPaperSizes: ['a4', 'legal', 'letter'],
+      recommendedPaperSizes: ['a4', 'legal', 'letter', 'folio', 'a3'],
     },
     getPdfFilename: (contents) =>
       `Census_${contents.census.censusCode || 'Record'}.pdf`,
@@ -152,7 +152,7 @@ export const TEMPLATE_REGISTRY: Record<DocumentType, TemplateMetadata> = {
         'paper_size',
         'margins_density',
       ],
-      recommendedPaperSizes: ['a4', 'a5', 'letter'],
+      recommendedPaperSizes: ['a5', 'a4', 'letter', 'statement', 'pos80'],
     },
     getPdfFilename: (contents) =>
       `Receipt_${contents.receipt.receiptNumber || 'Payment'}.pdf`,
@@ -178,7 +178,7 @@ export const TEMPLATE_REGISTRY: Record<DocumentType, TemplateMetadata> = {
         'paper_size',
         'margins_density',
       ],
-      recommendedPaperSizes: ['a4', 'letter', 'a3'],
+      recommendedPaperSizes: ['a4-landscape', 'letter-landscape', 'a4', 'letter', 'a3-landscape'],
     },
     getPdfFilename: (contents) =>
       `Certificate_${contents.certificate.recipientName.replace(/\s+/g, '_') || 'Award'}.pdf`,

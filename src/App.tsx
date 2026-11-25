@@ -11,6 +11,8 @@ import {
 } from './types/document';
 import {
   DEFAULT_STYLE,
+  getDefaultPaperSizeForDocType,
+  getDocTypeDesignMeta,
   resolveDocumentAssets,
 } from './assets/documentAssets';
 import {
@@ -120,6 +122,7 @@ export default function App() {
   // Active Structural Template & Mounted Common Style Assets
   const [docType, setDocType] = useState<DocumentType>('cv');
   const [style, setStyle] = useState<DocumentStyle>(DEFAULT_STYLE);
+  const [hasPickedDesign, setHasPickedDesign] = useState<boolean>(false);
   const [sidebarTab, setSidebarTab] = useState<SidebarTab>('inputs');
   const [mobileView, setMobileView] = useState<'editor' | 'preview'>('editor');
   const [lang, setLang] = useState<LanguageCode>('en');
@@ -231,8 +234,8 @@ export default function App() {
     if (!documentWrapperRef.current) return;
     const availableWidth = documentWrapperRef.current.clientWidth - 24;
     const fitScale = Math.min(
-      1.15,
-      Math.max(0.32, Number((availableWidth / currentPaperSpec.widthPx).toFixed(2)))
+      2.2,
+      Math.max(0.08, Number((availableWidth / currentPaperSpec.widthPx).toFixed(2)))
     );
     setZoomLevel(fitScale);
   }, [currentPaperSpec.widthPx]);
@@ -243,7 +246,7 @@ export default function App() {
     if (!keptDraftTypes.includes(selectedType)) {
       setStyle((prev) => ({
         ...prev,
-        paperSize: DEFAULT_STYLE.paperSize,
+        paperSize: getDefaultPaperSizeForDocType(selectedType),
       }));
     }
     setSidebarTab('inputs');
@@ -272,6 +275,7 @@ export default function App() {
   const handleDiscardChangesAndGoHome = () => {
     updateTemplateContent(docType, getDefaultTemplateContent(docType));
     setStyle((prev) => ({ ...DEFAULT_STYLE, paperSize: prev.paperSize || 'a4' }));
+    setHasPickedDesign(false);
     setKeptDraftTypes((prev) => prev.filter((item) => item !== docType));
     setPreTranslationSnapshots((prev) => {
       const next = { ...prev };
@@ -442,22 +446,22 @@ export default function App() {
         if (screenW < 1024) {
           const available = screenW - 32;
           const fitScale = Math.min(
-            1.0,
-            Math.max(0.28, Number((available / currentPaperSpec.widthPx).toFixed(2)))
+            1.4,
+            Math.max(0.08, Number((available / currentPaperSpec.widthPx).toFixed(2)))
           );
           setZoomLevel(fitScale);
         } else if (documentWrapperRef.current && documentWrapperRef.current.clientWidth > 0) {
           const available = documentWrapperRef.current.clientWidth - 48;
           const fitScale = Math.min(
-            0.95,
-            Math.max(0.32, Number((available / currentPaperSpec.widthPx).toFixed(2)))
+            1.25,
+            Math.max(0.08, Number((available / currentPaperSpec.widthPx).toFixed(2)))
           );
           setZoomLevel(fitScale);
         } else {
           const approxPreviewW = Math.max(400, screenW - 560);
           const fitScale = Math.min(
-            0.95,
-            Math.max(0.35, Number((approxPreviewW / currentPaperSpec.widthPx).toFixed(2)))
+            1.25,
+            Math.max(0.08, Number((approxPreviewW / currentPaperSpec.widthPx).toFixed(2)))
           );
           setZoomLevel(fitScale);
         }
@@ -473,8 +477,8 @@ export default function App() {
       const available = window.innerWidth - 32;
       if (available < currentPaperSpec.widthPx) {
         const fit = Math.min(
-          1.0,
-          Math.max(0.28, Number((available / currentPaperSpec.widthPx).toFixed(2)))
+          1.4,
+          Math.max(0.08, Number((available / currentPaperSpec.widthPx).toFixed(2)))
         );
         setZoomLevel(fit);
       }
@@ -595,7 +599,10 @@ export default function App() {
               <span className="text-zinc-300 shrink-0" aria-hidden="true">·</span>
               <button
                 type="button"
-                onClick={() => setSidebarTab('style')}
+                onClick={() => {
+                  setHasPickedDesign(true);
+                  setSidebarTab('style');
+                }}
                 title={t('paper_size_title')}
                 className="font-mono-tabular tabular-nums text-blue-600 hover:text-blue-700 font-medium whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded"
               >
@@ -665,14 +672,22 @@ export default function App() {
             )}
 
             {sidebarTab === 'style' && (
-              <StyleCustomizer style={style} onChange={setStyle} lang={lang} />
+              <StyleCustomizer
+                docType={docType}
+                style={style}
+                onChange={setStyle}
+                hasPickedDesign={hasPickedDesign}
+                onSelectDesign={() => setHasPickedDesign(true)}
+                lang={lang}
+              />
             )}
           </div>
 
           {/* Sidebar Footer Bar */}
-          <div className="px-4 py-2.5 border-t border-zinc-200 bg-zinc-50/70 flex items-center text-xs text-zinc-500 shrink-0">
+          <div className="px-4 py-2.5 border-t border-zinc-200 bg-zinc-50/70 flex items-center justify-between gap-2 text-xs text-zinc-500 shrink-0">
             <span className="truncate">
-              Theme: <strong className="font-semibold text-zinc-900">{currentTheme.name}</strong>
+              {t(getDocTypeDesignMeta(docType, mountedAssets.design.id).nameKey)} ·{' '}
+              <strong className="font-semibold text-zinc-900">{currentTheme.name}</strong>
             </span>
           </div>
         </aside>
@@ -694,8 +709,10 @@ export default function App() {
                 {currentPaperSpec.name} <span className="hidden sm:inline text-zinc-500">({currentPaperSpec.dimensionsLabel})</span>
               </span>
               <span className="text-zinc-300 hidden md:inline">·</span>
-              <span className="text-xs text-zinc-500 hidden md:inline">
-                Font: {mountedAssets.font.name}
+              <span className="text-xs text-zinc-500 hidden md:inline truncate">
+                {mountedAssets.typography.heading.id === mountedAssets.typography.body.id
+                  ? mountedAssets.typography.body.name
+                  : `${mountedAssets.typography.heading.name} / ${mountedAssets.typography.body.name}`}
               </span>
             </div>
 
@@ -703,7 +720,7 @@ export default function App() {
             <div className="flex items-center gap-1 shrink-0">
               <button
                 type="button"
-                onClick={() => setZoomLevel((z) => Math.max(0.28, Number((z - 0.1).toFixed(2))))}
+                onClick={() => setZoomLevel((z) => Math.max(0.08, Number((z - 0.1).toFixed(2))))}
                 className="h-8 w-8 inline-flex items-center justify-center text-zinc-600 hover:text-zinc-900 rounded-md hover:bg-zinc-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
                 title="Zoom Out"
                 aria-label="Zoom Out"
@@ -715,7 +732,7 @@ export default function App() {
               </span>
               <button
                 type="button"
-                onClick={() => setZoomLevel((z) => Math.min(1.3, Number((z + 0.1).toFixed(2))))}
+                onClick={() => setZoomLevel((z) => Math.min(2.5, Number((z + 0.1).toFixed(2))))}
                 className="h-8 w-8 inline-flex items-center justify-center text-zinc-600 hover:text-zinc-900 rounded-md hover:bg-zinc-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
                 title="Zoom In"
                 aria-label="Zoom In"
@@ -747,10 +764,13 @@ export default function App() {
             ref={documentWrapperRef}
             className="flex-1 overflow-x-auto overflow-y-auto p-2 sm:p-6 lg:p-8 flex justify-center items-start custom-scrollbar w-full max-w-full"
           >
-            {/* Outer container matching exact scaled width so it NEVER overflows the device screen */}
+            {/* Outer container matching exact scaled dimensions */}
             <div
               style={{
-                width: `${Math.round(currentPaperSpec.widthPx * zoomLevel)}px`,
+                width: `${Math.max(1, Math.round(currentPaperSpec.widthPx * zoomLevel))}px`,
+                ...(currentPaperSpec.id === 'custom'
+                  ? { height: `${Math.max(1, Math.round(currentPaperSpec.heightPx * zoomLevel))}px` }
+                  : {}),
                 maxWidth: '100%',
                 overflow: 'visible',
               }}
@@ -762,11 +782,18 @@ export default function App() {
                   width: `${currentPaperSpec.widthPx}px`,
                   minWidth: `${currentPaperSpec.widthPx}px`,
                   maxWidth: `${currentPaperSpec.widthPx}px`,
+                  ...(currentPaperSpec.id === 'custom'
+                    ? {
+                        height: `${currentPaperSpec.heightPx}px`,
+                        maxHeight: `${currentPaperSpec.heightPx}px`,
+                        overflow: 'hidden',
+                      }
+                    : {}),
                   transform: `scale(${zoomLevel})`,
                   transformOrigin: 'top center',
                   transition: 'transform 0.15s ease-out',
                 }}
-                className="doc-page-shadow rounded-sm print-canvas bg-white shrink-0 border border-zinc-200"
+                className="doc-page-shadow rounded-sm print-canvas bg-white shrink-0 ring-1 ring-zinc-200"
               >
                 {/* Single dedicated DOM ID for PDF export */}
                 <div
@@ -775,6 +802,13 @@ export default function App() {
                     width: `${currentPaperSpec.widthPx}px`,
                     minWidth: `${currentPaperSpec.widthPx}px`,
                     maxWidth: `${currentPaperSpec.widthPx}px`,
+                    ...(currentPaperSpec.id === 'custom'
+                      ? {
+                          height: `${currentPaperSpec.heightPx}px`,
+                          maxHeight: `${currentPaperSpec.heightPx}px`,
+                          overflow: 'hidden',
+                        }
+                      : {}),
                   }}
                   className="bg-white"
                 >

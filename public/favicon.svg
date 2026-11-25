@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <defs>
+    <linearGradient id="easydoc-bg" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#easydoc-bg)" />
+  <path
+    d="M19 13C19 11.3431 20.3431 10 22 10H36.7574C37.553 10 38.3161 10.3161 38.8787 10.8787L46.1213 18.1213C46.6839 18.6839 47 19.447 47 20.2426V51C47 52.6569 45.6569 54 44 54H22C20.3431 54 19 52.6569 19 51V13Z"
+    fill="#ffffff"
+  />
+  <path
+    d="M37 10.2V18C37 19.1046 37.8954 20 39 20H46.8"
+    fill="#dbeafe"
+  />
+  <rect x="24" y="26" width="14" height="3.5" rx="1.75" fill="#2563eb" />
+  <rect x="24" y="34" width="18" height="3" rx="1.5" fill="#94a3b8" />
+  <rect x="24" y="41" width="14" height="3" rx="1.5" fill="#cbd5e1" />
+</svg>

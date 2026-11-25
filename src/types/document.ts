@@ -2,7 +2,13 @@ export type DocumentType = 'cv' | 'letter' | 'census' | 'receipt' | 'certificate
 
 export type LanguageCode = 'en' | 'pt' | 'es' | 'fr';
 
-export type ColorThemeId = 'slate-emerald' | 'navy-cerulean' | 'nordic-forest' | 'teal-aegean' | 'cobalt-seafoam';
+export type ColorThemeId =
+  | 'slate-emerald'
+  | 'navy-cerulean'
+  | 'nordic-forest'
+  | 'teal-aegean'
+  | 'cobalt-seafoam'
+  | 'custom';
 
 export interface ColorTheme {
   id: ColorThemeId;
@@ -19,10 +25,58 @@ export interface ColorTheme {
   badgeText: string;
 }
 
-export type FontFamilyChoice = 'source-serif' | 'lora';
+export interface CustomColorPalette {
+  name?: string;
+  primary: string;
+  secondary: string;
+  textHeader: string;
+}
+
+export type DesignPresetId =
+  | 'executive-spine'
+  | 'modern-banner'
+  | 'editorial-serif'
+  | 'split-sidebar'
+  | 'swiss-grid';
+
+export type GoogleFontId =
+  | 'plus-jakarta-sans'
+  | 'dm-sans'
+  | 'manrope'
+  | 'outfit'
+  | 'bricolage-grotesque'
+  | 'ibm-plex-sans'
+  | 'source-serif-4'
+  | 'lora'
+  | 'playfair-display'
+  | 'fraunces'
+  | 'cormorant-garamond'
+  | 'jetbrains-mono';
+
+export type FontFamilyChoice = GoogleFontId | 'source-serif';
 export type DensityChoice = 'compact' | 'standard' | 'generous';
 export type HeaderStyleChoice = 'minimal' | 'left-bar' | 'banner' | 'classic';
-export type PaperSizeId = 'a4' | 'letter' | 'legal' | 'a5' | 'a3';
+export type PaperSizeId =
+  | 'a4'
+  | 'letter'
+  | 'legal'
+  | 'a5'
+  | 'a3'
+  | 'executive'
+  | 'b5'
+  | 'statement'
+  | 'folio'
+  | 'pos80'
+  | 'a4-landscape'
+  | 'letter-landscape'
+  | 'a3-landscape'
+  | 'custom';
+
+export interface CustomPaperDimensions {
+  widthMm: number;
+  heightMm: number;
+  unit?: 'mm' | 'in' | 'px';
+}
 
 export interface PaperSizeSpec {
   id: PaperSizeId;
@@ -32,22 +86,44 @@ export interface PaperSizeSpec {
   widthPx: number;
   heightPx: number;
   dimensionsLabel: string;
-  jsPdfFormat: 'a4' | 'letter' | 'legal' | 'a5' | 'a3';
+  jsPdfFormat: 'a4' | 'letter' | 'legal' | 'a5' | 'a3' | [number, number];
   cssPageSize: string;
+  orientation: 'portrait' | 'landscape';
 }
 
 export interface DocumentStyle {
+  designId?: DesignPresetId;
   themeId: ColorThemeId;
+  customPalette?: CustomColorPalette;
   fontFamily: FontFamilyChoice;
+  headingFont?: GoogleFontId;
+  bodyFont?: GoogleFontId;
+  monoFont?: GoogleFontId;
   density: DensityChoice;
   headerStyle: HeaderStyleChoice;
   showWatermarkOrSeal: boolean;
   paperSize: PaperSizeId;
+  customPaperSize?: CustomPaperDimensions;
+}
+
+export interface DesignPresetSpec {
+  id: DesignPresetId;
+  nameKey: string;
+  shortLabelKey: string;
+  descriptionKey: string;
+  headerStyle: HeaderStyleChoice;
+  density: DensityChoice;
+  defaultThemeId: Exclude<ColorThemeId, 'custom'>;
+  defaultHeadingFont: GoogleFontId;
+  defaultBodyFont: GoogleFontId;
+  defaultMonoFont: GoogleFontId;
 }
 
 export interface FontAsset {
-  id: FontFamilyChoice;
+  id: GoogleFontId;
   name: string;
+  category: 'Sans' | 'Serif' | 'Display' | 'Mono';
+  cssFamily: string;
   description: string;
   cssClass: string;
   previewClass: string;
@@ -67,10 +143,13 @@ export interface HeaderAccentAsset {
 
 export interface DocumentLayoutTokens {
   paper: PaperSizeSpec;
-  isCompact: boolean; // a5
-  isShort: boolean;   // letter
-  isTall: boolean;    // legal
-  isLarge: boolean;   // a3
+  isCompact: boolean;      // narrow width (< 620px, e.g. A5 or narrow custom)
+  isUltraNarrow: boolean;  // extra narrow custom width (< 480px)
+  isShort: boolean;        // short height (< 1080px, e.g. Letter or custom)
+  isTall: boolean;         // tall height (>= 1250px, e.g. Legal or custom)
+  isLarge: boolean;        // wide width (>= 950px, e.g. A3 or wide custom)
+  isLandscape: boolean;    // width > height
+  scaleFactor: number;     // widthPx / 794 clamped for smooth proportional sizing
   paddingPx: number;
   headerMbClass: string;
   sectionMbClass: string;
@@ -89,8 +168,14 @@ export interface DocumentLayoutTokens {
 
 export interface DocumentAssetBundle {
   style: DocumentStyle;
+  design: DesignPresetSpec;
   theme: ColorTheme;
   font: FontAsset;
+  typography: {
+    heading: FontAsset;
+    body: FontAsset;
+    mono: FontAsset;
+  };
   paper: PaperSizeSpec;
   density: DensityAsset;
   headerAccent: HeaderAccentAsset;
