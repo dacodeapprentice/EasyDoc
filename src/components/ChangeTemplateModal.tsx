@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { LanguageCode } from '../types/document';
 import { getTranslation } from '../utils/i18n';
-import { X, ArrowLeftRight } from 'lucide-react';
+import { X, AlertTriangle } from 'lucide-react';
 
 interface ChangeTemplateModalProps {
   isOpen: boolean;
   currentDocTitle: string;
   lang: LanguageCode;
-  onKeepChanges: () => void;
-  onDiscardChanges: () => void;
+  onConfirmSavePdf: () => void;
+  onDiscardAndGoHome: () => void;
   onCancel: () => void;
 }
 
@@ -16,8 +16,8 @@ export const ChangeTemplateModal: React.FC<ChangeTemplateModalProps> = ({
   isOpen,
   currentDocTitle,
   lang,
-  onKeepChanges,
-  onDiscardChanges,
+  onConfirmSavePdf,
+  onDiscardAndGoHome,
   onCancel,
 }) => {
   const t = (key: string) => getTranslation(lang, key);
@@ -48,9 +48,9 @@ export const ChangeTemplateModal: React.FC<ChangeTemplateModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-zinc-200 bg-zinc-50/70 flex items-center justify-between gap-3">
+        <div className="px-6 py-4 border-b border-zinc-200 bg-amber-50/70 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
-            <ArrowLeftRight className="w-4 h-4 text-blue-600 shrink-0" />
+            <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
             <h2
               id="change-template-modal-title"
               className="text-base font-semibold text-zinc-900 truncate"
@@ -73,35 +73,27 @@ export const ChangeTemplateModal: React.FC<ChangeTemplateModalProps> = ({
           <div className="text-xs font-medium text-zinc-500">
             {currentDocTitle}
           </div>
-          <p className="text-sm text-zinc-700 leading-relaxed">
+          <p className="text-sm font-medium text-amber-950 bg-amber-50/80 border border-amber-200/90 rounded-xl px-4 py-3 leading-relaxed">
             {t('change_template_desc')}
           </p>
         </div>
 
         {/* Footer Actions */}
-        <div className="px-6 py-4 border-t border-zinc-200 bg-zinc-50/70 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2.5">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="h-10 px-4 text-xs sm:text-sm font-medium text-zinc-700 bg-white hover:bg-zinc-100 border border-zinc-200 rounded-lg transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-          >
-            {t('cancel')}
-          </button>
-
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+        <div className="px-6 py-4 border-t border-zinc-200 bg-zinc-50/70 flex items-center justify-end">
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 w-full">
             <button
               type="button"
-              onClick={onDiscardChanges}
-              className="h-10 px-4 text-xs sm:text-sm font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600"
+              onClick={onDiscardAndGoHome}
+              className="h-10 px-5 text-xs sm:text-sm font-semibold text-zinc-700 bg-white hover:bg-zinc-100 border border-zinc-300 rounded-lg transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
             >
-              {t('discard_changes')}
+              {t('no')}
             </button>
             <button
               type="button"
-              onClick={onKeepChanges}
-              className="h-10 px-4 text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
+              onClick={onConfirmSavePdf}
+              className="h-10 px-5 text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
             >
-              {t('keep_changes')}
+              {t('yes')}
             </button>
           </div>
         </div>

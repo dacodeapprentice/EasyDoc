@@ -13,7 +13,6 @@ interface LandingPageProps {
   onChangeLang: (lang: LanguageCode) => void;
   onSelectTemplate: (type: DocumentType) => void;
   onLoadProgress: () => void;
-  keptDraftTypes: DocumentType[];
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
@@ -21,7 +20,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onChangeLang,
   onSelectTemplate,
   onLoadProgress,
-  keptDraftTypes,
 }) => {
   const t = (key: string) => getTranslation(currentLang, key);
 
@@ -201,53 +199,42 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Template Grid */}
             <div className="p-4 sm:p-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {templates.map((tpl) => {
-                const hasDraft = keptDraftTypes.includes(tpl.type);
-                return (
-                  <button
-                    key={tpl.type}
-                    type="button"
-                    onClick={() => onSelectTemplate(tpl.type)}
-                    className={`text-left p-5 rounded-xl border transition-all flex flex-col justify-between gap-4 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
-                      hasDraft
-                        ? 'border-blue-600/70 bg-blue-50/20 hover:border-blue-600 hover:bg-blue-50/40'
-                        : 'border-zinc-200 bg-white hover:border-blue-600 hover:bg-zinc-50/70'
-                    }`}
-                  >
-                    <div>
-                      <div className="flex items-center justify-between gap-2 mb-3.5">
-                        <div className="w-9 h-9 rounded-lg border border-zinc-200 bg-zinc-50 flex items-center justify-center text-zinc-600 group-hover:text-blue-600 group-hover:border-blue-200 group-hover:bg-blue-50/60 transition-colors shrink-0">
-                          {tpl.icon}
-                        </div>
-                        <span className="text-xs font-medium text-zinc-500 whitespace-nowrap">
-                          {hasDraft ? (
-                            <span className="text-blue-600 font-semibold">{t('draft_kept')}</span>
-                          ) : (
-                            t('format_a4')
-                          )}
-                        </span>
+              {templates.map((tpl) => (
+                <button
+                  key={tpl.type}
+                  type="button"
+                  onClick={() => onSelectTemplate(tpl.type)}
+                  className="text-left p-5 rounded-xl border border-zinc-200 bg-white hover:border-blue-600 hover:bg-zinc-50/70 transition-all flex flex-col justify-between gap-4 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-3.5">
+                      <div className="w-9 h-9 rounded-lg border border-zinc-200 bg-zinc-50 flex items-center justify-center text-zinc-600 group-hover:text-blue-600 group-hover:border-blue-200 group-hover:bg-blue-50/60 transition-colors shrink-0">
+                        {tpl.icon}
                       </div>
-
-                      <h3 className="text-base font-semibold text-zinc-900 group-hover:text-blue-700 transition-colors">
-                        {tpl.title}
-                      </h3>
-
-                      <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed mt-1.5">
-                        {tpl.description}
-                      </p>
-
-                      <p className="text-[11px] text-zinc-400 mt-3 leading-snug">
-                        {tpl.includes}
-                      </p>
+                      <span className="text-xs font-medium text-zinc-500 whitespace-nowrap">
+                        {t('format_a4')}
+                      </span>
                     </div>
 
-                    <div className="pt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-semibold text-blue-600">
-                      <span>{hasDraft ? t('resume_draft') : t('use_template')}</span>
-                      <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
-                    </div>
-                  </button>
-                );
-              })}
+                    <h3 className="text-base font-semibold text-zinc-900 group-hover:text-blue-700 transition-colors">
+                      {tpl.title}
+                    </h3>
+
+                    <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed mt-1.5">
+                      {tpl.description}
+                    </p>
+
+                    <p className="text-[11px] text-zinc-400 mt-3 leading-snug">
+                      {tpl.includes}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-semibold text-blue-600">
+                    <span>{t('use_template')}</span>
+                    <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </div>
+                </button>
+              ))}
 
               {/* 6th Card: Resume from Saved PDF (.pdf) */}
               <button

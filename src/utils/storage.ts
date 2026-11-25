@@ -8,10 +8,7 @@ import {
   ReceiptData,
   CertificateData,
 } from '../types/document';
-import {
-  extractProjectStateFromBuffer,
-  hydrateProjectState,
-} from './pdfProjectCodec';
+import { extractProjectStateFromBuffer } from './pdfProjectCodec';
 
 export interface SavedProjectState {
   version: string;
@@ -27,25 +24,6 @@ export interface SavedProjectState {
 }
 
 const PRIMARY_STORAGE_KEY = 'easydoc_autosave_v3';
-
-export function saveAutoSave(state: SavedProjectState): void {
-  try {
-    localStorage.setItem(PRIMARY_STORAGE_KEY, JSON.stringify(state));
-  } catch (err) {
-    console.warn('Could not auto-save to localStorage (quota or disabled):', err);
-  }
-}
-
-export function loadAutoSave(): SavedProjectState | null {
-  try {
-    const raw = localStorage.getItem(PRIMARY_STORAGE_KEY);
-    if (!raw) return null;
-    return hydrateProjectState(JSON.parse(raw));
-  } catch (err) {
-    console.warn('Failed to load auto-saved data from localStorage:', err);
-    return null;
-  }
-}
 
 export function clearAutoSave(): void {
   try {

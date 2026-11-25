@@ -4,7 +4,6 @@ import {
   Download,
   Loader2,
   RefreshCw,
-  Save,
   FolderOpen,
   ArrowLeft,
 } from 'lucide-react';
@@ -18,7 +17,6 @@ interface NavbarProps {
   onDownloadPdf: () => void;
   isGeneratingPdf: boolean;
   onResetData: () => void;
-  onSaveProgress: () => void;
   onLoadProgress: () => void;
   currentLang: LanguageCode;
   onChangeLang: (lang: LanguageCode) => void;
@@ -31,7 +29,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onDownloadPdf,
   isGeneratingPdf,
   onResetData,
-  onSaveProgress,
   onLoadProgress,
   currentLang,
   onChangeLang,
@@ -97,27 +94,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           </select>
         </div>
 
-        {/* Save & Load Progress Buttons */}
-        <button
-          type="button"
-          onClick={onSaveProgress}
-          title={t('save_progress')}
-          className="hidden sm:inline-flex h-9 items-center gap-1.5 px-2.5 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 hover:bg-zinc-100 rounded-lg transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-        >
-          <Save className="w-3.5 h-3.5 text-zinc-500" />
-          <span className="hidden 2xl:inline">{t('save_progress')}</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={onLoadProgress}
-          title={t('load_progress')}
-          className="hidden sm:inline-flex h-9 items-center gap-1.5 px-2.5 text-xs font-medium text-zinc-700 bg-white border border-zinc-200 hover:bg-zinc-100 rounded-lg transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-        >
-          <FolderOpen className="w-3.5 h-3.5 text-zinc-500" />
-          <span className="hidden 2xl:inline">{t('load_progress')}</span>
-        </button>
-
         <button
           type="button"
           onClick={onResetData}
@@ -126,6 +102,16 @@ export const Navbar: React.FC<NavbarProps> = ({
         >
           <RefreshCw className="w-3.5 h-3.5 text-zinc-600" />
           <span className="hidden 2xl:inline">{t('preset_data')}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={onLoadProgress}
+          className="inline-flex h-9 items-center gap-1.5 px-3 sm:px-4 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-lg transition-colors whitespace-nowrap shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
+        >
+          <FolderOpen className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">{t('open_load_pdf')}</span>
+          <span className="sm:hidden">{t('open_load_pdf_short')}</span>
         </button>
 
         <button
@@ -143,8 +129,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           ) : (
             <>
               <Download className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{t('download_pdf')}</span>
-              <span className="sm:hidden">PDF</span>
+              <span className="hidden sm:inline">{t('download_save_pdf')}</span>
+              <span className="sm:hidden">{t('download_save_pdf_short')}</span>
             </>
           )}
         </button>

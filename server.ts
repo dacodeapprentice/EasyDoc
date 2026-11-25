@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import express, { Request, Response } from 'express';
+import express, { type Request, type Response } from 'express';
 import { GoogleGenAI } from '@google/genai';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -101,6 +101,8 @@ function extractErrorDetails(err: unknown): { status: number; message: string; c
   const lower = rawMessage.toLowerCase();
 
   if (
+    lower.includes('401') ||
+    lower.includes('unauthenticated') ||
     lower.includes('api_key_invalid') ||
     lower.includes('api key not valid') ||
     lower.includes('permission_denied') ||
@@ -121,6 +123,14 @@ function extractErrorDetails(err: unknown): { status: number; message: string; c
     };
   }
 
+  if (lower.includes('404') || lower.includes('not_found')) {
+    return {
+      status: 502,
+      code: 'MODEL_NOT_FOUND',
+      message: 'Translation model is temporarily unavailable. Please try again shortly.',
+    };
+  }
+
   return {
     status: 500,
     code: 'TRANSLATION_FAILED',
@@ -132,7 +142,7 @@ async function createServer() {
   const app = express();
   app.use(express.json({ limit: '5mb' }));
 
-  app.post('/api/translate', async (req: Request, res: Response) => {
+  app.post(/\/api\/translate\/?$/, async (req: Request, res: Response) => {
     try {
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey || apiKey === 'MY_GEMINI_API_KEY') {
@@ -248,8 +258,63 @@ async function createServer() {
 
   if (!IS_PRODUCTION) {
     const { createServer: createViteServer } = await import('vite');
+    const hmrDisabled = process.env.DISABLE_HMR === 'true';
+
+    if (hmrDisabled) {
+      app.get('/@vite/client', (_req: Request, res: Response) => {
+        res.type('application/javascript');
+        res.send(`
+const sheetsMap = new Map();
+const linkSheetsMap = new Map();
+let lastInsertedStyle;
+export class ErrorOverlay {}
+export function updateStyle(id, content) {
+  if (linkSheetsMap.has(id)) return;
+  let style = sheetsMap.get(id);
+  if (!style) {
+    style = document.createElement('style');
+    style.setAttribute('type', 'text/css');
+    style.setAttribute('data-vite-dev-id', id);
+    style.textContent = content;
+    if (!lastInsertedStyle) {
+      document.head.appendChild(style);
+      setTimeout(() => { lastInsertedStyle = undefined; }, 0);
+    } else {
+      lastInsertedStyle.insertAdjacentElement('afterend', style);
+    }
+    lastInsertedStyle = style;
+  } else {
+    style.textContent = content;
+  }
+  sheetsMap.set(id, style);
+}
+export function removeStyle(id) {
+  const style = sheetsMap.get(id);
+  if (style) {
+    document.head.removeChild(style);
+    sheetsMap.delete(id);
+  }
+}
+export function createHotContext() {
+  const noop = () => {};
+  return { data: {}, accept: noop, prune: noop, dispose: noop, decline: noop, invalidate: noop, on: noop, off: noop, send: noop };
+}
+export function injectQuery(url, queryToInject) {
+  if (url[0] !== '.' && url[0] !== '/') return url;
+  const pathname = url.replace(/[?#].*$/, '');
+  const { search, hash } = new URL(url, 'http://vite.dev');
+  return \`\${pathname}?\${queryToInject}\${search ? '&' + search.slice(1) : ''}\${hash || ''}\`;
+}
+`);
+      });
+    }
+
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        hmr: !hmrDisabled,
+        ...(hmrDisabled ? { ws: false as const } : {}),
+      },
       appType: 'spa',
     });
     app.use(vite.middlewares);

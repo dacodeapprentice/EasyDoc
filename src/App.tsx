@@ -39,8 +39,7 @@ import {
 } from './utils/translateContent';
 import {
   loadProjectFromFile,
-  saveAutoSave,
-  loadAutoSave,
+  clearAutoSave,
   SavedProjectState,
 } from './utils/storage';
 import { getTranslation, LANGUAGES } from './utils/i18n';
@@ -56,6 +55,8 @@ import {
   Loader2,
   AlertCircle,
   RefreshCw,
+  Info,
+  X,
 } from 'lucide-react';
 
 type SidebarTab = 'inputs' | 'style';
@@ -117,7 +118,6 @@ export default function App() {
   // Incremental View Flow: Hero + Template Chooser ('home') -> Document Editor ('editor')
   const [view, setView] = useState<AppView>('home');
   const [showChangeTemplateModal, setShowChangeTemplateModal] = useState<boolean>(false);
-  const [keptDraftTypes, setKeptDraftTypes] = useState<DocumentType[]>([]);
 
   // Active Structural Template & Mounted Common Style Assets
   const [docType, setDocType] = useState<DocumentType>('cv');
@@ -139,8 +139,7 @@ export default function App() {
   // UI & Zoom Controls
   const [zoomLevel, setZoomLevel] = useState<number>(0.95);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState<boolean>(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [autoSavedTime, setAutoSavedTime] = useState<string | null>(null);
+  const [toastState, setToastState] = useState<{ message: string; isHint?: boolean } | null>(null);
 
   // Document Content Translation State
   const [targetTranslateLang, setTargetTranslateLang] = useState<string>('es');
@@ -150,7 +149,15 @@ export default function App() {
   const [translatedLabels, setTranslatedLabels] = useState<Partial<Record<DocumentType, string>>>({});
 
   const documentWrapperRef = useRef<HTMLDivElement>(null);
+  const toastTimerRef = useRef<number | null>(null);
+  const baselineSnapshotRef = useRef<string>('');
   const t = (key: string) => getTranslation(lang, key);
+
+  const serializeDocumentSnapshot = useCallback(
+    (type: DocumentType, docContent: TemplateDefaultMap[DocumentType], docStyle: DocumentStyle) =>
+      JSON.stringify({ type, content: docContent, style: docStyle }),
+    []
+  );
 
   // Pick up common style assets (fonts, colors, paper size, density, header accents) into one mountable bundle
   const mountedAssets = resolveDocumentAssets(style);
@@ -169,65 +176,60 @@ export default function App() {
     []
   );
 
-  const buildSavedPayload = useCallback((): SavedProjectState => ({
-    version: '2.1',
-    savedAt: new Date().toISOString(),
-    currentType: docType,
-    style,
-    lang,
-    cvData: contents.cv,
-    letterData: contents.letter,
-    censusData: contents.census,
-    receiptData: contents.receipt,
-    certificateData: contents.certificate,
-  }), [docType, style, lang, contents]);
-
   const applySavedPayload = useCallback((saved: SavedProjectState) => {
+    const nextType = saved.currentType || 'cv';
+    const nextStyle = saved.style || DEFAULT_STYLE;
     if (saved.currentType) setDocType(saved.currentType);
     if (saved.style) setStyle(saved.style);
     if (saved.lang) setLang(saved.lang);
-    setContents((prev) => ({
-      cv: saved.cvData || prev.cv,
-      letter: saved.letterData || prev.letter,
-      census: saved.censusData || prev.census,
-      receipt: saved.receiptData || prev.receipt,
-      certificate: saved.certificateData || prev.certificate,
-    }));
+    setHasPickedDesign(Boolean(saved.style));
+
+    const nextContents: TemplateDefaultMap = {
+      cv: saved.cvData || getDefaultTemplateContent('cv'),
+      letter: saved.letterData || getDefaultTemplateContent('letter'),
+      census: saved.censusData || getDefaultTemplateContent('census'),
+      receipt: saved.receiptData || getDefaultTemplateContent('receipt'),
+      certificate: saved.certificateData || getDefaultTemplateContent('certificate'),
+    };
+    setContents(nextContents);
+    baselineSnapshotRef.current = serializeDocumentSnapshot(
+      nextType,
+      nextContents[nextType],
+      nextStyle
+    );
     setPreTranslationSnapshots({});
     setTranslatedLabels({});
     setTranslationError(null);
+  }, [serializeDocumentSnapshot]);
+
+  const dismissToast = useCallback(() => {
+    if (toastTimerRef.current !== null) {
+      window.clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = null;
+    }
+    setToastState(null);
   }, []);
 
-  const showToast = (message: string) => {
-    setToastMessage(message);
-    setTimeout(() => {
-      setToastMessage(null);
-    }, 3800);
-  };
-
-  // 1. Initial Load: Restore from localStorage if present
-  useEffect(() => {
-    const saved = loadAutoSave();
-    if (saved) {
-      try {
-        applySavedPayload(saved);
-        setAutoSavedTime('Restored');
-      } catch (err) {
-        console.warn('Could not restore autosave:', err);
-      }
+  const showToast = useCallback((message: string, durationMs = 3800, isHint = false) => {
+    if (toastTimerRef.current !== null) {
+      window.clearTimeout(toastTimerRef.current);
     }
-  }, [applySavedPayload]);
+    setToastState({ message, isHint });
+    toastTimerRef.current = window.setTimeout(() => {
+      setToastState(null);
+      toastTimerRef.current = null;
+    }, durationMs);
+  }, []);
 
-  // 2. Debounced Automatic Persistence to localStorage
+  // Ensure no legacy browser edit-area auto-save persists
   useEffect(() => {
-    const timer = setTimeout(() => {
-      saveAutoSave(buildSavedPayload());
-      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      setAutoSavedTime(timeStr);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [buildSavedPayload]);
+    clearAutoSave();
+    return () => {
+      if (toastTimerRef.current !== null) {
+        window.clearTimeout(toastTimerRef.current);
+      }
+    };
+  }, []);
 
   // 3. Dynamic Fit to Screen calculation
   const handleFitToScreen = useCallback(() => {
@@ -240,15 +242,34 @@ export default function App() {
     setZoomLevel(fitScale);
   }, [currentPaperSpec.widthPx]);
 
+  const resetActiveTemplateState = useCallback((type: DocumentType) => {
+    const freshContent = getDefaultTemplateContent(type);
+    const freshStyle: DocumentStyle = {
+      ...DEFAULT_STYLE,
+      paperSize: getDefaultPaperSizeForDocType(type),
+    };
+    updateTemplateContent(type, freshContent);
+    setStyle(freshStyle);
+    setHasPickedDesign(false);
+    setPreTranslationSnapshots((prev) => {
+      const next = { ...prev };
+      delete next[type];
+      return next;
+    });
+    setTranslatedLabels((prev) => {
+      const next = { ...prev };
+      delete next[type];
+      return next;
+    });
+    setTranslationError(null);
+    return { freshContent, freshStyle };
+  }, [updateTemplateContent]);
+
   // Incremental Flow Handlers
   const handleSelectTemplateFromHome = (selectedType: DocumentType) => {
     setDocType(selectedType);
-    if (!keptDraftTypes.includes(selectedType)) {
-      setStyle((prev) => ({
-        ...prev,
-        paperSize: getDefaultPaperSizeForDocType(selectedType),
-      }));
-    }
+    const { freshContent, freshStyle } = resetActiveTemplateState(selectedType);
+    baselineSnapshotRef.current = serializeDocumentSnapshot(selectedType, freshContent, freshStyle);
     setSidebarTab('inputs');
     setMobileView('editor');
     setView('editor');
@@ -264,34 +285,47 @@ export default function App() {
     }, 60);
   };
 
-  const handleKeepChangesAndGoHome = () => {
-    setKeptDraftTypes((prev) => (prev.includes(docType) ? prev : [...prev, docType]));
-    setShowChangeTemplateModal(false);
+  const handleRequestChangeTemplate = () => {
+    const currentSnapshot = serializeDocumentSnapshot(docType, contents[docType], style);
+    if (currentSnapshot !== baselineSnapshotRef.current) {
+      setShowChangeTemplateModal(true);
+      return;
+    }
+    resetActiveTemplateState(docType);
     setView('home');
     scrollToTemplatePicker();
-    showToast(t('changes_kept_toast'));
   };
 
-  const handleDiscardChangesAndGoHome = () => {
-    updateTemplateContent(docType, getDefaultTemplateContent(docType));
-    setStyle((prev) => ({ ...DEFAULT_STYLE, paperSize: prev.paperSize || 'a4' }));
-    setHasPickedDesign(false);
-    setKeptDraftTypes((prev) => prev.filter((item) => item !== docType));
-    setPreTranslationSnapshots((prev) => {
-      const next = { ...prev };
-      delete next[docType];
-      return next;
-    });
-    setTranslatedLabels((prev) => {
-      const next = { ...prev };
-      delete next[docType];
-      return next;
-    });
-    setTranslationError(null);
+  const handleDiscardAndGoHome = () => {
+    resetActiveTemplateState(docType);
     setShowChangeTemplateModal(false);
     setView('home');
     scrollToTemplatePicker();
     showToast(t('changes_discarded_toast'));
+  };
+
+  const handleSavePdfAndGoHome = async () => {
+    setShowChangeTemplateModal(false);
+    setIsGeneratingPdf(true);
+    const filename = activeTemplateMeta.getPdfFilename(contents);
+    const pdfPayload = buildEasyDocPdfPayload(docType, style, lang, contents);
+
+    try {
+      const success = await exportToPdf('document-canvas', filename, currentPaperSpec, pdfPayload);
+      if (success) {
+        resetActiveTemplateState(docType);
+        setView('home');
+        scrollToTemplatePicker();
+        showToast(t('pdf_resume_hint'), 9000, true);
+      } else {
+        showToast('PDF generation failed. Please try again.');
+      }
+    } catch (err) {
+      console.error('PDF export error:', err);
+      showToast('PDF generation failed. Please try again.');
+    } finally {
+      setIsGeneratingPdf(false);
+    }
   };
 
   // PDF Export (embeds hidden template-organized project state inside the generated PDF)
@@ -303,6 +337,7 @@ export default function App() {
     try {
       const success = await exportToPdf('document-canvas', filename, currentPaperSpec, pdfPayload);
       if (success) {
+        baselineSnapshotRef.current = serializeDocumentSnapshot(docType, contents[docType], style);
         showToast(`Document downloaded: ${filename}`);
       } else {
         showToast('PDF generation failed. Please try again.');
@@ -401,26 +436,6 @@ export default function App() {
     showToast(t('restore_original_toast'));
   };
 
-  const handleSaveProgress = async () => {
-    setIsGeneratingPdf(true);
-    const saveFilename = `EasyDoc_${docType}_${new Date().toISOString().split('T')[0]}.pdf`;
-    const pdfPayload = buildEasyDocPdfPayload(docType, style, lang, contents);
-
-    try {
-      const success = await exportToPdf('document-canvas', saveFilename, currentPaperSpec, pdfPayload);
-      if (success) {
-        showToast(t('pdf_saved_progress_toast'));
-      } else {
-        showToast('Could not save progress PDF. Please try again.');
-      }
-    } catch (err) {
-      console.error('Save PDF progress error:', err);
-      showToast('Could not save progress PDF. Please try again.');
-    } finally {
-      setIsGeneratingPdf(false);
-    }
-  };
-
   const handleLoadProgress = async () => {
     try {
       const data = await loadProjectFromFile();
@@ -485,15 +500,31 @@ export default function App() {
     }
   }, [mobileView, view, currentPaperSpec.widthPx]);
 
-  // Toast shared across views
-  const toastNode = toastMessage ? (
+  // Toast / Hint popup shared across views
+  const toastNode = toastState ? (
     <div
       role="status"
       aria-live="polite"
-      className="fixed bottom-5 right-5 z-50 bg-zinc-900 text-white text-xs font-medium py-2.5 px-4 rounded-xl shadow-lg flex items-center gap-2 border border-zinc-800"
+      className={`fixed bottom-5 right-5 z-50 text-xs font-medium py-3 px-4 rounded-xl shadow-lg flex items-start gap-2.5 border max-w-sm ${
+        toastState.isHint
+          ? 'bg-blue-950 text-white border-blue-800'
+          : 'bg-zinc-900 text-white border-zinc-800'
+      }`}
     >
-      <CheckCircle className="w-4 h-4 text-blue-400 shrink-0" />
-      <span>{toastMessage}</span>
+      {toastState.isHint ? (
+        <Info className="w-4 h-4 text-blue-300 shrink-0 mt-0.5" />
+      ) : (
+        <CheckCircle className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+      )}
+      <span className="leading-relaxed">{toastState.message}</span>
+      <button
+        type="button"
+        onClick={dismissToast}
+        aria-label="Dismiss"
+        className="text-white/70 hover:text-white transition-colors shrink-0 ml-1"
+      >
+        <X className="w-3.5 h-3.5" />
+      </button>
     </div>
   ) : null;
 
@@ -506,7 +537,6 @@ export default function App() {
           onChangeLang={handleLanguageChange}
           onSelectTemplate={handleSelectTemplateFromHome}
           onLoadProgress={handleLoadProgress}
-          keptDraftTypes={keptDraftTypes}
         />
         {toastNode}
       </>
@@ -527,13 +557,13 @@ export default function App() {
         </div>
       )}
 
-      {/* Keep / Discard Changes Modal when leaving Editor for Template Selection */}
+      {/* Save Warning Modal when leaving Editor for Template Selection */}
       <ChangeTemplateModal
         isOpen={showChangeTemplateModal}
         currentDocTitle={currentDocTitle}
         lang={lang}
-        onKeepChanges={handleKeepChangesAndGoHome}
-        onDiscardChanges={handleDiscardChangesAndGoHome}
+        onConfirmSavePdf={handleSavePdfAndGoHome}
+        onDiscardAndGoHome={handleDiscardAndGoHome}
         onCancel={() => setShowChangeTemplateModal(false)}
       />
 
@@ -541,11 +571,10 @@ export default function App() {
       <Navbar
         currentType={docType}
         paperSizeLabel={currentPaperSpec.name}
-        onRequestChangeTemplate={() => setShowChangeTemplateModal(true)}
+        onRequestChangeTemplate={handleRequestChangeTemplate}
         onDownloadPdf={handleDownloadPdf}
         isGeneratingPdf={isGeneratingPdf}
         onResetData={handleResetData}
-        onSaveProgress={handleSaveProgress}
         onLoadProgress={handleLoadProgress}
         currentLang={lang}
         onChangeLang={handleLanguageChange}
@@ -609,12 +638,6 @@ export default function App() {
                 {currentPaperSpec.name} ({currentPaperSpec.dimensionsLabel})
               </button>
             </div>
-
-            {autoSavedTime && (
-              <span className="text-[11px] text-zinc-500 font-mono-tabular tabular-nums whitespace-nowrap shrink-0">
-                {autoSavedTime}
-              </span>
-            )}
           </div>
 
           {/* Sidebar Tab Header */}
