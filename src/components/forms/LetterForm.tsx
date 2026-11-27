@@ -54,6 +54,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
             <ImageUploadCrop
               label={t('company_logo')}
               shape="square"
+              mode="logo"
               currentImage={data.logoUrl}
               onImageChange={(val) => updateField('logoUrl', val)}
               lang={lang}
@@ -69,7 +70,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                   value={data.senderName}
                   onChange={(e) => updateField('senderName', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="Sender name here"
+                  placeholder={t('letter_ph_sender_name')}
                 />
               </div>
 
@@ -82,7 +83,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                   value={data.senderTitle}
                   onChange={(e) => updateField('senderTitle', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="Sender title or role"
+                  placeholder={t('letter_ph_sender_title')}
                 />
               </div>
 
@@ -95,7 +96,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                   value={data.senderCompany}
                   onChange={(e) => updateField('senderCompany', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="Organization name here"
+                  placeholder={t('letter_ph_sender_company')}
                 />
               </div>
 
@@ -108,7 +109,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                   value={data.senderPhone}
                   onChange={(e) => updateField('senderPhone', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="Phone number here"
+                  placeholder={t('cv_ph_phone')}
                 />
               </div>
 
@@ -121,7 +122,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                   value={data.senderAddress}
                   onChange={(e) => updateField('senderAddress', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="Street address, city, postal code"
+                  placeholder={t('letter_ph_sender_address')}
                 />
               </div>
 
@@ -183,7 +184,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                 value={data.recipientName}
                 onChange={(e) => updateField('recipientName', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Recipient name here"
+                placeholder={t('letter_ph_recipient_name')}
               />
             </div>
 
@@ -196,7 +197,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                 value={data.recipientTitle}
                 onChange={(e) => updateField('recipientTitle', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Recipient title"
+                placeholder={t('letter_ph_recipient_title')}
               />
             </div>
 
@@ -209,7 +210,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                 value={data.recipientCompany}
                 onChange={(e) => updateField('recipientCompany', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Recipient organization"
+                placeholder={t('letter_ph_recipient_company')}
               />
             </div>
 
@@ -222,7 +223,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                 value={data.recipientAddress}
                 onChange={(e) => updateField('recipientAddress', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Recipient address here"
+                placeholder={t('letter_ph_recipient_address')}
               />
             </div>
 
@@ -235,7 +236,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                 value={data.subject}
                 onChange={(e) => updateField('subject', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 font-semibold transition-colors"
-                placeholder="Document subject or topic here"
+                placeholder={t('letter_ph_subject')}
               />
             </div>
           </div>
@@ -251,7 +252,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
         >
           <div className="flex items-center gap-2 font-semibold text-xs uppercase tracking-wider text-zinc-800">
             <FileText className="w-3.5 h-3.5 text-blue-600" />
-            <span>Letter Body & Content Paragraphs</span>
+            <span>{t('letter_body_section')}</span>
           </div>
           {openSections.body ? (
             <ChevronUp className="w-4 h-4 text-zinc-400" />
@@ -271,7 +272,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                 value={data.salutation}
                 onChange={(e) => updateField('salutation', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Dear Recipient,"
+                placeholder={t('letter_ph_salutation')}
               />
             </div>
 
@@ -284,7 +285,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                 value={data.openingParagraph}
                 onChange={(e) => updateField('openingParagraph', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Write an opening paragraph introducing the purpose of this letter..."
+                placeholder={t('letter_ph_opening')}
               />
             </div>
 
@@ -297,7 +298,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                 value={data.bodyParagraphOne}
                 onChange={(e) => updateField('bodyParagraphOne', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Provide main details or supporting context here..."
+                placeholder={t('letter_ph_body')}
               />
             </div>
 
@@ -310,7 +311,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                 value={data.closingParagraph}
                 onChange={(e) => updateField('closingParagraph', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Write a closing remark or next steps..."
+                placeholder={t('letter_ph_closing')}
               />
             </div>
           </div>
@@ -326,7 +327,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
         >
           <div className="flex items-center gap-2 font-semibold text-xs uppercase tracking-wider text-zinc-800">
             <CheckSquare className="w-3.5 h-3.5 text-blue-600" />
-            <span>Formal Signoff & Attachments</span>
+            <span>{t('letter_signoff_section')}</span>
           </div>
           {openSections.signoff ? (
             <ChevronUp className="w-4 h-4 text-zinc-400" />
@@ -346,7 +347,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                 value={data.signoff}
                 onChange={(e) => updateField('signoff', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Sincerely,"
+                placeholder={t('letter_ph_signoff')}
               />
             </div>
 
@@ -359,7 +360,7 @@ export const LetterForm: React.FC<LetterFormProps> = ({ data, onChange, lang = '
                 value={data.enclosureNotice}
                 onChange={(e) => updateField('enclosureNotice', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="List any enclosures or attachments here"
+                placeholder={t('letter_ph_enclosure')}
               />
             </div>
           </div>

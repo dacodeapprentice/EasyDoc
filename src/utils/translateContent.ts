@@ -87,7 +87,7 @@ export async function translateDocumentContent<T extends DocumentType>(params: {
   targetLanguage: string;
   content: TemplateDefaultMap[T];
 }): Promise<TranslateResult<T>> {
-  const response = await fetch('./api/translate', {
+  const response = await fetch('/api/translate', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

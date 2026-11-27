@@ -38,12 +38,34 @@ export function loadProjectFromFile(): Promise<SavedProjectState> {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.pdf,application/pdf';
+    input.style.display = 'none';
 
-    input.onchange = async (e: Event) => {
+    let settled = false;
+
+    const cleanup = () => {
+      input.removeEventListener('change', handleChange);
+      input.removeEventListener('cancel', handleCancel);
+      if (input.parentNode) {
+        input.parentNode.removeChild(input);
+      }
+    };
+
+    const handleCancel = () => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      reject(new Error('FILE_PICKER_CANCELLED'));
+    };
+
+    const handleChange = async (e: Event) => {
+      if (settled) return;
+      settled = true;
       const target = e.target as HTMLInputElement;
       const file = target.files?.[0];
+      cleanup();
+
       if (!file) {
-        reject(new Error('No file selected'));
+        reject(new Error('FILE_PICKER_CANCELLED'));
         return;
       }
 
@@ -55,13 +77,14 @@ export function loadProjectFromFile(): Promise<SavedProjectState> {
         if (err?.message === 'NO_EMBEDDED_EASYDOC_DATA') {
           reject(new Error('NO_EMBEDDED_EASYDOC_DATA'));
         } else {
-          reject(new Error('Invalid PDF project file'));
+          reject(new Error('INVALID_PDF_PROJECT_FILE'));
         }
       }
     };
 
+    input.addEventListener('change', handleChange);
+    input.addEventListener('cancel', handleCancel);
     document.body.appendChild(input);
     input.click();
-    document.body.removeChild(input);
   });
 }

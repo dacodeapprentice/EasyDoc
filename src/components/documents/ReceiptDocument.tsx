@@ -79,11 +79,11 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
   const renderCustomerFields = (alignRight = false) => (
     <div className={alignRight ? 'text-right' : 'text-left'}>
       <div className={`font-bold text-slate-900 ${isCompact ? 'text-xs' : isLarge ? 'text-base' : 'text-sm'}`}>
-        <PlaceholderText value={data.customerName} placeholder="Customer Name Here" />
+        <PlaceholderText value={data.customerName} placeholder={t('receipt_ph_customer_name')} />
       </div>
       {(!hasCustomerDetails || hasText(data.customerCompany)) && (
         <div className={`text-slate-700 font-medium ${layout.metaSizeClass}`}>
-          <PlaceholderText value={data.customerCompany} placeholder="Customer Organization" />
+          <PlaceholderText value={data.customerCompany} placeholder={t('receipt_ph_customer_company')} />
         </div>
       )}
       {(!hasCustomerDetails || hasText(data.customerEmail)) && (
@@ -93,7 +93,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
       )}
       {(!hasCustomerDetails || hasText(data.customerAddress)) && (
         <div className={`text-slate-600 ${layout.metaSizeClass}`}>
-          <PlaceholderText value={data.customerAddress} placeholder="Customer address here" />
+          <PlaceholderText value={data.customerAddress} placeholder={t('receipt_ph_customer_address')} />
         </div>
       )}
     </div>
@@ -101,7 +101,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
 
   const renderLedgerTable = (tintedHeader = false, narrow = false) => (
     <table className={`w-full text-left border-collapse ${layout.tableTextClass} ${isUltraNarrow || narrow ? 'table-fixed' : ''}`}>
-      <thead>
+      <thead data-pdf-block="true" data-pdf-keep-with-next="true">
         <tr
           className="border-b-2 font-sans-title text-slate-700 font-bold"
           style={{
@@ -135,12 +135,12 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
           const price = safeNum(item.unitPrice);
           const lineTot = qty * price;
           return (
-            <tr key={item.id || idx} className="hover:bg-slate-50/50 transition-colors">
+            <tr key={item.id || idx} data-pdf-block="true" className="hover:bg-slate-50/50 transition-colors">
               <td className={layout.tableCellPaddingClass}>
                 <span className="font-semibold text-slate-900 block">
                   <PlaceholderText
                     value={item.description}
-                    placeholder="Item or service description here"
+                    placeholder={t('receipt_ph_item_desc')}
                   />
                 </span>
               </td>
@@ -162,6 +162,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
 
   const renderTotalsBreakdown = (widthClass?: string) => (
     <div
+      data-pdf-block="true"
       className={`${
         widthClass ?? (isUltraNarrow ? 'w-full' : isCompact ? 'w-56' : isLarge ? 'w-96' : 'w-72')
       } font-sans-title ${layout.metaSizeClass} space-y-2`}
@@ -218,6 +219,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
           style={{ minHeight: `${layout.paper.heightPx}px` }}
         >
           <aside
+            data-pdf-sidebar="true"
             className="col-span-4 border-r flex flex-col justify-between gap-6"
             style={{
               backgroundColor: theme.primaryLight,
@@ -226,9 +228,13 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
             }}
           >
             <div className="space-y-4">
-              {data.logoUrl && <DocumentLogo src={data.logoUrl} alt="Business Logo" assets={mounted} />}
+              {data.logoUrl && (
+                <div data-pdf-block="true">
+                  <DocumentLogo src={data.logoUrl} alt={t('business_logo')} assets={mounted} />
+                </div>
+              )}
 
-              <div>
+              <div data-pdf-block="true">
                 <div className="flex items-center gap-1.5 mb-1">
                   <Receipt className="w-3.5 h-3.5" style={{ color: theme.primary }} />
                   <span className={`font-sans-title ${layout.smallSizeClass} font-bold uppercase tracking-widest text-slate-500`}>
@@ -239,16 +245,16 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
                   className={`font-sans-title ${isLarge ? 'text-2xl' : 'text-lg'} font-extrabold tracking-tight`}
                   style={hasText(data.businessName) ? { color: theme.textHeader } : undefined}
                 >
-                  <PlaceholderText value={data.businessName} placeholder="Business or Issuer Name" />
+                  <PlaceholderText value={data.businessName} placeholder={t('receipt_ph_business_name')} />
                 </h1>
                 {(!hasBusinessDetails || hasText(data.businessTaxId)) && (
                   <p className={`font-mono-tabular ${layout.smallSizeClass} text-slate-500 mt-1`}>
-                    <PlaceholderText value={data.businessTaxId} placeholder="Tax ID / Registration" />
+                    <PlaceholderText value={data.businessTaxId} placeholder={t('receipt_ph_tax_id')} />
                   </p>
                 )}
                 {(!hasBusinessDetails || hasText(data.businessAddress)) && (
                   <p className={`font-sans-title ${layout.smallSizeClass} text-slate-600 mt-1`}>
-                    <PlaceholderText value={data.businessAddress} placeholder="Business address here" />
+                    <PlaceholderText value={data.businessAddress} placeholder={t('receipt_ph_business_address')} />
                   </p>
                 )}
                 {(!hasBusinessDetails || hasText(data.businessEmail)) && (
@@ -258,7 +264,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
                 )}
               </div>
 
-              <div className="pt-3 border-t space-y-2.5 font-sans-title" style={{ borderColor: `${theme.primary}25` }}>
+              <div data-pdf-block="true" className="pt-3 border-t space-y-2.5 font-sans-title" style={{ borderColor: `${theme.primary}25` }}>
                 <DocumentStatusBadge
                   assets={mounted}
                   icon={<CheckCircle2 className="w-3.5 h-3.5" />}
@@ -281,7 +287,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
                   <div>
                     <span className={`${layout.smallSizeClass} text-slate-500 block`}>{t('payment_method')}</span>
                     <span className={`${layout.metaSizeClass} text-slate-800`}>
-                      <PlaceholderText value={data.paymentMethod} placeholder="Payment method" />
+                      <PlaceholderText value={data.paymentMethod} placeholder={t('receipt_ph_payment_method')} />
                     </span>
                   </div>
                 )}
@@ -298,6 +304,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
 
             {/* Highlighted Total Paid Card in Sidebar */}
             <div
+              data-pdf-block="true"
               className="p-3.5 rounded-lg text-white font-sans-title"
               style={{ backgroundColor: theme.primaryDark }}
             >
@@ -311,7 +318,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
           </aside>
 
           <div className="col-span-8 space-y-6" style={{ padding: `${pad}px` }}>
-            <div className="pb-4 border-b border-slate-200">
+            <div data-pdf-block="true" className="pb-4 border-b border-slate-200">
               <span className={`${layout.smallSizeClass} font-sans-title font-bold uppercase tracking-wider text-slate-500 block mb-1.5`}>
                 {t('billed_to')}
               </span>
@@ -327,7 +334,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
                 assets={mounted}
                 label={t('notes_terms')}
                 text={data.notes}
-                placeholder="Add payment terms, notes, or warranty details here."
+                placeholder={t('receipt_doc_ph_notes')}
               />
             )}
 
@@ -339,7 +346,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
                     <div>
                       {t('authorized_signatory')}:{' '}
                       <strong className="text-slate-800">
-                        <PlaceholderText value={data.cashierOrAgent} placeholder="Signatory Name Here" />
+                        <PlaceholderText value={data.cashierOrAgent} placeholder={t('receipt_ph_signatory')} />
                       </strong>
                     </div>
                   )}
@@ -362,12 +369,13 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
     return (
       <DocumentSheet assets={mounted}>
         <header
+          data-pdf-block="true"
           className={`border-b ${layout.isLarge ? 'pb-6 mb-6' : 'pb-4 mb-5'} flex items-end justify-between gap-6`}
           style={{ borderColor: theme.textHeader }}
         >
           <div className="flex items-center gap-3.5 min-w-0">
-            {data.logoUrl && <DocumentLogo src={data.logoUrl} alt="Business Logo" assets={mounted} />}
-            <div>
+            {data.logoUrl && <DocumentLogo src={data.logoUrl} alt={t('business_logo')} assets={mounted} />}
+            <div className="min-w-0">
               <span className={`font-sans-title ${layout.smallSizeClass} font-bold uppercase tracking-widest text-slate-500 block mb-1`}>
                 {t('official_voucher')}
               </span>
@@ -375,7 +383,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
                 className={`font-sans-title ${isLarge ? 'text-3xl' : 'text-2xl'} font-extrabold tracking-tight`}
                 style={hasText(data.businessName) ? { color: theme.textHeader } : undefined}
               >
-                <PlaceholderText value={data.businessName} placeholder="Business or Issuer Name" />
+                <PlaceholderText value={data.businessName} placeholder={t('receipt_ph_business_name')} />
               </h1>
             </div>
           </div>
@@ -394,17 +402,18 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
 
         {/* Three-column metadata grid */}
         <div
+          data-pdf-block="true"
           className={`${layout.sectionMbClass} grid grid-cols-3 gap-4 pb-5 border-b border-slate-200 font-sans-title ${layout.metaSizeClass}`}
         >
           <div>
             <span className={`${layout.smallSizeClass} font-bold uppercase tracking-widest text-slate-500 block mb-1`}>
-              From
+              {t('receipt_from')}
             </span>
             <p className="font-mono-tabular text-slate-600">
-              <PlaceholderText value={data.businessTaxId} placeholder="Tax ID / Registration" />
+              <PlaceholderText value={data.businessTaxId} placeholder={t('receipt_ph_tax_id')} />
             </p>
             <p className="text-slate-700 mt-0.5">
-              <PlaceholderText value={data.businessAddress} placeholder="Business address here" />
+              <PlaceholderText value={data.businessAddress} placeholder={t('receipt_ph_business_address')} />
             </p>
             <p className="text-slate-500 break-all">
               <PlaceholderText value={data.businessEmail} placeholder="billing@example.com" />
@@ -429,7 +438,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
               </span>
             </div>
             <div className="text-slate-600">
-              {t('payment_method')}: <PlaceholderText value={data.paymentMethod} placeholder="Payment method" />
+              {t('payment_method')}: <PlaceholderText value={data.paymentMethod} placeholder={t('receipt_ph_payment_method')} />
             </div>
             {hasText(data.transactionRef) && (
               <div className={`${layout.smallSizeClass} font-mono-tabular text-slate-400`}>
@@ -443,20 +452,20 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
           {renderLedgerTable(false, false)}
         </section>
 
-        <div className="grid grid-cols-12 gap-6 items-start pt-2">
+        <div data-pdf-block="true" className="grid grid-cols-12 gap-6 items-start pt-2">
           <div className="col-span-6 space-y-3">
             {(hasText(data.notes) || !hasBusinessDetails) && (
               <DocumentNotesBox
                 assets={mounted}
                 label={t('notes_terms')}
                 text={data.notes}
-                placeholder="Add payment terms, notes, or warranty details here."
+                placeholder={t('receipt_doc_ph_notes')}
               />
             )}
-            <div className={`font-sans-title ${layout.metaSizeClass} text-slate-500`}>
+            <div data-pdf-block="true" className={`font-sans-title ${layout.metaSizeClass} text-slate-500`}>
               {t('authorized_signatory')}:{' '}
               <strong className="text-slate-900">
-                <PlaceholderText value={data.cashierOrAgent} placeholder="Signatory Name Here" />
+                <PlaceholderText value={data.cashierOrAgent} placeholder={t('receipt_ph_signatory')} />
               </strong>
             </div>
           </div>
@@ -475,11 +484,11 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
       <DocumentHeaderBand
         assets={mounted}
         left={
-          <div className={`flex items-start gap-3.5 ${isEditorial ? 'justify-center' : ''}`}>
+          <div className={`flex items-start gap-3.5 min-w-0 ${isEditorial ? 'justify-center' : ''}`}>
             {data.logoUrl && (
-              <DocumentLogo src={data.logoUrl} alt="Business Logo" assets={mounted} />
+              <DocumentLogo src={data.logoUrl} alt={t('business_logo')} assets={mounted} />
             )}
-            <div>
+            <div className="min-w-0">
               <div className={`flex items-center gap-2 mb-1 ${isEditorial ? 'justify-center' : ''}`}>
                 <span className="p-1 rounded bg-slate-100 text-slate-800">
                   <Receipt
@@ -497,16 +506,16 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
                 } font-extrabold tracking-tight`}
                 style={hasText(data.businessName) ? { color: theme.textHeader } : undefined}
               >
-                <PlaceholderText value={data.businessName} placeholder="Business or Issuer Name" />
+                <PlaceholderText value={data.businessName} placeholder={t('receipt_ph_business_name')} />
               </h1>
               {(!hasBusinessDetails || hasText(data.businessTaxId)) && (
                 <p className={`font-mono-tabular ${layout.metaSizeClass} text-slate-500 mt-1`}>
-                  <PlaceholderText value={data.businessTaxId} placeholder="Tax ID / Registration" />
+                  <PlaceholderText value={data.businessTaxId} placeholder={t('receipt_ph_tax_id')} />
                 </p>
               )}
               {(!hasBusinessDetails || hasText(data.businessAddress)) && (
                 <p className={`font-sans-title ${layout.metaSizeClass} text-slate-600 mt-0.5`}>
-                  <PlaceholderText value={data.businessAddress} placeholder="Business address here" />
+                  <PlaceholderText value={data.businessAddress} placeholder={t('receipt_ph_business_address')} />
                 </p>
               )}
               {(!hasBusinessDetails || hasText(data.businessEmail)) && (
@@ -537,7 +546,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
               </div>
               {(!hasText(data.receiptNumber) || hasText(data.paymentMethod)) && (
                 <div className={`${layout.metaSizeClass} text-slate-500 font-sans-title mt-0.5`}>
-                  {t('payment_method')}: <PlaceholderText value={data.paymentMethod} placeholder="Payment method" />
+                  {t('payment_method')}: <PlaceholderText value={data.paymentMethod} placeholder={t('receipt_ph_payment_method')} />
                 </div>
               )}
               {hasText(data.transactionRef) && (
@@ -553,6 +562,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
       {/* Classic Voucher (Editorial): two-column ruled strip for Billed To & Receipt Meta */}
       {isEditorial ? (
         <section
+          data-pdf-block="true"
           className={`${layout.sectionMbClass} grid ${
             isCompact ? 'grid-cols-1 gap-3' : 'grid-cols-2 gap-4'
           } pb-5 border-b border-slate-200 font-sans-title ${layout.metaSizeClass}`}
@@ -580,13 +590,14 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
               {t('issue_date')}: <PlaceholderText value={data.issueDate} placeholder="YYYY-MM-DD" />
             </div>
             <div className="text-slate-600 mt-0.5">
-              {t('payment_method')}: <PlaceholderText value={data.paymentMethod} placeholder="Payment method" />
+              {t('payment_method')}: <PlaceholderText value={data.paymentMethod} placeholder={t('receipt_ph_payment_method')} />
             </div>
           </div>
         </section>
       ) : isBanner ? (
         /* Modern Banner: side-by-side Billed To + Highlighted Total Paid panel */
         <section
+          data-pdf-block="true"
           className={`${layout.sectionMbClass} grid ${
             isCompact ? 'grid-cols-1 gap-3' : 'grid-cols-12 gap-4'
           } items-stretch print-avoid-break`}
@@ -610,7 +621,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
               {formatCurrency(grandTotal)}
             </div>
             <span className={`${layout.smallSizeClass} text-slate-600`}>
-              {t('payment_method')}: <PlaceholderText value={data.paymentMethod} placeholder="Payment method" />
+              {t('payment_method')}: <PlaceholderText value={data.paymentMethod} placeholder={t('receipt_ph_payment_method')} />
             </span>
           </div>
         </section>
@@ -623,11 +634,11 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
           >
             <div>
               <div className={`font-bold text-slate-900 ${isCompact ? 'text-xs' : isLarge ? 'text-base' : 'text-sm'}`}>
-                <PlaceholderText value={data.customerName} placeholder="Customer Name Here" />
+                <PlaceholderText value={data.customerName} placeholder={t('receipt_ph_customer_name')} />
               </div>
               {(!hasCustomerDetails || hasText(data.customerCompany)) && (
                 <div className="text-slate-700 font-medium">
-                  <PlaceholderText value={data.customerCompany} placeholder="Customer Organization" />
+                  <PlaceholderText value={data.customerCompany} placeholder={t('receipt_ph_customer_company')} />
                 </div>
               )}
             </div>
@@ -639,7 +650,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
               )}
               {(!hasCustomerDetails || hasText(data.customerAddress)) && (
                 <div>
-                  <PlaceholderText value={data.customerAddress} placeholder="Customer address here" />
+                  <PlaceholderText value={data.customerAddress} placeholder={t('receipt_ph_customer_address')} />
                 </div>
               )}
             </div>
@@ -660,7 +671,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
           assets={mounted}
           label={t('notes_terms')}
           text={data.notes}
-          placeholder="Add payment terms, notes, or warranty details here."
+          placeholder={t('receipt_doc_ph_notes')}
         />
       )}
 
@@ -672,7 +683,7 @@ export const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
               <div>
                 {t('authorized_signatory')}:{' '}
                 <strong className="text-slate-800">
-                  <PlaceholderText value={data.cashierOrAgent} placeholder="Signatory Name Here" />
+                  <PlaceholderText value={data.cashierOrAgent} placeholder={t('receipt_ph_signatory')} />
                 </strong>
               </div>
             )}

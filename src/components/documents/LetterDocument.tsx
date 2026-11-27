@@ -46,26 +46,27 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
 
   const renderRecipientBlock = (centered = false) => (
     <div
+      data-pdf-block="true"
       className={`font-sans-title ${layout.metaSizeClass} leading-relaxed print-avoid-break ${
         centered ? 'text-center' : ''
       }`}
     >
       <div className={`font-bold text-slate-900 ${isCompact ? 'text-xs' : isLarge ? 'text-base' : 'text-sm'}`}>
-        <PlaceholderText value={data.recipientName} placeholder="Recipient Name Here" />
+        <PlaceholderText value={data.recipientName} placeholder={t('letter_ph_recipient_name')} />
       </div>
       {(!hasText(data.recipientName) || hasText(data.recipientTitle)) && (
         <div className="text-slate-700">
-          <PlaceholderText value={data.recipientTitle} placeholder="Recipient Title" />
+          <PlaceholderText value={data.recipientTitle} placeholder={t('letter_ph_recipient_title')} />
         </div>
       )}
       {(!hasText(data.recipientName) || hasText(data.recipientCompany)) && (
         <div className="text-slate-800 font-semibold">
-          <PlaceholderText value={data.recipientCompany} placeholder="Recipient Organization" />
+          <PlaceholderText value={data.recipientCompany} placeholder={t('letter_ph_recipient_company')} />
         </div>
       )}
       {(!hasText(data.recipientName) || hasText(data.recipientAddress)) && (
         <div className="text-slate-600 mt-0.5">
-          <PlaceholderText value={data.recipientAddress} placeholder="Recipient address here" />
+          <PlaceholderText value={data.recipientAddress} placeholder={t('letter_ph_recipient_address')} />
         </div>
       )}
     </div>
@@ -75,6 +76,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
     if (variant === 'editorial') {
       return (
         <div
+          data-pdf-block="true"
           className={`${
             isCompact ? 'my-4 py-2 text-xs' : isLarge ? 'my-8 py-3.5 text-base' : 'my-6 py-2.5 text-sm'
           } border-y font-sans-title font-bold text-slate-900 text-center print-avoid-break`}
@@ -83,7 +85,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
           <span className={`${layout.smallSizeClass} uppercase tracking-widest text-slate-500 mr-2`}>
             {t('formal_subject')}:
           </span>
-          <PlaceholderText value={data.subject} placeholder="Document subject or topic here" />
+          <PlaceholderText value={data.subject} placeholder={t('letter_ph_subject')} />
         </div>
       );
     }
@@ -91,6 +93,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
     if (variant === 'banner') {
       return (
         <div
+          data-pdf-block="true"
           className={`${
             isCompact ? 'mb-4 py-2 px-3 text-xs' : isLarge ? 'mb-8 py-3.5 px-5 text-base' : 'mb-6 py-2.5 px-4 text-sm'
           } rounded-md border font-sans-title font-bold text-slate-900 print-avoid-break`}
@@ -102,19 +105,23 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
           <span className={`${layout.smallSizeClass} uppercase tracking-wider mr-1.5`} style={{ color: theme.primaryDark }}>
             {t('formal_subject')}:
           </span>
-          <PlaceholderText value={data.subject} placeholder="Document subject or topic here" />
+          <PlaceholderText value={data.subject} placeholder={t('letter_ph_subject')} />
         </div>
       );
     }
 
     if (variant === 'swiss') {
       return (
-        <div className="border-t pt-2.5 font-sans-title print-avoid-break" style={{ borderColor: theme.textHeader }}>
+        <div
+          data-pdf-block="true"
+          className="border-t pt-2.5 font-sans-title print-avoid-break"
+          style={{ borderColor: theme.textHeader }}
+        >
           <span className={`${layout.smallSizeClass} font-bold uppercase tracking-widest block text-slate-500 mb-1`}>
             {t('formal_subject')}
           </span>
           <div className={`font-bold text-slate-900 ${isLarge ? 'text-base' : 'text-sm'}`}>
-            <PlaceholderText value={data.subject} placeholder="Document subject or topic here" />
+            <PlaceholderText value={data.subject} placeholder={t('letter_ph_subject')} />
           </div>
         </div>
       );
@@ -122,6 +129,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
 
     return (
       <div
+        data-pdf-block="true"
         className={`${
           isCompact ? 'mb-4 py-2 px-3 text-xs' : isLarge ? 'mb-8 py-3 px-4 text-base' : 'mb-6 py-2.5 px-3.5 text-sm'
         } rounded-md bg-slate-50 border font-sans-title font-bold text-slate-900 print-avoid-break`}
@@ -130,7 +138,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
         <span className={`${layout.smallSizeClass} uppercase tracking-wider text-slate-500 mr-1.5`}>
           {t('formal_subject')}:
         </span>
-        <PlaceholderText value={data.subject} placeholder="Document subject or topic here" />
+        <PlaceholderText value={data.subject} placeholder={t('letter_ph_subject')} />
       </div>
     );
   };
@@ -138,11 +146,13 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
   const renderProseAndSignature = (hideEnclosure = false) => (
     <>
       <div
+        data-pdf-block="true"
+        data-pdf-keep-with-next="true"
         className={`font-sans-title font-semibold text-slate-900 ${
           isCompact ? 'text-xs mb-3' : isLarge ? 'text-base mb-5' : 'text-sm mb-4'
         }`}
       >
-        <PlaceholderText value={data.salutation} placeholder="Dear Recipient," />
+        <PlaceholderText value={data.salutation} placeholder={t('letter_ph_salutation')} />
       </div>
 
       <div
@@ -161,46 +171,47 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
         } ${layout.bodySizeClass} text-slate-800`}
       >
         {(!hasAnyParagraph || hasText(data.openingParagraph)) && (
-          <p>
+          <p data-pdf-block="true">
             <PlaceholderText
               value={data.openingParagraph}
-              placeholder="Write a clear opening sentence introducing the purpose of this letter."
+              placeholder={t('letter_doc_ph_opening')}
             />
           </p>
         )}
         {(!hasAnyParagraph || hasText(data.bodyParagraphOne)) && (
-          <p>
+          <p data-pdf-block="true">
             <PlaceholderText
               value={data.bodyParagraphOne}
-              placeholder="Provide supporting details, background context, or key information for the reader here."
+              placeholder={t('letter_doc_ph_body')}
             />
           </p>
         )}
-        {hasText(data.bodyParagraphTwo) && <p>{data.bodyParagraphTwo}</p>}
+        {hasText(data.bodyParagraphTwo) && <p data-pdf-block="true">{data.bodyParagraphTwo}</p>}
         {(!hasAnyParagraph || hasText(data.closingParagraph)) && (
-          <p>
+          <p data-pdf-block="true">
             <PlaceholderText
               value={data.closingParagraph}
-              placeholder="Conclude with a closing remark and any next steps."
+              placeholder={t('letter_doc_ph_closing')}
             />
           </p>
         )}
       </div>
 
       <div
+        data-pdf-block="true"
         className={`${
           isCompact ? 'mt-5 pt-3' : isTall ? 'mt-12 pt-6' : isLarge ? 'mt-14 pt-6' : 'mt-8 pt-4'
         } font-sans-title print-avoid-break`}
       >
         <div className={`${layout.metaSizeClass} text-slate-600`}>
-          <PlaceholderText value={data.signoff} placeholder="Sincerely," />
+          <PlaceholderText value={data.signoff} placeholder={t('letter_ph_signoff')} />
         </div>
         <div
           className={`font-bold text-slate-900 ${
             isCompact ? 'text-xs mt-3' : isLarge ? 'text-base mt-7' : 'text-sm mt-5'
           }`}
         >
-          <PlaceholderText value={data.senderName} placeholder="Sender Name Here" />
+          <PlaceholderText value={data.senderName} placeholder={t('letter_ph_sender_name')} />
         </div>
         {hasText(data.senderTitle) && <div className={`${layout.metaSizeClass} text-slate-600`}>{data.senderTitle}</div>}
         {hasText(data.senderCompany) && <div className={`${layout.metaSizeClass} text-slate-500`}>{data.senderCompany}</div>}
@@ -222,7 +233,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
         {(!hasAnySenderContact || hasText(data.senderAddress)) && (
           <div className={`flex items-center ${justifyClass} gap-1.5`}>
             <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-            <PlaceholderText value={data.senderAddress} placeholder="Street address, city, postal code" />
+            <PlaceholderText value={data.senderAddress} placeholder={t('letter_ph_sender_address')} />
           </div>
         )}
         {(!hasAnySenderContact || hasText(data.senderEmail)) && (
@@ -234,7 +245,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
         {(!hasAnySenderContact || hasText(data.senderPhone)) && (
           <div className={`flex items-center ${justifyClass} gap-1.5`}>
             <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-            <PlaceholderText value={data.senderPhone} placeholder="Phone number here" />
+            <PlaceholderText value={data.senderPhone} placeholder={t('cv_ph_phone')} />
           </div>
         )}
       </div>
@@ -251,6 +262,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
           style={{ minHeight: `${layout.paper.heightPx}px` }}
         >
           <aside
+            data-pdf-sidebar="true"
             className="col-span-4 border-r flex flex-col justify-between gap-6"
             style={{
               backgroundColor: theme.primaryLight,
@@ -259,33 +271,38 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
             }}
           >
             <div className="space-y-5">
-              {data.logoUrl && <DocumentLogo src={data.logoUrl} alt="Logo" assets={mounted} />}
+              {data.logoUrl && (
+                <div data-pdf-block="true">
+                  <DocumentLogo src={data.logoUrl} alt={t('company_logo')} assets={mounted} />
+                </div>
+              )}
 
-              <div>
+              <div data-pdf-block="true">
                 <h1
                   className={`font-sans-title ${isLarge ? 'text-2xl' : 'text-lg'} font-extrabold tracking-tight`}
                   style={hasText(data.senderName) ? { color: theme.textHeader } : undefined}
                 >
-                  <PlaceholderText value={data.senderName} placeholder="Sender Name Here" />
+                  <PlaceholderText value={data.senderName} placeholder={t('letter_ph_sender_name')} />
                 </h1>
                 <p
                   className={`font-sans-title ${layout.metaSizeClass} font-semibold mt-1`}
                   style={hasText(data.senderTitle) ? { color: theme.primary } : undefined}
                 >
-                  <PlaceholderText value={data.senderTitle} placeholder="Sender Role or Title" />
+                  <PlaceholderText value={data.senderTitle} placeholder={t('letter_ph_sender_title')} />
                 </p>
                 <p className={`font-sans-title ${layout.metaSizeClass} text-slate-600 mt-0.5`}>
-                  <PlaceholderText value={data.senderCompany} placeholder="Organization Name" />
+                  <PlaceholderText value={data.senderCompany} placeholder={t('letter_ph_sender_company')} />
                 </p>
               </div>
 
-              <div className="pt-3 border-t" style={{ borderColor: `${theme.primary}25` }}>
+              <div data-pdf-block="true" className="pt-3 border-t" style={{ borderColor: `${theme.primary}25` }}>
                 {renderSenderContactList('left')}
               </div>
             </div>
 
             {hasText(data.enclosureNotice) && (
               <div
+                data-pdf-block="true"
                 className={`pt-3 border-t ${layout.smallSizeClass} text-slate-600 italic font-sans-title`}
                 style={{ borderColor: `${theme.primary}25` }}
               >
@@ -295,8 +312,11 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
           </aside>
 
           <div className="col-span-8" style={{ padding: `${pad}px` }}>
-            <div className={`${layout.sectionMbClass} font-sans-title ${layout.metaSizeClass} font-semibold text-slate-500`}>
-              <PlaceholderText value={data.date} placeholder="Date Here" />
+            <div
+              data-pdf-block="true"
+              className={`${layout.sectionMbClass} font-sans-title ${layout.metaSizeClass} font-semibold text-slate-500`}
+            >
+              <PlaceholderText value={data.date} placeholder={t('letter_doc_ph_date')} />
             </div>
             <div className={layout.sectionMbClass}>{renderRecipientBlock(false)}</div>
             {renderSubjectBanner('spine')}
@@ -312,26 +332,27 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
     return (
       <DocumentSheet assets={mounted}>
         <header
+          data-pdf-block="true"
           className={`border-b ${
             layout.isLarge ? 'pb-7 mb-7' : 'pb-5 mb-6'
           } flex items-end justify-between gap-6`}
           style={{ borderColor: theme.textHeader }}
         >
           <div className="flex items-center gap-3.5 min-w-0">
-            {data.logoUrl && <DocumentLogo src={data.logoUrl} alt="Logo" assets={mounted} />}
+            {data.logoUrl && <DocumentLogo src={data.logoUrl} alt={t('company_logo')} assets={mounted} />}
             <div className="min-w-0">
               <h1
                 className={`font-sans-title ${isLarge ? 'text-3xl' : 'text-2xl'} font-extrabold tracking-tight`}
                 style={hasText(data.senderName) ? { color: theme.textHeader } : undefined}
               >
-                <PlaceholderText value={data.senderName} placeholder="Sender Name Here" />
+                <PlaceholderText value={data.senderName} placeholder={t('letter_ph_sender_name')} />
               </h1>
               <p className={`font-sans-title ${layout.metaSizeClass} font-semibold mt-0.5`} style={{ color: theme.primary }}>
-                <PlaceholderText value={data.senderTitle} placeholder="Sender Role or Title" />
+                <PlaceholderText value={data.senderTitle} placeholder={t('letter_ph_sender_title')} />
                 {(hasText(data.senderCompany) || !hasText(data.senderName)) && (
                   <span className="text-slate-500 font-normal">
                     {' · '}
-                    <PlaceholderText value={data.senderCompany} placeholder="Organization Name" />
+                    <PlaceholderText value={data.senderCompany} placeholder={t('letter_ph_sender_company')} />
                   </span>
                 )}
               </p>
@@ -342,16 +363,16 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
 
         <div className="grid grid-cols-12 gap-6 items-start">
           <div className="col-span-4 space-y-5">
-            <div className="border-t pt-2.5 font-sans-title" style={{ borderColor: theme.textHeader }}>
+            <div data-pdf-block="true" className="border-t pt-2.5 font-sans-title" style={{ borderColor: theme.textHeader }}>
               <span className={`${layout.smallSizeClass} font-bold uppercase tracking-widest block text-slate-500 mb-1`}>
                 {t('issue_date')}
               </span>
               <span className={`${layout.metaSizeClass} font-semibold text-slate-800 font-mono-tabular`}>
-                <PlaceholderText value={data.date} placeholder="Date Here" />
+                <PlaceholderText value={data.date} placeholder={t('letter_doc_ph_date')} />
               </span>
             </div>
 
-            <div className="border-t pt-2.5 font-sans-title" style={{ borderColor: theme.textHeader }}>
+            <div data-pdf-block="true" className="border-t pt-2.5 font-sans-title" style={{ borderColor: theme.textHeader }}>
               <span className={`${layout.smallSizeClass} font-bold uppercase tracking-widest block text-slate-500 mb-1.5`}>
                 {t('recipient_details')}
               </span>
@@ -380,7 +401,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
         align="end"
         left={
           <div className={`flex items-center gap-3.5 min-w-0 ${isEditorial ? 'justify-center' : ''}`}>
-            {data.logoUrl && <DocumentLogo src={data.logoUrl} alt="Logo" assets={mounted} />}
+            {data.logoUrl && <DocumentLogo src={data.logoUrl} alt={t('company_logo')} assets={mounted} />}
             <div className="min-w-0">
               <h1
                 className={`font-sans-title ${
@@ -388,7 +409,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
                 } font-extrabold tracking-tight`}
                 style={hasText(data.senderName) ? { color: theme.textHeader } : undefined}
               >
-                <PlaceholderText value={data.senderName} placeholder="Sender Name Here" />
+                <PlaceholderText value={data.senderName} placeholder={t('letter_ph_sender_name')} />
               </h1>
               {(!hasText(data.senderName) || hasText(data.senderTitle)) && (
                 <p
@@ -397,12 +418,12 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
                   } font-semibold mt-0.5`}
                   style={hasText(data.senderTitle) ? { color: theme.primary } : undefined}
                 >
-                  <PlaceholderText value={data.senderTitle} placeholder="Sender Role or Title" />
+                  <PlaceholderText value={data.senderTitle} placeholder={t('letter_ph_sender_title')} />
                 </p>
               )}
               {(!hasText(data.senderName) || hasText(data.senderCompany)) && (
                 <p className={`font-sans-title ${layout.metaSizeClass} text-slate-600 font-medium mt-0.5`}>
-                  <PlaceholderText value={data.senderCompany} placeholder="Organization Name" />
+                  <PlaceholderText value={data.senderCompany} placeholder={t('letter_ph_sender_company')} />
                 </p>
               )}
             </div>
@@ -413,6 +434,7 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
 
       {isBanner ? (
         <div
+          data-pdf-block="true"
           className={`${layout.sectionMbClass} grid ${
             isCompact ? 'grid-cols-1 gap-3' : 'grid-cols-2 gap-4'
           } p-3.5 rounded-md border border-slate-200 bg-slate-50/70`}
@@ -428,18 +450,19 @@ export const LetterDocument: React.FC<LetterDocumentProps> = ({
               {t('issue_date')}
             </span>
             <div className={`font-sans-title ${layout.metaSizeClass} font-semibold text-slate-800`}>
-              <PlaceholderText value={data.date} placeholder="Date Here" />
+              <PlaceholderText value={data.date} placeholder={t('letter_doc_ph_date')} />
             </div>
           </div>
         </div>
       ) : (
         <>
           <div
+            data-pdf-block="true"
             className={`${
               isCompact ? 'mb-4' : isLarge ? 'mb-7' : 'mb-5'
             } font-sans-title ${layout.metaSizeClass} font-semibold text-slate-600`}
           >
-            <PlaceholderText value={data.date} placeholder="Date Here" />
+            <PlaceholderText value={data.date} placeholder={t('letter_doc_ph_date')} />
           </div>
           <div className={layout.sectionMbClass}>{renderRecipientBlock(false)}</div>
         </>

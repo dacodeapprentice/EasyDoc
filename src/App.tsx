@@ -65,6 +65,9 @@ type AppView = 'home' | 'editor';
 interface ErrorBoundaryProps {
   children: ReactNode;
   fallbackText?: string;
+  title?: string;
+  description?: string;
+  resetLabel?: string;
   onReset?: () => void;
 }
 
@@ -92,9 +95,12 @@ class DocumentErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryS
       return (
         <div className="p-8 text-center bg-white rounded-xl border border-rose-200 shadow-sm max-w-md mx-auto my-8">
           <AlertCircle className="w-10 h-10 text-rose-500 mx-auto mb-3" />
-          <h3 className="font-semibold text-zinc-900 text-sm mb-1">Preview Render Issue</h3>
+          <h3 className="font-semibold text-zinc-900 text-sm mb-1">
+            {this.props.title || 'Preview Render Issue'}
+          </h3>
           <p className="text-xs text-zinc-500 mb-4">
-            An unexpected error occurred while rendering the document preview.
+            {this.props.description ||
+              'An unexpected error occurred while rendering the document preview.'}
           </p>
           <button
             type="button"
@@ -105,7 +111,7 @@ class DocumentErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryS
             className="px-3.5 py-2 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-1.5"
           >
             <RefreshCw className="w-3.5 h-3.5" />
-            <span>Reset Template</span>
+            <span>{this.props.resetLabel || 'Reset Template'}</span>
           </button>
         </div>
       );
@@ -138,8 +144,12 @@ export default function App() {
 
   // UI & Zoom Controls
   const [zoomLevel, setZoomLevel] = useState<number>(0.95);
+  const [measuredDocHeight, setMeasuredDocHeight] = useState<number | null>(null);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState<boolean>(false);
-  const [toastState, setToastState] = useState<{ message: string; isHint?: boolean } | null>(null);
+  const [toastState, setToastState] = useState<{
+    message: string;
+    variant?: 'success' | 'hint' | 'error';
+  } | null>(null);
 
   // Document Content Translation State
   const [targetTranslateLang, setTargetTranslateLang] = useState<string>('es');
@@ -149,6 +159,7 @@ export default function App() {
   const [translatedLabels, setTranslatedLabels] = useState<Partial<Record<DocumentType, string>>>({});
 
   const documentWrapperRef = useRef<HTMLDivElement>(null);
+  const documentCanvasRef = useRef<HTMLDivElement>(null);
   const toastTimerRef = useRef<number | null>(null);
   const baselineSnapshotRef = useRef<string>('');
   const t = (key: string) => getTranslation(lang, key);
@@ -210,16 +221,23 @@ export default function App() {
     setToastState(null);
   }, []);
 
-  const showToast = useCallback((message: string, durationMs = 3800, isHint = false) => {
-    if (toastTimerRef.current !== null) {
-      window.clearTimeout(toastTimerRef.current);
-    }
-    setToastState({ message, isHint });
-    toastTimerRef.current = window.setTimeout(() => {
-      setToastState(null);
-      toastTimerRef.current = null;
-    }, durationMs);
-  }, []);
+  const showToast = useCallback(
+    (
+      message: string,
+      durationMs = 3800,
+      variant: 'success' | 'hint' | 'error' = 'success'
+    ) => {
+      if (toastTimerRef.current !== null) {
+        window.clearTimeout(toastTimerRef.current);
+      }
+      setToastState({ message, variant });
+      toastTimerRef.current = window.setTimeout(() => {
+        setToastState(null);
+        toastTimerRef.current = null;
+      }, durationMs);
+    },
+    []
+  );
 
   // Ensure no legacy browser edit-area auto-save persists
   useEffect(() => {
@@ -316,13 +334,13 @@ export default function App() {
         resetActiveTemplateState(docType);
         setView('home');
         scrollToTemplatePicker();
-        showToast(t('pdf_resume_hint'), 9000, true);
+        showToast(t('pdf_resume_hint'), 9000, 'hint');
       } else {
-        showToast('PDF generation failed. Please try again.');
+        showToast(t('pdf_export_failed'), 6000, 'error');
       }
     } catch (err) {
       console.error('PDF export error:', err);
-      showToast('PDF generation failed. Please try again.');
+      showToast(t('pdf_export_failed'), 6000, 'error');
     } finally {
       setIsGeneratingPdf(false);
     }
@@ -338,13 +356,13 @@ export default function App() {
       const success = await exportToPdf('document-canvas', filename, currentPaperSpec, pdfPayload);
       if (success) {
         baselineSnapshotRef.current = serializeDocumentSnapshot(docType, contents[docType], style);
-        showToast(`Document downloaded: ${filename}`);
+        showToast(`${t('pdf_downloaded_prefix')} ${filename}`);
       } else {
-        showToast('PDF generation failed. Please try again.');
+        showToast(t('pdf_export_failed'), 6000, 'error');
       }
     } catch (err) {
       console.error('PDF export error:', err);
-      showToast('PDF generation failed. Please try again.');
+      showToast(t('pdf_export_failed'), 6000, 'error');
     } finally {
       setIsGeneratingPdf(false);
     }
@@ -353,7 +371,7 @@ export default function App() {
   // Language switch handler: translates UI guidance only; template contents stay constant
   const handleLanguageChange = (newLang: LanguageCode) => {
     setLang(newLang);
-    showToast(`Language: ${LANGUAGES[newLang].name}`);
+    showToast(`${getTranslation(newLang, 'language_toast_prefix')} ${LANGUAGES[newLang].name}`);
   };
 
   // Restore neutral blank template state for the active template
@@ -370,7 +388,7 @@ export default function App() {
       return next;
     });
     setTranslationError(null);
-    showToast('Template reset to neutral placeholders');
+    showToast(t('template_reset_toast'));
   };
 
   // Translate entered/uploaded content for multi-country applications
@@ -410,7 +428,7 @@ export default function App() {
       }));
       showToast(`${t('translate_success_toast')} ${selectedOption.label}`);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Could not translate document content.';
+      const msg = err instanceof Error ? err.message : t('translate_failed_error');
       setTranslationError(msg);
       showToast(msg);
     } finally {
@@ -445,10 +463,15 @@ export default function App() {
       window.scrollTo({ top: 0, behavior: 'auto' });
       showToast(t('pdf_restored_toast'));
     } catch (err: any) {
+      if (err?.message === 'FILE_PICKER_CANCELLED' || err?.message === 'No file selected') {
+        return;
+      }
       if (err?.message === 'NO_EMBEDDED_EASYDOC_DATA') {
-        showToast(t('pdf_no_project_data'));
-      } else if (err?.message !== 'No file selected') {
-        showToast(err?.message || 'Could not load PDF file.');
+        showToast(t('pdf_no_project_data'), 5000, 'error');
+      } else if (err?.message === 'INVALID_PDF_PROJECT_FILE') {
+        showToast(t('pdf_invalid_file'), 5000, 'error');
+      } else {
+        showToast(t('pdf_load_failed'), 5000, 'error');
       }
     }
   };
@@ -500,19 +523,49 @@ export default function App() {
     }
   }, [mobileView, view, currentPaperSpec.widthPx]);
 
+  // Measure true unscaled document height so the outer container scales cleanly with zoomLevel
+  useEffect(() => {
+    if (view !== 'editor') return;
+    const canvasEl = documentCanvasRef.current;
+    if (!canvasEl) return;
+
+    const syncHeight = () => {
+      const nextHeight = canvasEl.offsetHeight;
+      if (nextHeight > 0) {
+        setMeasuredDocHeight((prev) => (prev === nextHeight ? prev : nextHeight));
+      }
+    };
+
+    syncHeight();
+
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(() => {
+      syncHeight();
+    });
+    observer.observe(canvasEl);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [view, mobileView, docType, currentPaperSpec.id, currentPaperSpec.heightPx]);
+
   // Toast / Hint popup shared across views
   const toastNode = toastState ? (
     <div
-      role="status"
-      aria-live="polite"
+      role={toastState.variant === 'error' ? 'alert' : 'status'}
+      aria-live={toastState.variant === 'error' ? 'assertive' : 'polite'}
       className={`fixed bottom-5 right-5 z-50 text-xs font-medium py-3 px-4 rounded-xl shadow-lg flex items-start gap-2.5 border max-w-sm ${
-        toastState.isHint
+        toastState.variant === 'hint'
           ? 'bg-blue-950 text-white border-blue-800'
+          : toastState.variant === 'error'
+          ? 'bg-rose-950 text-white border-rose-800'
           : 'bg-zinc-900 text-white border-zinc-800'
       }`}
     >
-      {toastState.isHint ? (
+      {toastState.variant === 'hint' ? (
         <Info className="w-4 h-4 text-blue-300 shrink-0 mt-0.5" />
+      ) : toastState.variant === 'error' ? (
+        <AlertCircle className="w-4 h-4 text-rose-300 shrink-0 mt-0.5" />
       ) : (
         <CheckCircle className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
       )}
@@ -520,7 +573,7 @@ export default function App() {
       <button
         type="button"
         onClick={dismissToast}
-        aria-label="Dismiss"
+        aria-label={t('dismiss')}
         className="text-white/70 hover:text-white transition-colors shrink-0 ml-1"
       >
         <X className="w-3.5 h-3.5" />
@@ -552,7 +605,7 @@ export default function App() {
           <div className="bg-white rounded-2xl shadow-xl p-8 max-w-xs w-full text-center border border-zinc-200">
             <Loader2 className="w-9 h-9 animate-spin text-blue-600 mx-auto mb-4" />
             <h3 className="font-semibold text-zinc-900 text-sm">{t('exporting')}</h3>
-            <p className="text-xs text-zinc-500 mt-1">Generating high-resolution document...</p>
+            <p className="text-xs text-zinc-500 mt-1">{t('generating_high_res')}</p>
           </div>
         </div>
       )}
@@ -745,8 +798,8 @@ export default function App() {
                 type="button"
                 onClick={() => setZoomLevel((z) => Math.max(0.08, Number((z - 0.1).toFixed(2))))}
                 className="h-8 w-8 inline-flex items-center justify-center text-zinc-600 hover:text-zinc-900 rounded-md hover:bg-zinc-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-                title="Zoom Out"
-                aria-label="Zoom Out"
+                title={t('zoom_out')}
+                aria-label={t('zoom_out')}
               >
                 <ZoomOut className="w-3.5 h-3.5" />
               </button>
@@ -757,8 +810,8 @@ export default function App() {
                 type="button"
                 onClick={() => setZoomLevel((z) => Math.min(2.5, Number((z + 0.1).toFixed(2))))}
                 className="h-8 w-8 inline-flex items-center justify-center text-zinc-600 hover:text-zinc-900 rounded-md hover:bg-zinc-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-                title="Zoom In"
-                aria-label="Zoom In"
+                title={t('zoom_in')}
+                aria-label={t('zoom_in')}
               >
                 <ZoomIn className="w-3.5 h-3.5" />
               </button>
@@ -766,7 +819,7 @@ export default function App() {
                 type="button"
                 onClick={() => setZoomLevel(1.0)}
                 className="h-8 text-xs px-2.5 text-zinc-600 hover:text-zinc-900 rounded-md hover:bg-zinc-100 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-                title="Reset to 100%"
+                title={t('zoom_reset_100')}
               >
                 100%
               </button>
@@ -775,7 +828,7 @@ export default function App() {
                 onClick={handleFitToScreen}
                 className="h-8 w-8 inline-flex items-center justify-center text-zinc-600 hover:text-zinc-900 rounded-md hover:bg-zinc-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
                 title={t('fit_screen')}
-                aria-label="Fit to Screen"
+                aria-label={t('fit_screen')}
               >
                 <Maximize2 className="w-3.5 h-3.5" />
               </button>
@@ -791,13 +844,18 @@ export default function App() {
             <div
               style={{
                 width: `${Math.max(1, Math.round(currentPaperSpec.widthPx * zoomLevel))}px`,
-                ...(currentPaperSpec.id === 'custom'
-                  ? { height: `${Math.max(1, Math.round(currentPaperSpec.heightPx * zoomLevel))}px` }
-                  : {}),
+                height: `${Math.max(
+                  1,
+                  Math.round(
+                    (currentPaperSpec.id === 'custom'
+                      ? currentPaperSpec.heightPx
+                      : measuredDocHeight ?? currentPaperSpec.heightPx) * zoomLevel
+                  )
+                )}px`,
                 maxWidth: '100%',
                 overflow: 'visible',
               }}
-              className="my-2 transition-all flex justify-center shrink-0"
+              className="my-2 transition-all flex justify-center items-start shrink-0"
             >
               <div
                 id="document-scale-wrapper"
@@ -820,6 +878,7 @@ export default function App() {
               >
                 {/* Single dedicated DOM ID for PDF export */}
                 <div
+                  ref={documentCanvasRef}
                   id="document-canvas"
                   style={{
                     width: `${currentPaperSpec.widthPx}px`,
@@ -835,7 +894,12 @@ export default function App() {
                   }}
                   className="bg-white"
                 >
-                  <DocumentErrorBoundary onReset={handleResetData}>
+                  <DocumentErrorBoundary
+                    title={t('preview_render_issue')}
+                    description={t('preview_render_error_desc')}
+                    resetLabel={t('preset_data')}
+                    onReset={handleResetData}
+                  >
                     {mountTemplateDocument(docType, contents, mountedAssets, lang)}
                   </DocumentErrorBoundary>
                 </div>

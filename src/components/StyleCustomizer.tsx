@@ -1182,7 +1182,9 @@ export const StyleCustomizer: React.FC<StyleCustomizerProps> = ({
                   />
                 </div>
                 <span className="font-semibold text-zinc-900 text-xs truncate">
-                  {resolvedAssets.theme.name}
+                  {resolvedAssets.theme.id === 'custom' && resolvedAssets.theme.name === 'Custom Palette'
+                    ? t('custom_palette')
+                    : resolvedAssets.theme.name}
                 </span>
               </div>
 
@@ -1263,7 +1265,7 @@ export const StyleCustomizer: React.FC<StyleCustomizerProps> = ({
                         key={`${histKey}-${idx}`}
                         type="button"
                         onClick={() => handleApplyHistoryPalette(hist)}
-                        title={`${hist.name || 'Custom Palette'} (${hist.primary} / ${hist.secondary})`}
+                        title={`${!hist.name || hist.name === 'Custom Palette' ? t('custom_palette') : hist.name} (${hist.primary} / ${hist.secondary})`}
                         className={`flex items-center justify-center -space-x-1 py-2 px-1.5 rounded-lg border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                           isSelected
                             ? 'border-blue-600 bg-blue-50/50'

@@ -362,7 +362,7 @@ export const CalendarDatePicker: React.FC<CalendarDatePickerProps> = ({
                 type="button"
                 onClick={handlePrevMonth}
                 className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition-colors shrink-0"
-                aria-label="Previous month"
+                aria-label={t('previous_month')}
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -371,7 +371,7 @@ export const CalendarDatePicker: React.FC<CalendarDatePickerProps> = ({
                 <select
                   value={viewMonth}
                   onChange={(e) => setViewMonth(Number(e.target.value))}
-                  aria-label="Month"
+                  aria-label={t('month_label')}
                   className="text-xs font-semibold text-zinc-900 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 rounded-md px-1.5 py-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600 max-w-[116px] truncate"
                 >
                   {monthNames.map((name, idx) => (
@@ -384,7 +384,7 @@ export const CalendarDatePicker: React.FC<CalendarDatePickerProps> = ({
                 <select
                   value={viewYear}
                   onChange={(e) => setViewYear(Number(e.target.value))}
-                  aria-label="Year"
+                  aria-label={t('year_label')}
                   className="text-xs font-semibold font-mono-tabular tabular-nums text-zinc-900 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 rounded-md px-1.5 py-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600"
                 >
                   {yearOptions.map((y) => (
@@ -399,7 +399,7 @@ export const CalendarDatePicker: React.FC<CalendarDatePickerProps> = ({
                 type="button"
                 onClick={handleNextMonth}
                 className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 transition-colors shrink-0"
-                aria-label="Next month"
+                aria-label={t('next_month')}
               >
                 <ChevronRight className="w-4 h-4" />
               </button>

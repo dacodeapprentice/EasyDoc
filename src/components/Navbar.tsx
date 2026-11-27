@@ -83,8 +83,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             value={currentLang}
             onChange={(e) => onChangeLang(e.target.value as LanguageCode)}
             className="h-9 bg-white hover:bg-zinc-50 text-zinc-900 text-xs font-medium px-2 sm:px-2.5 rounded-lg border border-zinc-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors max-w-[110px] sm:max-w-none"
-            title="Change Language"
-            aria-label="Change Language"
+            title={t('change_language')}
+            aria-label={t('change_language')}
           >
             {(Object.keys(LANGUAGES) as LanguageCode[]).map((code) => (
               <option key={code} value={code} className="text-zinc-900 bg-white">

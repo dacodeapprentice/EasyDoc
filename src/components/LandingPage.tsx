@@ -53,7 +53,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         {/* Zone 2: Clean single-line text links */}
         <nav
-          aria-label="Primary navigation"
+          aria-label={t('primary_navigation')}
           className="hidden md:flex items-center gap-6 text-sm font-medium text-zinc-600"
         >
           <button
@@ -78,8 +78,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             value={currentLang}
             onChange={(e) => onChangeLang(e.target.value as LanguageCode)}
             className="h-9 bg-white hover:bg-zinc-50 text-zinc-900 text-xs font-medium px-2.5 rounded-lg border border-zinc-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-            title="Change Language"
-            aria-label="Change Language"
+            title={t('change_language')}
+            aria-label={t('change_language')}
           >
             {(Object.keys(LANGUAGES) as LanguageCode[]).map((code) => (
               <option key={code} value={code} className="text-zinc-900 bg-white">

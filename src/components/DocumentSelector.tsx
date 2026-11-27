@@ -56,7 +56,7 @@ export const DocumentSelector: React.FC<DocumentSelectorProps> = ({
                   </h4>
                   {isSelected && (
                     <span className="text-xs font-medium text-blue-600 shrink-0">
-                      {lang === 'pt' ? 'Ativo' : lang === 'es' ? 'Activo' : lang === 'fr' ? 'Actif' : 'Active'}
+                      {t('active_badge')}
                     </span>
                   )}
                 </div>

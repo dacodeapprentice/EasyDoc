@@ -43,6 +43,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
 
   const renderContactItems = (vertical = false, centered = false) => (
     <div
+      data-pdf-block="true"
       className={`flex ${vertical ? 'flex-col gap-1.5' : 'flex-wrap items-center'} ${
         centered ? 'justify-center' : ''
       } ${
@@ -65,31 +66,31 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
       {(!hasAnyContact || hasText(data.phone)) && (
         <span className="inline-flex items-center gap-1.5 min-w-0">
           <Phone className={`${isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'} shrink-0`} style={{ color: theme.primary }} />
-          <PlaceholderText value={data.phone} placeholder="Phone number here" />
+          <PlaceholderText value={data.phone} placeholder={t('cv_ph_phone')} />
         </span>
       )}
       {(!hasAnyContact || hasText(data.location)) && (
         <span className="inline-flex items-center gap-1.5 min-w-0">
           <MapPin className={`${isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'} shrink-0`} style={{ color: theme.primary }} />
-          <PlaceholderText value={data.location} placeholder="City, Country" />
+          <PlaceholderText value={data.location} placeholder={t('cv_ph_location')} />
         </span>
       )}
       {(!hasAnyContact || hasText(data.website)) && (
         <span className="inline-flex items-center gap-1.5 min-w-0 break-all">
           <Globe className={`${isCompact ? 'w-3 h-3' : 'w-3.5 h-3.5'} shrink-0`} style={{ color: theme.primary }} />
-          <PlaceholderText value={data.website} placeholder="website.example.com" />
+          <PlaceholderText value={data.website} placeholder={t('cv_ph_website')} />
         </span>
       )}
     </div>
   );
 
   const renderSummary = () => (
-    <section className={`${layout.sectionMbClass} print-avoid-break`}>
+    <section data-pdf-block="true" className={`${layout.sectionMbClass} print-avoid-break`}>
       <DocumentSectionHeading assets={mounted} title={t('profile_summary')} />
-      <p className={`${layout.bodySizeClass} text-slate-700`}>
+      <p data-pdf-block="true" className={`${layout.bodySizeClass} text-slate-700`}>
         <PlaceholderText
           value={data.summary}
-          placeholder="Write a brief overview of your background, skills, and core focus areas here."
+          placeholder={t('cv_doc_ph_summary')}
         />
       </p>
     </section>
@@ -113,27 +114,29 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
                 : [];
 
             return (
-              <div key={exp.id} className="print-avoid-break">
+              <div key={exp.id} data-pdf-block="true" className="print-avoid-break">
                 <div
+                  data-pdf-block="true"
+                  data-pdf-keep-with-next="true"
                   className={`flex ${
                     isCompact ? 'flex-col gap-0.5' : 'flex-row items-baseline justify-between gap-3'
                   } font-sans-title`}
                 >
                   <div className={`font-bold text-slate-900 ${isCompact ? 'text-xs' : isLarge ? 'text-base' : 'text-sm'}`}>
-                    <PlaceholderText value={exp.role} placeholder="Role or Position Title" />
+                    <PlaceholderText value={exp.role} placeholder={t('cv_ph_role')} />
                     <span className="font-normal text-slate-500"> · </span>
                     <PlaceholderText
                       value={exp.company}
-                      placeholder="Organization Name"
+                      placeholder={t('cv_ph_company')}
                       className="font-semibold text-slate-800"
                     />
                   </div>
                   <div className={`${layout.smallSizeClass} font-medium text-slate-500 font-mono-tabular shrink-0`}>
-                    <PlaceholderText value={exp.period} placeholder="Start – End" />
+                    <PlaceholderText value={exp.period} placeholder={t('cv_doc_ph_period')} />
                     {(hasText(exp.location) || (!hasText(exp.period) && !hasText(exp.role))) && (
                       <>
                         {' · '}
-                        <PlaceholderText value={exp.location} placeholder="Location" />
+                        <PlaceholderText value={exp.location} placeholder={t('cv_doc_ph_location')} />
                       </>
                     )}
                   </div>
@@ -152,10 +155,10 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
                     } text-slate-700 leading-normal`}
                   >
                     {visibleHighlights.map((h, i) => (
-                      <li key={i}>
+                      <li key={i} data-pdf-block="true">
                         <PlaceholderText
                           value={h}
-                          placeholder="Describe a key responsibility, task, or outcome here."
+                          placeholder={t('cv_doc_ph_highlight')}
                         />
                       </li>
                     ))}
@@ -181,6 +184,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
           {entries.map((edu) => (
             <div
               key={edu.id}
+              data-pdf-block="true"
               className={`flex ${
                 isCompact || isLarge || design.id === 'split-sidebar'
                   ? 'flex-col gap-0.5'
@@ -189,20 +193,20 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
             >
               <div>
                 <div className={`font-bold text-slate-900 ${isCompact ? 'text-xs' : isLarge ? 'text-base' : 'text-sm'}`}>
-                  <PlaceholderText value={edu.degree} placeholder="Degree or Certification Title" />
+                  <PlaceholderText value={edu.degree} placeholder={t('cv_ph_degree')} />
                 </div>
                 <div className={`${layout.metaSizeClass} text-slate-600 font-medium`}>
-                  <PlaceholderText value={edu.institution} placeholder="Institution Name" />
+                  <PlaceholderText value={edu.institution} placeholder={t('cv_ph_institution')} />
                   {(hasText(edu.details) || !hasText(edu.degree)) && (
                     <span className="italic text-slate-500 font-normal">
                       {' '}
-                      — <PlaceholderText value={edu.details} placeholder="Field of study or notes" />
+                      — <PlaceholderText value={edu.details} placeholder={t('cv_doc_ph_edu_details')} />
                     </span>
                   )}
                 </div>
               </div>
               <div className={`${layout.smallSizeClass} font-medium text-slate-500 font-mono-tabular shrink-0`}>
-                <PlaceholderText value={edu.year} placeholder="Start – End" />
+                <PlaceholderText value={edu.year} placeholder={t('cv_doc_ph_period')} />
               </div>
             </div>
           ))}
@@ -213,10 +217,12 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
 
   const renderSkills = () => {
     const hasSkills = data.skills && data.skills.length > 0;
-    const displaySkills = hasSkills ? data.skills : ['Skill Placeholder 1', 'Skill Placeholder 2', 'Skill Placeholder 3'];
+    const displaySkills = hasSkills
+      ? data.skills
+      : [t('cv_doc_ph_skill_1'), t('cv_doc_ph_skill_2'), t('cv_doc_ph_skill_3')];
 
     return (
-      <div>
+      <div data-pdf-block="true">
         <DocumentSectionHeading assets={mounted} title={t('key_competencies')} className="mb-2" />
         <DocumentTagList assets={mounted} items={displaySkills} isPlaceholder={!hasSkills} />
       </div>
@@ -225,10 +231,12 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
 
   const renderLanguages = () => {
     const hasLangs = data.languages && data.languages.length > 0;
-    const displayLangs = hasLangs ? data.languages : ['Language 1 (Level)', 'Language 2 (Level)'];
+    const displayLangs = hasLangs
+      ? data.languages
+      : [t('cv_doc_ph_lang_1'), t('cv_doc_ph_lang_2')];
 
     return (
-      <div>
+      <div data-pdf-block="true">
         <DocumentSectionHeading assets={mounted} title={t('languages')} className="mb-2" />
         <div className={`flex flex-wrap gap-2 ${layout.metaSizeClass} text-slate-700 pt-1 font-sans-title`}>
           {displayLangs.map((langItem, index) => (
@@ -263,6 +271,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
           style={{ minHeight: `${layout.paper.heightPx}px` }}
         >
           <aside
+            data-pdf-sidebar="true"
             className="col-span-4 border-r flex flex-col justify-start gap-5"
             style={{
               backgroundColor: theme.primaryLight,
@@ -271,30 +280,30 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
             }}
           >
             {data.photoUrl && (
-              <div className="flex justify-start">
+              <div data-pdf-block="true" className="flex justify-start">
                 <DocumentLogo
                   src={data.photoUrl}
-                  alt={data.fullName || 'Profile'}
+                  alt={data.fullName || t('profile_photo')}
                   assets={mounted}
                   variant="circle"
                 />
               </div>
             )}
 
-            <div>
+            <div data-pdf-block="true">
               <h1
                 className={`font-sans-title ${
                   isLarge ? 'text-3xl' : 'text-xl'
                 } font-extrabold tracking-tight leading-tight`}
                 style={hasText(data.fullName) ? { color: theme.textHeader } : undefined}
               >
-                <PlaceholderText value={data.fullName} placeholder="Full Name Here" />
+                <PlaceholderText value={data.fullName} placeholder={t('cv_doc_ph_full_name')} />
               </h1>
               <p
                 className={`font-sans-title ${isLarge ? 'text-base' : 'text-xs'} font-semibold mt-1.5`}
                 style={hasText(data.professionalTitle) ? { color: theme.primary } : undefined}
               >
-                <PlaceholderText value={data.professionalTitle} placeholder="Professional Title Here" />
+                <PlaceholderText value={data.professionalTitle} placeholder={t('cv_doc_ph_job_title')} />
               </p>
             </div>
 
@@ -332,13 +341,13 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
                 className={`font-sans-title ${layout.titleSizeClass} font-extrabold tracking-tight`}
                 style={hasText(data.fullName) ? { color: theme.textHeader } : undefined}
               >
-                <PlaceholderText value={data.fullName} placeholder="Full Name Here" />
+                <PlaceholderText value={data.fullName} placeholder={t('cv_doc_ph_full_name')} />
               </h1>
               <p
                 className={`font-sans-title ${isLarge ? 'text-xl' : 'text-base'} font-semibold mt-1`}
                 style={hasText(data.professionalTitle) ? { color: theme.primary } : undefined}
               >
-                <PlaceholderText value={data.professionalTitle} placeholder="Professional Title Here" />
+                <PlaceholderText value={data.professionalTitle} placeholder={t('cv_doc_ph_job_title')} />
               </p>
             </div>
           }
@@ -347,7 +356,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
               {data.photoUrl && (
                 <DocumentLogo
                   src={data.photoUrl}
-                  alt={data.fullName || 'Profile'}
+                  alt={data.fullName || t('profile_photo')}
                   assets={mounted}
                   variant="circle"
                 />
@@ -356,18 +365,18 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
           }
         />
 
-        <div className="mb-5">{renderContactItems(false)}</div>
+        <div data-pdf-block="true" className="mb-5">{renderContactItems(false)}</div>
 
         <div className="space-y-6">
-          <div className="grid grid-cols-12 gap-5 items-start">
+          <div data-pdf-block="true" className="grid grid-cols-12 gap-5 items-start">
             <div className="col-span-4">
               <DocumentSectionHeading assets={mounted} title={t('profile_summary')} />
             </div>
             <div className="col-span-8">
-              <p className={`${layout.bodySizeClass} text-slate-700`}>
+              <p data-pdf-block="true" className={`${layout.bodySizeClass} text-slate-700`}>
                 <PlaceholderText
                   value={data.summary}
-                  placeholder="Write a brief overview of your background, skills, and core focus areas here."
+                  placeholder={t('cv_doc_ph_summary')}
                 />
               </p>
             </div>
@@ -380,24 +389,28 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
             <div className="col-span-8">
               <div className={layout.itemGapClass}>
                 {data.experience.map((exp) => (
-                  <div key={exp.id} className="print-avoid-break">
-                    <div className="flex items-baseline justify-between gap-2 font-sans-title">
+                  <div key={exp.id} data-pdf-block="true" className="print-avoid-break">
+                    <div
+                      data-pdf-block="true"
+                      data-pdf-keep-with-next="true"
+                      className="flex items-baseline justify-between gap-2 font-sans-title"
+                    >
                       <div className="font-bold text-slate-900 text-sm">
-                        <PlaceholderText value={exp.role} placeholder="Role or Position Title" />
+                        <PlaceholderText value={exp.role} placeholder={t('cv_ph_role')} />
                         <span className="font-normal text-slate-500"> · </span>
-                        <PlaceholderText value={exp.company} placeholder="Organization Name" />
+                        <PlaceholderText value={exp.company} placeholder={t('cv_ph_company')} />
                       </div>
                       <span className={`${layout.smallSizeClass} text-slate-500 font-mono-tabular shrink-0`}>
-                        <PlaceholderText value={exp.period} placeholder="Start – End" />
+                        <PlaceholderText value={exp.period} placeholder={t('cv_doc_ph_period')} />
                       </span>
                     </div>
                     {exp.highlights.length > 0 && (
                       <ul className="mt-1 list-disc list-outside pl-4 space-y-1 text-xs text-slate-700">
                         {(exp.highlights.some(hasText) ? exp.highlights.filter(hasText) : exp.highlights).map((h, i) => (
-                          <li key={i}>
+                          <li key={i} data-pdf-block="true">
                             <PlaceholderText
                               value={h}
-                              placeholder="Describe a key responsibility, task, or outcome here."
+                              placeholder={t('cv_doc_ph_highlight')}
                             />
                           </li>
                         ))}
@@ -415,17 +428,17 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
             </div>
             <div className="col-span-8 space-y-3">
               {data.education.map((edu) => (
-                <div key={edu.id} className="flex items-baseline justify-between gap-2 font-sans-title">
+                <div key={edu.id} data-pdf-block="true" className="flex items-baseline justify-between gap-2 font-sans-title">
                   <div>
                     <div className="font-bold text-slate-900 text-sm">
-                      <PlaceholderText value={edu.degree} placeholder="Degree or Certification Title" />
+                      <PlaceholderText value={edu.degree} placeholder={t('cv_ph_degree')} />
                     </div>
                     <div className={`${layout.metaSizeClass} text-slate-600`}>
-                      <PlaceholderText value={edu.institution} placeholder="Institution Name" />
+                      <PlaceholderText value={edu.institution} placeholder={t('cv_ph_institution')} />
                     </div>
                   </div>
                   <span className={`${layout.smallSizeClass} text-slate-500 font-mono-tabular shrink-0`}>
-                    <PlaceholderText value={edu.year} placeholder="Start – End" />
+                    <PlaceholderText value={edu.year} placeholder={t('cv_doc_ph_period')} />
                   </span>
                 </div>
               ))}
@@ -437,11 +450,13 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
               <DocumentSectionHeading assets={mounted} title={t('key_competencies')} />
             </div>
             <div className="col-span-8 space-y-4">
-              <DocumentTagList
-                assets={mounted}
-                items={data.skills.length ? data.skills : ['Skill Placeholder 1', 'Skill Placeholder 2']}
-                isPlaceholder={!data.skills.length}
-              />
+              <div data-pdf-block="true">
+                <DocumentTagList
+                  assets={mounted}
+                  items={data.skills.length ? data.skills : [t('cv_doc_ph_skill_1'), t('cv_doc_ph_skill_2')]}
+                  isPlaceholder={!data.skills.length}
+                />
+              </div>
               {renderLanguages()}
             </div>
           </div>
@@ -464,7 +479,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
               className={`font-sans-title ${layout.titleSizeClass} font-extrabold tracking-tight`}
               style={hasText(data.fullName) ? { color: theme.textHeader } : undefined}
             >
-              <PlaceholderText value={data.fullName} placeholder="Full Name Here" />
+              <PlaceholderText value={data.fullName} placeholder={t('cv_doc_ph_full_name')} />
             </h1>
             <p
               className={`font-sans-title ${
@@ -472,7 +487,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
               } font-semibold mt-1`}
               style={hasText(data.professionalTitle) ? { color: theme.primary } : undefined}
             >
-              <PlaceholderText value={data.professionalTitle} placeholder="Professional Title Here" />
+              <PlaceholderText value={data.professionalTitle} placeholder={t('cv_doc_ph_job_title')} />
             </p>
 
             {renderContactItems(false, isEditorial)}
@@ -483,7 +498,7 @@ export const CvDocument: React.FC<CvDocumentProps> = ({
             <div className={isEditorial ? '' : 'ml-2'}>
               <DocumentLogo
                 src={data.photoUrl}
-                alt={data.fullName || 'Profile'}
+                alt={data.fullName || t('profile_photo')}
                 assets={mounted}
                 variant="circle"
               />

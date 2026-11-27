@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CertificateData, LanguageCode } from '../../types/document';
 import { ChevronDown, ChevronUp, Award, Users } from 'lucide-react';
+import { ImageUploadCrop } from '../ImageUploadCrop';
 import { CalendarDatePicker } from '../CalendarDatePicker';
 import { getTranslation } from '../../utils/i18n';
 
@@ -44,7 +45,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
         >
           <div className="flex items-center gap-2 font-semibold text-xs uppercase tracking-wider text-zinc-800">
             <Award className="w-3.5 h-3.5 text-blue-600" />
-            <span>Recipient & Achievement Distinction</span>
+            <span>{t('cert_distinction_section')}</span>
           </div>
           {openSections.distinction ? (
             <ChevronUp className="w-4 h-4 text-zinc-400" />
@@ -54,7 +55,17 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
         </button>
 
         {openSections.distinction && (
-          <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="p-4 space-y-4">
+            <ImageUploadCrop
+              label={t('certificate_seal')}
+              shape="square"
+              mode="logo"
+              currentImage={data.sealUrl}
+              onImageChange={(val) => updateField('sealUrl', val)}
+              lang={lang}
+            />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="sm:col-span-2">
               <label className="block text-xs font-semibold text-zinc-700 mb-1">
                 {t('cert_recipient')} *
@@ -64,20 +75,20 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.recipientName}
                 onChange={(e) => updateField('recipientName', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 font-semibold transition-colors"
-                placeholder="Recipient name here"
+                placeholder={t('cert_ph_recipient')}
               />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-zinc-700 mb-1">
-                Certificate Title
+                {t('cert_title_label')}
               </label>
               <input
                 type="text"
                 value={data.title}
                 onChange={(e) => updateField('title', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Certificate title here"
+                placeholder={t('cert_ph_title')}
               />
             </div>
 
@@ -90,7 +101,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.issuingOrganization}
                 onChange={(e) => updateField('issuingOrganization', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Organization or institution name"
+                placeholder={t('cert_ph_org')}
               />
             </div>
 
@@ -103,7 +114,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.courseOrAchievement}
                 onChange={(e) => updateField('courseOrAchievement', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Course, program, or distinction name"
+                placeholder={t('cert_ph_course')}
               />
             </div>
 
@@ -121,14 +132,14 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
 
             <div>
               <label className="block text-xs font-semibold text-zinc-700 mb-1">
-                Certificate Registry ID
+                {t('cert_registry_id_label')}
               </label>
               <input
                 type="text"
                 value={data.certificateId}
                 onChange={(e) => updateField('certificateId', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Certificate ID here"
+                placeholder={t('cert_ph_id')}
               />
             </div>
 
@@ -141,8 +152,9 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.description}
                 onChange={(e) => updateField('description', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 leading-relaxed focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Write a generalized citation or commendation statement here..."
+                placeholder={t('cert_ph_citation')}
               />
+            </div>
             </div>
           </div>
         )}
@@ -157,7 +169,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
         >
           <div className="flex items-center gap-2 font-semibold text-xs uppercase tracking-wider text-zinc-800">
             <Users className="w-3.5 h-3.5 text-blue-600" />
-            <span>Institutional Signatories</span>
+            <span>{t('cert_signatories_section')}</span>
           </div>
           {openSections.signatories ? (
             <ChevronUp className="w-4 h-4 text-zinc-400" />
@@ -177,7 +189,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.primarySignatoryName}
                 onChange={(e) => updateField('primarySignatoryName', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Primary signatory name"
+                placeholder={t('cert_ph_primary_name')}
               />
             </div>
 
@@ -190,7 +202,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.primarySignatoryTitle}
                 onChange={(e) => updateField('primarySignatoryTitle', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Primary signatory title"
+                placeholder={t('cert_ph_primary_title')}
               />
             </div>
 
@@ -203,7 +215,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.secondarySignatoryName}
                 onChange={(e) => updateField('secondarySignatoryName', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Secondary signatory name"
+                placeholder={t('cert_ph_secondary_name')}
               />
             </div>
 
@@ -216,7 +228,7 @@ export const CertificateForm: React.FC<CertificateFormProps> = ({
                 value={data.secondarySignatoryTitle}
                 onChange={(e) => updateField('secondarySignatoryTitle', e.target.value)}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Secondary signatory title"
+                placeholder={t('cert_ph_secondary_title')}
               />
             </div>
           </div>

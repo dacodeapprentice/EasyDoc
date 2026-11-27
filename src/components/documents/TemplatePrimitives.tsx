@@ -64,6 +64,7 @@ export const DocumentSheet: React.FC<DocumentSheetProps> = ({
     >
       {showHeaderAccent && design.id === 'executive-spine' && (
         <div
+          data-pdf-vertical-accent="true"
           className={`absolute left-0 top-0 bottom-0 ${layout.accentBarWidthClass} pointer-events-none`}
           style={{ backgroundColor: theme.primary }}
         />
@@ -187,18 +188,19 @@ export const DocumentLogo: React.FC<DocumentLogoProps> = ({
     );
   }
 
-  const sizeClass = layout.isUltraNarrow
-    ? 'w-9 h-9'
+  const maxSizeClass = layout.isUltraNarrow
+    ? 'max-h-9 max-w-[96px]'
     : layout.isCompact
-    ? 'w-11 h-11'
+    ? 'max-h-11 max-w-[120px]'
     : layout.isLarge
-    ? 'w-20 h-20'
-    : 'w-14 h-14';
+    ? 'max-h-20 max-w-[200px]'
+    : 'max-h-14 max-w-[150px]';
   return (
     <img
       src={src}
       alt={alt}
-      className={`${sizeClass} object-contain rounded-md border border-slate-200 shrink-0 bg-white`}
+      className={`${maxSizeClass} w-auto h-auto object-contain shrink-0 block`}
+      style={{ objectFit: 'contain' }}
     />
   );
 };
@@ -231,6 +233,7 @@ export const DocumentHeaderBand: React.FC<DocumentHeaderBandProps> = ({
   if (isBanner) {
     return (
       <header
+        data-pdf-block="true"
         className={`${layout.headerMbClass} ${
           layout.isUltraNarrow ? 'p-3' : layout.isCompact ? 'p-4' : layout.isLarge ? 'p-7' : 'p-5'
         } rounded-lg border`}
@@ -260,6 +263,7 @@ export const DocumentHeaderBand: React.FC<DocumentHeaderBandProps> = ({
   if (isEditorial) {
     return (
       <header
+        data-pdf-block="true"
         className={`text-center border-b-2 ${
           layout.isCompact ? 'pb-4 mb-4' : layout.isLarge ? 'pb-7 mb-7' : 'pb-5 mb-5'
         }`}
@@ -274,7 +278,7 @@ export const DocumentHeaderBand: React.FC<DocumentHeaderBandProps> = ({
   }
 
   return (
-    <header className={dividerClass}>
+    <header data-pdf-block="true" className={dividerClass}>
       <div
         className={`flex ${
           layout.isCompact
@@ -342,6 +346,8 @@ export const DocumentSectionHeading: React.FC<DocumentSectionHeadingProps> = ({
   if (design.id === 'swiss-grid') {
     return (
       <h2
+        data-pdf-block="true"
+        data-pdf-keep-with-next="true"
         className={`font-sans-title ${layout.metaSizeClass} font-bold uppercase tracking-widest pt-1.5 ${mbClass} border-t`}
         style={{ borderColor: theme.textHeader, color: theme.textHeader }}
       >
@@ -353,6 +359,8 @@ export const DocumentSectionHeading: React.FC<DocumentSectionHeadingProps> = ({
   if (design.id === 'editorial-serif') {
     return (
       <h2
+        data-pdf-block="true"
+        data-pdf-keep-with-next="true"
         className={`font-sans-title ${layout.metaSizeClass} font-semibold uppercase tracking-[0.14em] pb-1.5 ${mbClass} border-b flex items-center justify-between`}
         style={{ borderColor: theme.border, color: theme.primaryDark }}
       >
@@ -364,6 +372,8 @@ export const DocumentSectionHeading: React.FC<DocumentSectionHeadingProps> = ({
   if (design.id === 'modern-banner') {
     return (
       <h2
+        data-pdf-block="true"
+        data-pdf-keep-with-next="true"
         className={`font-sans-title ${layout.metaSizeClass} font-bold uppercase tracking-wider pb-1.5 ${mbClass} border-b flex items-center gap-2`}
         style={{ borderColor: theme.border, color: theme.primaryDark }}
       >
@@ -378,6 +388,8 @@ export const DocumentSectionHeading: React.FC<DocumentSectionHeadingProps> = ({
 
   return (
     <h2
+      data-pdf-block="true"
+      data-pdf-keep-with-next="true"
       className={`font-sans-title ${layout.metaSizeClass} font-bold uppercase tracking-wider pb-1.5 ${mbClass} border-b`}
       style={{ borderColor: theme.border, color: theme.primaryDark }}
     >
@@ -400,6 +412,7 @@ export const DocumentInfoCard: React.FC<DocumentInfoCardProps> = ({
   const { layout, design, theme } = assets;
   return (
     <section
+      data-pdf-block="true"
       className={`${layout.sectionMbClass} ${
         layout.isUltraNarrow ? 'p-2.5' : layout.isCompact ? 'p-3' : layout.isLarge ? 'p-5' : 'p-4'
       } rounded-md border font-sans-title ${layout.metaSizeClass} print-avoid-break`}
@@ -460,6 +473,7 @@ export const DocumentNotesBox: React.FC<DocumentNotesBoxProps> = ({
   const filled = hasText(text);
   return (
     <section
+      data-pdf-block="true"
       className={`${layout.sectionMbClass} ${
         layout.isCompact ? 'p-2.5' : 'p-3.5'
       } rounded bg-slate-50 border border-slate-200 font-sans-title ${layout.metaSizeClass} text-slate-600 print-avoid-break`}
@@ -530,6 +544,7 @@ export const DocumentFooterBand: React.FC<DocumentFooterBandProps> = ({
   const { layout } = assets;
   return (
     <footer
+      data-pdf-block="true"
       className={`pt-5 border-t border-slate-200 flex ${
         layout.isCompact
           ? 'flex-col items-start gap-3'

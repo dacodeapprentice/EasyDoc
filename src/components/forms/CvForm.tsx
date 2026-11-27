@@ -173,7 +173,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                   value={data.fullName}
                   onChange={(e) => updateField('fullName', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs text-zinc-900 bg-zinc-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="Full name here"
+                  placeholder={t('cv_ph_full_name')}
                 />
               </div>
 
@@ -186,7 +186,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                   value={data.professionalTitle}
                   onChange={(e) => updateField('professionalTitle', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs text-zinc-900 bg-zinc-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="Job title here"
+                  placeholder={t('cv_ph_job_title')}
                 />
               </div>
 
@@ -212,7 +212,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                   value={data.phone}
                   onChange={(e) => updateField('phone', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs text-zinc-900 bg-zinc-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="Phone number here"
+                  placeholder={t('cv_ph_phone')}
                 />
               </div>
 
@@ -225,7 +225,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                   value={data.location}
                   onChange={(e) => updateField('location', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs text-zinc-900 bg-zinc-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="City, Country"
+                  placeholder={t('cv_ph_location')}
                 />
               </div>
 
@@ -238,7 +238,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                   value={data.website}
                   onChange={(e) => updateField('website', e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs text-zinc-900 bg-zinc-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                  placeholder="website.example.com"
+                  placeholder={t('cv_ph_website')}
                 />
               </div>
             </div>
@@ -271,7 +271,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
               value={data.summary}
               onChange={(e) => updateField('summary', e.target.value)}
               className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs text-zinc-900 bg-zinc-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 leading-relaxed transition-colors"
-              placeholder="Write a brief overview of your background and key strengths..."
+              placeholder={t('cv_ph_summary')}
             />
           </div>
         )}
@@ -340,7 +340,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       value={exp.role}
                       onChange={(e) => updateExperience(exp.id, 'role', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Role or position title"
+                      placeholder={t('cv_ph_role')}
                     />
                   </div>
                   <div>
@@ -352,7 +352,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       value={exp.company}
                       onChange={(e) => updateExperience(exp.id, 'company', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Organization name"
+                      placeholder={t('cv_ph_company')}
                     />
                   </div>
                   <div className="sm:col-span-2">
@@ -375,7 +375,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       value={exp.location}
                       onChange={(e) => updateExperience(exp.id, 'location', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="City, Country"
+                      placeholder={t('cv_ph_location')}
                     />
                   </div>
                 </div>
@@ -403,7 +403,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                           value={h}
                           onChange={(e) => updateHighlight(exp.id, hIdx, e.target.value)}
                           className="flex-1 px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                          placeholder="Describe a key responsibility or outcome..."
+                          placeholder={t('cv_ph_highlight')}
                         />
                         <button
                           type="button"
@@ -485,7 +485,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       value={edu.degree}
                       onChange={(e) => updateEducation(edu.id, 'degree', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Degree or certification title"
+                      placeholder={t('cv_ph_degree')}
                     />
                   </div>
                   <div className="sm:col-span-2">
@@ -497,7 +497,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       value={edu.institution}
                       onChange={(e) => updateEducation(edu.id, 'institution', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Institution name"
+                      placeholder={t('cv_ph_institution')}
                     />
                   </div>
                   <div className="sm:col-span-2">
@@ -519,7 +519,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                       value={edu.details}
                       onChange={(e) => updateEducation(edu.id, 'details', e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs border border-zinc-200 rounded-lg bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                      placeholder="Specialization or additional details"
+                      placeholder={t('cv_ph_details')}
                     />
                   </div>
                 </div>
@@ -553,7 +553,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
           <div className="p-4 space-y-3">
             <div>
               <label className="block text-xs font-semibold text-zinc-700 mb-1">
-                {t('key_competencies')} (Comma-separated)
+                {t('key_competencies')} {t('comma_separated')}
               </label>
               <input
                 type="text"
@@ -567,13 +567,13 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                   );
                 }}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Skill 1, Skill 2, Skill 3"
+                placeholder={t('cv_ph_skills')}
               />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-zinc-700 mb-1">
-                {t('languages')} (Comma-separated)
+                {t('languages')} {t('comma_separated')}
               </label>
               <input
                 type="text"
@@ -587,7 +587,7 @@ export const CvForm: React.FC<CvFormProps> = ({ data, onChange, lang = 'en' }) =
                   );
                 }}
                 className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-xs bg-zinc-50/60 focus:bg-white text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
-                placeholder="Language 1, Language 2"
+                placeholder={t('cv_ph_languages')}
               />
             </div>
           </div>
